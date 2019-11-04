@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "500663699306",
+    "firebase_url": "https://homefinance-jay.firebaseio.com",
+    "project_id": "homefinance-jay",
+    "storage_bucket": "homefinance-jay.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:500663699306:android:e61c5aaad2200ebc218713",
+        "android_client_info": {
+          "package_name": "com.jayjay.homefinance"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "500663699306-o6cvg4ef6ciemfdid22t652parlrc4tl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsfHhDMI7StRLTbesALKe_5Aj5U-rPzxU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "500663699306-o6cvg4ef6ciemfdid22t652parlrc4tl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

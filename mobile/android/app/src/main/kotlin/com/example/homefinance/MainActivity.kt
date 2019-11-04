@@ -1,4 +1,4 @@
-package com.example.homefinance
+package com.jayjay.homefinance
 
 import android.os.Bundle
 
