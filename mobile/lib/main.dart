@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:homefinance/util/state_widget.dart';
 import 'package:homefinance/ui/theme.dart';
 import 'package:homefinance/ui/screens/home.dart';
-import 'package:homefinance/ui/screens/authentication/sign_in.dart';
-import 'package:homefinance/ui/screens/authentication/sign_up.dart';
-import 'package:homefinance/ui/screens/authentication/forgot_password.dart';
+import 'package:homefinance/ui/screens/sign_in.dart';
+import 'package:homefinance/ui/screens/sign_up.dart';
+import 'package:homefinance/ui/screens/forgot_password.dart';
 
 class MyApp extends StatelessWidget {
   MyApp() {

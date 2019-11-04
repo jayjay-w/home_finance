@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/state.dart';
 import 'package:homefinance/util/state_widget.dart';
-import 'package:homefinance/ui/screens/authentication/sign_in.dart';
+import 'package:homefinance/ui/screens/sign_in.dart';
 import 'package:homefinance/ui/widgets/loading.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -91,8 +91,8 @@ class _HomeScreenState extends State<HomeScreen> {
 //check for null https://stackoverflow.com/questions/49775261/check-null-in-ternary-operation
       final userId = appState?.firebaseUserAuth?.uid ?? '';
       final email = appState?.firebaseUserAuth?.email ?? '';
-      final firstName = appState?.user?.firstName ?? '';
-      final lastName = appState?.user?.lastName ?? '';
+      final firstName = ""; // appState?.user?.firstName ?? '';
+      final lastName = ""; // appState?.user?.lastName ?? '';
       final settingsId = appState?.settings?.settingsId ?? '';
       final userIdLabel = Text('App Id: ');
       final emailLabel = Text('Email: ');

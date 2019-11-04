@@ -19,7 +19,7 @@ class Auth {
   static void addUserSettingsDB(User user) async {
     checkUserExist(user.userId).then((value) {
       if (!value) {
-        print("user ${user.firstName} ${user.email} added");
+        print("user ${user.email} added");
         Firestore.instance
             .document("users/${user.userId}")
             .setData(user.toJson());
@@ -27,7 +27,7 @@ class Auth {
           settingsId: user.userId,
         ));
       } else {
-        print("user ${user.firstName} ${user.email} exists");
+        print("user ${user.email} exists");
       }
     });
   }
@@ -56,6 +56,7 @@ class Auth {
   static Future<String> signIn(String email, String password) async {
     FirebaseUser user = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
+    print(user.uid);
     return user.uid;
   }
 
@@ -152,10 +153,10 @@ class Auth {
           return 'This email address already has an account.';
           break;
         default:
-          return 'Unknown error occured.';
+          return 'Unknown error occured. ' + e.message;
       }
     } else {
-      return 'Unknown error occured.';
+      return 'Unknown error occured. 1';
     }
   }
 

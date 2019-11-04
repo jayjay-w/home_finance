@@ -17,28 +17,28 @@ String userToJson(User data) {
 
 class User {
   String userId;
-  String firstName;
-  String lastName;
+  // String firstName;
+  // String lastName;
   String email;
 
   User({
     this.userId,
-    this.firstName,
-    this.lastName,
+    // this.firstName,
+    // this.lastName,
     this.email,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => new User(
         userId: json["userId"],
-        firstName: json["firstName"],
-        lastName: json["lastName"],
+        // firstName: json["firstName"],
+        // lastName: json["lastName"],
         email: json["email"],
       );
 
   Map<String, dynamic> toJson() => {
         "userId": userId,
-        "firstName": firstName,
-        "lastName": lastName,
+        // "firstName": firstName,
+        // "lastName": lastName,
         "email": email,
       };
 
