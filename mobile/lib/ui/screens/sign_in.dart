@@ -164,10 +164,10 @@ class _SignInScreenState extends State<SignInScreen> {
       } catch (e) {
         _changeLoadingVisible();
         print("Sign In Error: $e");
-        //String exception = Auth.getExceptionText(e);
+        String exception = Auth.getExceptionText(e);
         Flushbar(
           title: "Sign In Error",
-          message: e.toString(),
+          message: exception,
           duration: Duration(seconds: 5),
         )..show(context);
       }

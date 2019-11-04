@@ -125,8 +125,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
         onPressed: () {
           _emailSignUp(
-              // firstName: _firstName.text,
-              // lastName: _lastName.text,
+              firstName: _firstName.text,
+              lastName: _lastName.text,
               email: _email.text,
               password: _password.text,
               context: context);
@@ -162,10 +162,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
                       logo,
-                      // SizedBox(height: 48.0),
-                      // firstName,
-                      // SizedBox(height: 24.0),
-                      // lastName,
+                      SizedBox(height: 48.0),
+                      firstName,
+                      SizedBox(height: 24.0),
+                      lastName,
                       SizedBox(height: 24.0),
                       email,
                       SizedBox(height: 24.0),
@@ -191,8 +191,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _emailSignUp(
       {
-      // String firstName,
-      // String lastName,
+      String firstName,
+      String lastName,
       String email,
       String password,
       BuildContext context}) async {
@@ -205,8 +205,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
           Auth.addUserSettingsDB(new User(
             userId: uID,
             email: email,
-            // firstName: firstName,
-            // lastName: lastName,
+            firstName: firstName,
+            lastName: lastName,
           ));
         });
         //now automatically login user too
