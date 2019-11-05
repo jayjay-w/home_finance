@@ -11,8 +11,8 @@ enum authProblems { UserNotFound, PasswordNotValid, NetworkError, UnknownError }
 
 class Auth {
   static Future<String> signUp(String email, String password) async {
-    FirebaseUser user = await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(email: email, password: password);
+   FirebaseUser user = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
     return user.uid;
   }
 
