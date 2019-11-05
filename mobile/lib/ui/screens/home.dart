@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/state.dart';
+import 'package:homefinance/ui/screens/accounts.dart';
 import 'package:homefinance/ui/screens/dashboard.dart';
 import 'package:homefinance/ui/screens/receive_money.dart';
 import 'package:homefinance/ui/screens/reports.dart';
@@ -61,7 +62,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   // CategorySelector(),
                   Expanded(
                       child: Container(
-                      height: 100,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.only(
@@ -71,7 +71,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       child: PageView(
                         controller: _pageController,
-                        
                         onPageChanged: (int index) {
                           setState(() {
                            _currentTab = index; 
@@ -82,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ReceiveMoneyScreen(),
                           SendMoneyScreen(),
                           TransferMoneyScreen(),
-                          ReportsScreen()
+                          AccountsScreen()
                         ],
                       ),
                     ),
@@ -103,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 BottomNavigationBarItem(icon: Icon(Icons.arrow_downward,)),
                 BottomNavigationBarItem(icon: Icon(Icons.arrow_upward)),
                 BottomNavigationBarItem(icon: Icon(Icons.sync)),
-                BottomNavigationBarItem(icon: Icon(Icons.pie_chart)),
+                BottomNavigationBarItem(icon: Icon(Icons.account_balance)),
               ],
             ),
             ),
