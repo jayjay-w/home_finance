@@ -21,7 +21,7 @@ AppBar makeAppBar(BuildContext context) {
       elevation: 0,
       actions: <Widget>[
         IconButton(
-          icon: Icon(Icons.search),
+          icon: Icon(Icons.supervised_user_circle),
           iconSize: 30,
           color: Colors.white,
           onPressed: () {},
