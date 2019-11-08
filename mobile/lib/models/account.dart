@@ -20,41 +20,47 @@ class Account {
   String accountNo;
   String accountType;
   String currency;
-  int balance;
+  double balance;
+  DateTime balanceAsOf;
+  Timestamp dateCreated;
   List<Reconciliation> reconciliations;
 
+
   Account({
-    this.accountId,
     this.accountName,
     this.accountNo,
     this.accountType,
     this.currency,
     this.balance,
-    this.reconciliations
+    this.reconciliations,
+    this.balanceAsOf,
+    this.dateCreated
   });
 
   factory Account.fromJson(Map<String, dynamic> json) => new Account(
-        accountId: json["documentId"],
         accountName: json["accountName"],
         accountNo: json["accountNo"],
         accountType: json["accountType"],
         currency: json["currency"],
+        balanceAsOf: json["balanceAsOf"],
         balance: json["balance"],
-        reconciliations: json["reconciliations"]
+        dateCreated: json["createdOn"]
       );
 
   Map<String, dynamic> toJson() => {
-        "documentId": accountId,
-        "accountName": accountName,
-        "accountNo": accountNo,
-        "accountType": accountType,
-        "currency": currency,
-        "reconciliations": reconciliations,
-        "balance": balance
+        "accountName": accountName ?? '',
+        "accountNo": accountNo ?? '',
+        "accountType": accountType ?? 'Cash',
+        "currency": currency ?? 'USD',
+        "balanceAsOf": balanceAsOf ?? null,
+        "balance": balance ?? 0.00,
+        "createdOn": dateCreated ?? DateTime.now()
       };
 
   factory Account.fromDocument(DocumentSnapshot doc) {
-    return Account.fromJson(doc.data);
+    Account ret = Account.fromJson(doc.data);
+    ret.accountId = doc.documentID;
+    return ret;
   }
 
   factory Account.fromMap(Map data) {

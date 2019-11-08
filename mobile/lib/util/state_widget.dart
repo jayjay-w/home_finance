@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:homefinance/main.dart';
 import 'package:homefinance/models/state.dart';
 import 'package:homefinance/models/user.dart';
 import 'package:homefinance/models/settings.dart';
@@ -9,7 +10,7 @@ import 'package:homefinance/util/auth.dart';
 
 class StateWidget extends StatefulWidget {
   final StateModel state;
-  final Widget child;
+  final MyApp child;
 
   StateWidget({
     @required this.child,
