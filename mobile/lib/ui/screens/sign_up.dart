@@ -33,7 +33,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           radius: 60.0,
           child: ClipOval(
             child: Image.asset(
-              'assets/images/default.png',
+              'assets/images/home-budget-software.jpg',
               fit: BoxFit.cover,
               width: 120.0,
               height: 120.0,
@@ -43,7 +43,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     final firstName = TextFormField(
       autofocus: false,
-      textCapitalization: TextCapitalization.words,
+      autocorrect: false,
       controller: _firstName,
       validator: Validator.validateName,
       decoration: InputDecoration(
@@ -64,6 +64,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       autofocus: false,
       textCapitalization: TextCapitalization.words,
       controller: _lastName,
+      autocorrect: false,
       validator: Validator.validateName,
       decoration: InputDecoration(
         prefixIcon: Padding(
@@ -83,6 +84,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       keyboardType: TextInputType.emailAddress,
       autofocus: false,
       controller: _email,
+      autocorrect: false,
       validator: Validator.validateEmail,
       decoration: InputDecoration(
         prefixIcon: Padding(

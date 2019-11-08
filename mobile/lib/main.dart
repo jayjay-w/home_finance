@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:homefinance/ui/screens/user_profile.dart';
 import 'package:homefinance/util/state_widget.dart';
 import 'package:homefinance/ui/theme.dart';
 import 'package:homefinance/ui/screens/home.dart';
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
         '/signin': (context) => SignInScreen(),
         '/signup': (context) => SignUpScreen(),
         '/forgot-password': (context) => ForgotPasswordScreen(),
+        '/profile': (context) => UserProfileScreen(),
       },
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:homefinance/ui/screens/user_profile.dart';
 import 'package:homefinance/util/state_widget.dart';
 
 AppBar makeAppBar(BuildContext context) {
@@ -24,7 +25,7 @@ AppBar makeAppBar(BuildContext context) {
           icon: Icon(Icons.supervised_user_circle),
           iconSize: 30,
           color: Colors.white,
-          onPressed: () {},
+          onPressed: () {  Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfileScreen()),); },
         )
       ],
   );

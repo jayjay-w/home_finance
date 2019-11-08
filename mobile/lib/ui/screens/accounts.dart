@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/account.dart';
+import 'package:homefinance/services/database_service.dart';
 
 class AccountsScreen extends StatefulWidget {
   @override
@@ -8,23 +9,27 @@ class AccountsScreen extends StatefulWidget {
 }
 
 
-final dummyAccounts  = [
-  {"accountName": "Stanchart", "accountNo": "122342343", "accountType": "checking", "currency": "KES"},
-  {"accountName": "Equity", "accountNo": "122342343", "accountType": "checking", "currency": "KES"},
-  {"accountName": "KCB", "accountNo": "122342343", "accountType": "checking", "currency": "KES"},
-];
 
 class _AccountsScreenState extends State<AccountsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('accounts').snapshots(),
+   return Scaffold(
+      body: StreamBuilder<QuerySnapshot>(
+        stream: accountsRef.snapshots(),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) return LinearProgressIndicator();
-          return _buildList(context, snapshot.data.documents);
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          } else {
+            return _buildList(context, snapshot.data.documents);
+          }
         },
-    );
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: Icon(Icons.add),
+      ),
+   );
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {

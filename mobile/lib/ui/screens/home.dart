@@ -44,13 +44,6 @@ class _HomeScreenState extends State<HomeScreen> {
         _loadingVisible = false;
       }
       
-      final userId = appState?.firebaseUserAuth?.uid ?? '';
-      final email = appState?.firebaseUserAuth?.email ?? '';
-      final firstName = appState?.user?.firstName ?? '';
-      final lastName = appState?.user?.lastName ?? '';
-      final settingsId = appState?.settings?.settingsId ?? '';
-
-
       return Scaffold(
         backgroundColor: Colors.white,
         body: LoadingScreen(
