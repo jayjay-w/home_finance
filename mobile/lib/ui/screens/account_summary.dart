@@ -40,16 +40,16 @@ class _AccountSummaryScreenState extends State<AccountSummaryScreen> {
               child: Column(
                 children: <Widget>[
                   Row(children: <Widget>[
-                      Expanded(child: Text("As Of " + DateFormat("dd MMM yyyy").format(widget.account.dateCreated.toDate()) )), Text("0.00 CHF")
+                      Expanded(child: Text("As Of " + DateFormat("dd MMM yyyy").format(widget.account.dateCreated.toDate()) )), Text(widget.account.openingBalance.toString() + " " + widget.account.currency)
                     ],),
                   Row(children: <Widget>[
-                      Expanded(child: Text("   + Funds In")), Text("0.00 CHF", style: TextStyle(color: Colors.green),)
+                      Expanded(child: Text("   + Funds In")), Text(widget.account.allCredits.toString() + " " + widget.account.currency, style: TextStyle(color: Colors.green),)
                     ],),
                   Row(children: <Widget>[
-                      Expanded(child: Text("   +Funds Out")), Text("0.00 CHF", style: TextStyle(color: Colors.red))
+                      Expanded(child: Text("   +Funds Out")), Text(widget.account.allDebits.toString() + " " + widget.account.currency, style: TextStyle(color: Colors.red))
                     ],),
                   Row(children: <Widget>[
-                      Expanded(child: Text("Current Balance")), Text("0.00 CHF")
+                      Expanded(child: Text("Current Balance")), Text(widget.account.currentBalance.toString() + " " + widget.account.currency)
                     ],),
                 ],
               ),

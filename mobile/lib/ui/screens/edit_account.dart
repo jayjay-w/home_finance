@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/account.dart';
@@ -36,7 +37,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
     if (widget.account != null) {
       _accountName = widget.account.accountName;
       _accountType = widget.account.accountType;
-      _accountBalance = widget.account.balance.toString();
+      _accountBalance = widget.account.openingBalance.toString();
       currencyValue = widget.account.currency;
     }
 
@@ -46,7 +47,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       Account account;
-      account = Account(accountName: _accountName, accountType: _accountType, balance: double.parse(_accountBalance), currency: currencyValue);
+      account = Account(uid: widget.userId, accountName: _accountName, accountType: _accountType, openingBalance: double.parse(_accountBalance), currency: currencyValue, dateCreated: Timestamp.now());
       if (widget.account == null) {
          DatabaseService.addAccount(account, widget.userId);
       } else {
@@ -92,6 +93,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                   autocorrect: false,
                   initialValue: _accountName,
                   decoration: InputDecoration(labelText: 'Name'),
+                  validator: (input) => input.length < 2 ? 'Enter an account name' : null,
                   onSaved: (input) => _accountName = input,
                 ),
 

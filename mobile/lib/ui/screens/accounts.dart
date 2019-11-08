@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/account.dart';
 import 'package:homefinance/models/user.dart';
 import 'package:homefinance/services/database_service.dart';
 import 'package:homefinance/ui/screens/account_summary.dart';
 import 'package:homefinance/ui/screens/edit_account.dart';
+import 'package:homefinance/ui/screens/transfer.dart';
 
 class AccountsScreen extends StatefulWidget {
   final User user;
@@ -44,6 +46,30 @@ class _AccountsScreenState extends State<AccountsScreen> {
           }
         },
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: (index) {
+          if (index == 0) {
+            //Transfer button clicked
+            Navigator.push(context, MaterialPageRoute(
+                  builder: (_) => TransferScreen()
+              ));
+          }
+        },
+        items: [
+          BottomNavigationBarItem(
+            title: Text("Transfer"),
+            icon: Icon(Icons.swap_horiz, color: Colors.blue,)
+          ),
+          BottomNavigationBarItem(
+            title: Text("Add Expense"),
+            icon: Icon(Icons.arrow_downward, color: Colors.red)
+          ),
+          BottomNavigationBarItem(
+            title: Text("Add Income"),
+            icon: Icon(Icons.arrow_upward, color: Colors.green,)
+          ),
+        ],
+      ),
     );
   }
 
@@ -70,7 +96,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
                   title: Row(
                     children: <Widget>[
                       Expanded(child: Text(account.accountName, style: TextStyle(fontWeight: FontWeight.bold),)),
-                      Text(account.currency + " " + account.balance.toString(), style: account.balance >= 0 ? TextStyle(color: Colors.green) : TextStyle(color: Colors.red)),
+                      Text(account.currency + " " + account.currentBalance.toString(), style: account.currentBalance >= 0 ? TextStyle(color: Colors.green) : TextStyle(color: Colors.red)),
                     ],
                   ),
                   trailing:  GestureDetector(child: Icon(Icons.arrow_forward_ios),),

@@ -1,29 +1,43 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Transaction {
-  final String transactionDate;
-  final String accountId;
-  final bool isCredit;
+class Trans {
+  final Timestamp transactionDate;
+  final String debitAccountId;
+  final String creditAccountId;
+  final String creditorId;
+  final String debitorId;
   final double transactionAmount;
   final String id;
 
-  Transaction({
+  Trans({
     this.id,
     this.transactionDate,
-    this.accountId,
+    this.creditAccountId,
+    this.debitAccountId,
+    this.creditorId,
+    this.debitorId,
     this.transactionAmount,
-    this.isCredit
   });
 
-  factory Transaction.fromDocument(DocumentSnapshot doc) {
-    return Transaction(
+  factory Trans.fromDocument(DocumentSnapshot doc) {
+    return Trans(
       id: doc.documentID,
-      accountId: doc['accountId'],
-      isCredit: doc['isCredit'],
+      creditAccountId: doc['creditAccountId'],
+      debitAccountId: doc['debitAccountId'],
+      creditorId: doc['creditorId'],
+      debitorId: doc['debitorId'],
       transactionAmount: doc["transactionAmount"],
-      transactionDate: doc["transactionDate"]
+      //transactionDate: doc["transactionDate"].toString()
     );
   }
 
-
+  Map<String, dynamic> toJson() => {
+        "creditAccountId": creditAccountId ?? '',
+        "debitAccountId": debitAccountId ?? '',
+        "creditorId": creditorId ?? '',
+        "debitorId": debitorId ?? '',
+        "transactionAmount": transactionAmount ?? 0.00,
+        "transactionDate": transactionDate.toString() ?? "0.00",
+        "timestamp": DateTime.now()
+      };
 }
