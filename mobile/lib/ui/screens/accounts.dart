@@ -23,7 +23,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text("Home Finance",
+          title: Text("Accounts",
               style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,

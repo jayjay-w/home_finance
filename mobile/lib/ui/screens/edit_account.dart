@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,7 +21,6 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 
   String _accountName, _accountType;
   String _accountBalance;
-  DateTime _balanceAsOf;
   String currencyValue = 'USD';
 
 
@@ -32,7 +30,6 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
     _accountName = "";
     _accountType = "Cash";
     _accountBalance = "0.00";
-    _balanceAsOf = DateTime.now();
 
     if (widget.account != null) {
       _accountName = widget.account.accountName;
@@ -68,7 +65,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Home Finance",
+        title: Text("Account Details",
               style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,

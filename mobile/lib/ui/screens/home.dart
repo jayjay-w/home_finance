@@ -1,13 +1,9 @@
-import 'package:flushbar/flushbar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/state.dart';
+import 'package:homefinance/services/database_service.dart';
 import 'package:homefinance/ui/screens/accounts.dart';
-import 'package:homefinance/ui/screens/dashboard.dart';
-import 'package:homefinance/ui/screens/receive_money.dart';
-import 'package:homefinance/ui/screens/reports.dart';
-import 'package:homefinance/ui/screens/send_money.dart';
-import 'package:homefinance/ui/screens/transfer_money.dart';
 import 'package:homefinance/ui/widgets/appBar.dart';
 import 'package:homefinance/util/state_widget.dart';
 import 'package:homefinance/ui/screens/sign_in.dart';
@@ -118,11 +114,25 @@ class _HomeScreenState extends State<HomeScreen> {
                           onTap: () {
                             Navigator.pushNamed(context, AccountsScreen.id);
                           },
-                          child: dashboardListWidget(
-                              "Accounts",
-                              "Kes 3,239,008.00",
-                              Icons.account_box,
-                              Colors.green),
+                          child: StreamBuilder<QuerySnapshot>(
+                             stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('accounts').snapshots(),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData) {
+                                return Center(child: CircularProgressIndicator(),);
+                              }
+                              else if (snapshot.data.documents == null) {
+                                return Center(child: CircularProgressIndicator(),);
+                              } else {
+                                double totalBalance = 0;
+                                for (int i = 0; i< snapshot.data.documents.length; i++) {
+                                  totalBalance += double.parse(snapshot.data.documents[i]['amount']);
+                                }
+
+                                return dashboardListWidget("Accounts", "Kes " + totalBalance.toString(), Icons.account_box, Colors.green);
+
+                              }
+                            }
+                          ),
                         ),
                         dashboardListWidget("Transfers", "Kes 0.00",
                             Icons.refresh, Colors.indigo),

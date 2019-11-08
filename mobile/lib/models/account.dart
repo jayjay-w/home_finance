@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:homefinance/models/reconciliation.dart';
 import 'package:homefinance/models/transaction.dart';
@@ -56,8 +55,6 @@ class Account {
       );
 
   void getBalance() async {
-    double bal = 0;
-
     await DatabaseService.getAccountTransactions(accountId, uid).then((userTransactions) {
         print ('user transes for ' + uid + ' are ' + userTransactions.documents.length.toString());
         for (DocumentSnapshot doc in userTransactions.documents) {
