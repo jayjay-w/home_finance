@@ -1,5 +1,5 @@
+import 'package:homefinance/ui/screens/income.dart';
 import 'package:homefinance/ui/screens/receive_money.dart';
-import 'package:homefinance/ui/screens/transfers.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -144,28 +144,32 @@ class _HomeScreenState extends State<HomeScreen> {
                               }
                               double income = 0.00;
                               double expenses = 0.00;
-                              double transfers = 0.00;
                               for (int i = 0; i < snapshot.data.documents.length; i++) {
                                 Trans trans = Trans.fromDocument(snapshot.data.documents[i]);
-                                if (trans.transType == "Transfer") transfers += trans.transactionAmount;
+
                                 if (trans.transType == "Income") income += trans.transactionAmount;
                                 if (trans.transType == "Expense") expenses += trans.transactionAmount;
                               }
                               return Column(
                                   children: <Widget>[
-                                  dashboardListWidget("Transfers", "Kes " + currencyFormatter.format(transfers), Icons.refresh, Colors.green, (){ Navigator.pushNamed(context, TransfersScreen.id); }),
-                                  dashboardListWidget("Expenses", "Kes " + currencyFormatter.format(expenses), Icons.arrow_upward, Colors.red, (){ }),
-                                  dashboardListWidget("Income", "Kes " + currencyFormatter.format(income), Icons.arrow_downward, Colors.green, (){ Navigator.pushNamed(context, ReceiveMoneyScreen.id);}),
+                                  dashboardListWidget("Expenses", "Kes " + currencyFormatter.format(expenses), Icons.arrow_downward, Colors.red, (){ }),
+                                  dashboardListWidget("Income", "Kes " + currencyFormatter.format(income), Icons.arrow_upward, Colors.green, (){ Navigator.pushNamed(context, IncomeScreen.id);}),
                                   ],
                                 );
                             },
                           ),
-                        )
+                        ),
+                        dashboardListWidget("Budget", "0.00", Icons.assessment, Colors.blue, null),
                       ],
+                      
                     ),
+                    
                   ),
+                  
                 ],
+                
               ),
+              
             ),
             inAsyncCall: _loadingVisible),
       );

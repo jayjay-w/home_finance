@@ -51,8 +51,20 @@ class _AccountSummaryScreenState extends State<AccountSummaryScreen> {
                       Expanded(child: Text("   +Funds Out")), Text(currencyFormatter.format(widget.account.allDebits) + " " + widget.account.currency, style: TextStyle(color: Colors.red))
                     ],),
                   Row(children: <Widget>[
-                      Expanded(child: Text("Current Balance")), Text(currencyFormatter.format(widget.account.currentBalance) + " " + widget.account.currency)
+                      Expanded(child: Text("Current Balance")), Text(currencyFormatter.format(widget.account.currentBalance) + " " + widget.account.currency),
+                    
                     ],),
+                    Divider(),
+                    SizedBox(),
+                    Divider(),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text("Add Income", style: TextStyle(fontSize: 20, color: Colors.blue),),
+                        Expanded(child: Text("Add Expense", style: TextStyle(fontSize: 20, color: Colors.blue), textAlign: TextAlign.center,)),
+                        Text("View Month", style: TextStyle(fontSize: 20, color: Colors.blue))
+                      ],
+                    )
                 ],
               ),
             )

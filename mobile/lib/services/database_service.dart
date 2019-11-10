@@ -38,6 +38,21 @@ class DatabaseService {
       debitAccount(uid, sourceAccountId, amount);
     }
 
+    static void receiveMoney(String uid, String description, String notes, Timestamp dateReceived, double amount, String accountId) async {
+      Trans newTrans = new Trans(
+        description: description,
+        notes: notes,
+        creditAccountId: accountId,
+        debitAccountId: "none",
+        transactionDate: dateReceived,
+        transactionAmount: amount,
+        transType: "Income",
+        );
+      
+      usersRef.document(uid).collection('transactions').document().setData(newTrans.toJson());
+      creditAccount(uid, accountId, amount);
+    }
+
     static void creditAccount(String uid, String accId, double amount) {
       usersRef.document(uid).collection('accounts').document(accId).updateData(
         {
