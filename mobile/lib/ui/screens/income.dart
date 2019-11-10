@@ -64,7 +64,22 @@ class _IncomeScreenState extends State<IncomeScreen> {
                 child: ListTile(
                   title: Row(
                     children: <Widget>[
-                      Expanded(child: Text(trans.description, style: TextStyle(fontWeight: FontWeight.bold),)),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(trans.description, style: TextStyle(fontWeight: FontWeight.bold),),
+                            StreamBuilder(
+                              stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('accounts').document(trans.creditAccountId).snapshots(),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) return Center(child: CircularProgressIndicator(),);
+                                return Text(" " + snapshot.data["accountName"].toString());
+                              },
+                            ),
+                            Text(DateFormat("dd MMM yyyy").format(trans.transactionDate.toDate()))
+                          ],
+                        ),
+                      ),
                       Text( "KES " + currencyFormatter.format(trans.transactionAmount), style: trans.transactionAmount >= 0 ? TextStyle(color: Colors.green) : TextStyle(color: Colors.red)),
                     ],
                   ),

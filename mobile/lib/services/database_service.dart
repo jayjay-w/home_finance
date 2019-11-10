@@ -31,7 +31,7 @@ class DatabaseService {
     }
 
     static void transferMoney(String uid, String sourceAccountId, String targetAccountId, Timestamp date, double amount) async {
-      Trans newTrans = new Trans(transType: "Transfer", debitAccountId: sourceAccountId, creditAccountId: targetAccountId, transactionAmount: amount, transactionDate: date);
+      Trans newTrans = new Trans(currency: "KES", transType: "Transfer", debitAccountId: sourceAccountId, creditAccountId: targetAccountId, transactionAmount: amount, transactionDate: date);
       
       usersRef.document(uid).collection('transactions').document().setData(newTrans.toJson());
       creditAccount(uid, targetAccountId, amount);
@@ -47,6 +47,7 @@ class DatabaseService {
         transactionDate: dateReceived,
         transactionAmount: amount,
         transType: "Income",
+        currency: "KES"
         );
       
       usersRef.document(uid).collection('transactions').document().setData(newTrans.toJson());

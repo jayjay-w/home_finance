@@ -144,14 +144,18 @@ class _HomeScreenState extends State<HomeScreen> {
                               }
                               double income = 0.00;
                               double expenses = 0.00;
+                              double transfers = 0.00;
                               for (int i = 0; i < snapshot.data.documents.length; i++) {
                                 Trans trans = Trans.fromDocument(snapshot.data.documents[i]);
 
                                 if (trans.transType == "Income") income += trans.transactionAmount;
                                 if (trans.transType == "Expense") expenses += trans.transactionAmount;
+                                if (trans.transType == "Transfer") transfers += trans.transactionAmount;
                               }
                               return Column(
                                   children: <Widget>[
+                                    dashboardListWidget("Transfers", "Kes " + currencyFormatter.format(transfers), Icons.sync, Colors.blue, (){ }),
+                                  
                                   dashboardListWidget("Expenses", "Kes " + currencyFormatter.format(expenses), Icons.arrow_downward, Colors.red, (){ }),
                                   dashboardListWidget("Income", "Kes " + currencyFormatter.format(income), Icons.arrow_upward, Colors.green, (){ Navigator.pushNamed(context, IncomeScreen.id);}),
                                   ],
