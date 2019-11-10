@@ -7,18 +7,20 @@ import 'package:homefinance/services/database_service.dart';
 import 'package:homefinance/ui/screens/account_summary.dart';
 import 'package:homefinance/ui/screens/edit_account.dart';
 import 'package:homefinance/ui/screens/transfer.dart';
+import 'package:intl/intl.dart';
 
 class AccountsScreen extends StatefulWidget {
   final User user;
 
   AccountsScreen({this.user});
 
-  static final String id = 'home_screen';
+  static final String id = 'accounts';
   @override
   _AccountsScreenState createState() => _AccountsScreenState();
 }
 
 class _AccountsScreenState extends State<AccountsScreen> {
+  final currencyFormatter = new NumberFormat("#,##0.00", "en_US");
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,7 +98,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
                   title: Row(
                     children: <Widget>[
                       Expanded(child: Text(account.accountName, style: TextStyle(fontWeight: FontWeight.bold),)),
-                      Text(account.currency + " " + account.currentBalance.toString(), style: account.currentBalance >= 0 ? TextStyle(color: Colors.green) : TextStyle(color: Colors.red)),
+                      Text(account.currency + " " + currencyFormatter.format(account.currentBalance), style: account.currentBalance >= 0 ? TextStyle(color: Colors.green) : TextStyle(color: Colors.red)),
                     ],
                   ),
                   trailing:  GestureDetector(child: Icon(Icons.arrow_forward_ios),),

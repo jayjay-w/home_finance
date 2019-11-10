@@ -21,7 +21,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 
   String _accountName, _accountType;
   String _accountBalance;
-  String currencyValue = 'USD';
+  String currencyValue = 'KES';
 
 
   @override
@@ -46,6 +46,9 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
       Account account;
       account = Account(uid: widget.userId, accountName: _accountName, accountType: _accountType, openingBalance: double.parse(_accountBalance), currency: currencyValue, dateCreated: Timestamp.now());
       if (widget.account == null) {
+         account.currentBalance = double.parse(_accountBalance);
+         account.allDebits = 0.00;
+         account.allCredits = 0.00;
          DatabaseService.addAccount(account, widget.userId);
       } else {
          DatabaseService.updateAccount(widget.account.accountId, account, widget.userId);
@@ -57,7 +60,6 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
   _onCurrencyChanged(val, symbol) {
     setState(() {
       currencyValue = val;
-      print(symbol + ' selected'); 
     });
   }
 

@@ -14,6 +14,8 @@ class AccountSummaryScreen extends StatefulWidget {
 }
 
 class _AccountSummaryScreenState extends State<AccountSummaryScreen> {
+  final currencyFormatter = new NumberFormat("#,##0.00", "en_US");
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,16 +42,16 @@ class _AccountSummaryScreenState extends State<AccountSummaryScreen> {
               child: Column(
                 children: <Widget>[
                   Row(children: <Widget>[
-                      Expanded(child: Text("As Of " + DateFormat("dd MMM yyyy").format(widget.account.dateCreated.toDate()) )), Text(widget.account.openingBalance.toString() + " " + widget.account.currency)
+                      Expanded(child: Text("As Of " + DateFormat("dd MMM yyyy").format(widget.account.dateCreated.toDate()) )), Text(currencyFormatter.format(widget.account.openingBalance) + " " + widget.account.currency)
                     ],),
                   Row(children: <Widget>[
-                      Expanded(child: Text("   + Funds In")), Text(widget.account.allCredits.toString() + " " + widget.account.currency, style: TextStyle(color: Colors.green),)
+                      Expanded(child: Text("   + Funds In")), Text(currencyFormatter.format(widget.account.allCredits) + " " + widget.account.currency, style: TextStyle(color: Colors.green),)
                     ],),
                   Row(children: <Widget>[
-                      Expanded(child: Text("   +Funds Out")), Text(widget.account.allDebits.toString() + " " + widget.account.currency, style: TextStyle(color: Colors.red))
+                      Expanded(child: Text("   +Funds Out")), Text(currencyFormatter.format(widget.account.allDebits) + " " + widget.account.currency, style: TextStyle(color: Colors.red))
                     ],),
                   Row(children: <Widget>[
-                      Expanded(child: Text("Current Balance")), Text(widget.account.currentBalance.toString() + " " + widget.account.currency)
+                      Expanded(child: Text("Current Balance")), Text(currencyFormatter.format(widget.account.currentBalance) + " " + widget.account.currency)
                     ],),
                 ],
               ),

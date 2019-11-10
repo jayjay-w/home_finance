@@ -1,7 +1,12 @@
+import 'package:homefinance/ui/screens/receive_money.dart';
+import 'package:homefinance/ui/screens/transfers.dart';
+import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:homefinance/models/account.dart';
 import 'package:homefinance/models/state.dart';
+import 'package:homefinance/models/transaction.dart';
 import 'package:homefinance/services/database_service.dart';
 import 'package:homefinance/ui/screens/accounts.dart';
 import 'package:homefinance/ui/widgets/appBar.dart';
@@ -23,41 +28,44 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget dashboardListWidget(
-      String title, String value, IconData icon, Color color) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Container(
-        decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey, width: 0.1),
-            borderRadius: BorderRadius.circular(6)),
-        child: Row(
-          children: <Widget>[
-            Icon(
-              icon,
-              color: color,
-              size: 36,
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 6, left: 12),
-                child: Text(
-                  title,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 32),
+      String title, String value, IconData icon, Color color, Function tapped) {
+    return GestureDetector(
+      onTap: tapped,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: Container(
+          decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey, width: 0.1),
+              borderRadius: BorderRadius.circular(6)),
+          child: Row(
+            children: <Widget>[
+              Icon(
+                icon,
+                color: color,
+                size: 36,
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 6, left: 12),
+                  child: Text(
+                    title,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 32),
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 4),
-              child: Text(
-                value,
-                style: TextStyle(color: color, fontSize: 20),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Text(
+                  value,
+                  style: TextStyle(color: color, fontSize: 20),
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 4),
-              child: Icon(Icons.arrow_right, size: 32),
-            )
-          ],
+              Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Icon(Icons.arrow_right, size: 32),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -77,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
       } else {
         _loadingVisible = false;
       }
-
+      final currencyFormatter = new NumberFormat("#,##0.00", "en_US");
       return Scaffold(
         backgroundColor: Colors.white,
         body: LoadingScreen(
@@ -102,40 +110,57 @@ class _HomeScreenState extends State<HomeScreen> {
                                 fontSize: 24),
                           ),
                         ),
-                        dashboardListWidget("Expenses", "Kes 102,328.00",
-                            Icons.arrow_downward, Colors.red),
-                        dashboardListWidget("Income", "Kes 163,000.00",
-                            Icons.arrow_upward, Colors.green),
-                        dashboardListWidget("Bills", "Kes 93,452.00",
-                            Icons.payment, Colors.blue),
-                        dashboardListWidget("Budget", "Kes 96,109.00",
-                            Icons.queue_play_next, Colors.black),
+                        StreamBuilder<QuerySnapshot>(
+                           stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('accounts').snapshots(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return Center(child: CircularProgressIndicator(),);
+                            }
+                            else if (snapshot.data.documents == null) {
+                              return Center(child: CircularProgressIndicator(),);
+                            } else {
+                              double totalBalance = 0;
+                              for (int i = 0; i< snapshot.data.documents.length; i++) {
+                                Account acc = Account.fromDocument(snapshot.data.documents[i]);
+                                totalBalance += (acc.currentBalance ?? 0);
+                              }
+
+                              return dashboardListWidget(
+                                "Accounts", "Kes " + currencyFormatter.format(totalBalance), 
+                                Icons.account_box, 
+                                Colors.green, 
+                                (){ Navigator.pushNamed(context, AccountsScreen.id); });
+
+                            }
+                          }
+                        ),
                         GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(context, AccountsScreen.id);
-                          },
+                          onTap: () {},
                           child: StreamBuilder<QuerySnapshot>(
-                             stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('accounts').snapshots(),
+                            stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('transactions').snapshots(),
                             builder: (context, snapshot) {
                               if (!snapshot.hasData) {
                                 return Center(child: CircularProgressIndicator(),);
                               }
-                              else if (snapshot.data.documents == null) {
-                                return Center(child: CircularProgressIndicator(),);
-                              } else {
-                                double totalBalance = 0;
-                                for (int i = 0; i< snapshot.data.documents.length; i++) {
-                                  totalBalance += double.parse(snapshot.data.documents[i]['amount']);
-                                }
-
-                                return dashboardListWidget("Accounts", "Kes " + totalBalance.toString(), Icons.account_box, Colors.green);
-
+                              double income = 0.00;
+                              double expenses = 0.00;
+                              double transfers = 0.00;
+                              for (int i = 0; i < snapshot.data.documents.length; i++) {
+                                Trans trans = Trans.fromDocument(snapshot.data.documents[i]);
+                                if (trans.transType == "Transfer") transfers += trans.transactionAmount;
+                                if (trans.transType == "Income") income += trans.transactionAmount;
+                                if (trans.transType == "Expense") expenses += trans.transactionAmount;
                               }
-                            }
+                              return Column(
+                                  children: <Widget>[
+                                  dashboardListWidget("Transfers", "Kes " + currencyFormatter.format(transfers), Icons.refresh, Colors.green, (){ Navigator.pushNamed(context, TransfersScreen.id); }),
+                                  dashboardListWidget("Expenses", "Kes " + currencyFormatter.format(expenses), Icons.arrow_upward, Colors.red, (){ }),
+                                  dashboardListWidget("Income", "Kes " + currencyFormatter.format(income), Icons.arrow_downward, Colors.green, (){ Navigator.pushNamed(context, ReceiveMoneyScreen.id);}),
+                                  ],
+                                );
+                            },
                           ),
-                        ),
-                        dashboardListWidget("Transfers", "Kes 0.00",
-                            Icons.refresh, Colors.indigo),
+                        )
                       ],
                     ),
                   ),

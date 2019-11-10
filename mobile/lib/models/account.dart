@@ -22,8 +22,8 @@ class Account {
   String accountNo;
   String accountType;
   String currency = "";
-  double openingBalance = 0;
-  double currentBalance = 0;
+  double openingBalance = 0.00;
+  double currentBalance = 0.00;
   double allCredits = 0;
   double allDebits = 0;
   DateTime balanceAsOf;
@@ -40,7 +40,10 @@ class Account {
     this.openingBalance,
     this.balanceAsOf,
     this.dateCreated,
-    this.uid
+    this.uid,
+    this.currentBalance,
+    this.allDebits,
+    this.allCredits
   });
 
   factory Account.fromJson(Map<String, dynamic> json) => new Account(
@@ -51,12 +54,14 @@ class Account {
         uid: json['uid'],
         balanceAsOf: json["balanceAsOf"],
         openingBalance: double.parse(json["openingBalance"].toString()),
-        dateCreated: json["createdOn"]
+        dateCreated: json["createdOn"],
+        currentBalance: json["currentBalance"] ?? 0,
+        allCredits: json['allCredits'] ?? 0.00,
+        allDebits: json['allDebits'] ?? 0.00
       );
 
   void getBalance() async {
     await DatabaseService.getAccountTransactions(accountId, uid).then((userTransactions) {
-        print ('user transes for ' + uid + ' are ' + userTransactions.documents.length.toString());
         for (DocumentSnapshot doc in userTransactions.documents) {
           
           Trans trans = Trans.fromDocument(doc);
@@ -66,13 +71,14 @@ class Account {
 
               if (trans.debitAccountId == accountId)
                 allDebits += trans.transactionAmount;
-
-              print(trans.toJson());
             }
         }
         
-
-        currentBalance = openingBalance + allCredits - allDebits;
+        double bal = openingBalance + allCredits + allDebits;
+        if (currentBalance != bal) {
+          currentBalance = openingBalance + allCredits - allDebits;
+          DatabaseService.updateAccount(accountId, this, uid);
+        }
     });
   }
 
@@ -94,13 +100,16 @@ class Account {
         "currency": currency ?? 'USD',
         "balanceAsOf": balanceAsOf ?? null,
         "openingBalance": openingBalance.toString() ?? "0.00",
-        "createdOn": dateCreated ?? DateTime.now()
+        "createdOn": dateCreated ?? DateTime.now(),
+        "currentBalance" : currentBalance ?? 0.00,
+        "allCredits" : allCredits ?? 0.00,
+        "allDebits" : allDebits ?? 0.00
       };
 
   factory Account.fromDocument(DocumentSnapshot doc) {
     Account ret = Account.fromJson(doc.data);
     ret.accountId = doc.documentID;
-    ret.getBalance(); 
+    //ret.getBalance();
     return ret;
   }
 

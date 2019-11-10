@@ -5,6 +5,7 @@ import 'package:homefinance/models/account.dart';
 import 'package:homefinance/models/user.dart';
 import 'package:homefinance/services/database_service.dart';
 import 'package:homefinance/util/state_widget.dart';
+import 'package:intl/intl.dart';
 
 class TransferScreen extends StatefulWidget {
   static final String id = 'transfer';
@@ -14,7 +15,8 @@ class TransferScreen extends StatefulWidget {
 
 class _TransferScreenState extends State<TransferScreen> {
   User user;
-
+  final currencyFormatter = new NumberFormat("#,##0.00", "en_US");
+  
   Account sourceAccount, destAccount;
   String sourceAccId, destAccId;
   double amount;
@@ -54,7 +56,7 @@ class _TransferScreenState extends State<TransferScreen> {
               Navigator.pop(context);
               Flushbar(
                   title: "Transfer complete",
-                  message: "Transferred " + amount.toString() + ".",
+                  message: "Transferred " + currencyFormatter.format(amount) + ".",
                   duration: Duration(seconds: 5),
                 )..show(context);
             }, 

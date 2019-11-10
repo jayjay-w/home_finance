@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>500663699306-oldtej6n4vumm7pp60dbdbnhqa3603h7.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.500663699306-oldtej6n4vumm7pp60dbdbnhqa3603h7</string>
+	<key>API_KEY</key>
+	<string>AIzaSyA8zRFJXTYPoGJ50R0xi9gkSxYew9BBmHs</string>
+	<key>GCM_SENDER_ID</key>
+	<string>500663699306</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.jayjay.homefinance</string>
+	<key>PROJECT_ID</key>
+	<string>homefinance-jay</string>
+	<key>STORAGE_BUCKET</key>
+	<string>homefinance-jay.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:500663699306:ios:e02615149abb025f218713</string>
+	<key>DATABASE_URL</key>
+	<string>https://homefinance-jay.firebaseio.com</string>
+</dict>
+</plist>
