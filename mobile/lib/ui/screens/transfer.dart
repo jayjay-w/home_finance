@@ -32,6 +32,39 @@ class _TransferScreenState extends State<TransferScreen> {
     //user = StateWidget.of(context).state.user;
   }
 
+  Future<Null> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: transferDate,
+        firstDate: DateTime(2000, 1),
+        lastDate: DateTime(2100, 12));
+
+    if (picked != null && picked != transferDate) {
+      setState(() {
+        transferDate = picked;
+      });
+    }
+  }
+
+  _save() {
+     if (sourceAccId == destAccId) {
+                Flushbar(
+                  title: "Error",
+                  message: "Source and destination accounts should be different",
+                  duration: Duration(seconds: 5),
+                )..show(context);
+                return;
+              }
+
+              DatabaseService.transferMoney(StateWidget.of(context).state.user.userId, sourceAccId, destAccId, Timestamp.fromDate(transferDate), amount);
+              Navigator.pop(context);
+              Flushbar(
+                  title: "Transfer complete",
+                  message: "Transferred " + currencyFormatter.format(amount) + ".",
+                  duration: Duration(seconds: 5),
+                )..show(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,25 +74,7 @@ class _TransferScreenState extends State<TransferScreen> {
           FlatButton(
             color: Colors.blue,
             textColor: Colors.white,
-            onPressed: () {
-
-              if (sourceAccId == destAccId) {
-                Flushbar(
-                  title: "Error",
-                  message: "Source and destination accounts should be different",
-                  duration: Duration(seconds: 5),
-                )..show(context);
-                return;
-              }
-
-              DatabaseService.transferMoney(StateWidget.of(context).state.user.userId, sourceAccId, destAccId, Timestamp.now(), amount);
-              Navigator.pop(context);
-              Flushbar(
-                  title: "Transfer complete",
-                  message: "Transferred " + currencyFormatter.format(amount) + ".",
-                  duration: Duration(seconds: 5),
-                )..show(context);
-            }, 
+            onPressed: () { _save(); }, 
             child: Text("Save", style: TextStyle(fontSize: 18),),
           )
         ],
@@ -110,6 +125,24 @@ class _TransferScreenState extends State<TransferScreen> {
                         });
                        }, 
                     ),
+                    GestureDetector(
+                          onTap: () => _selectDate(context),
+                          child: Row(
+                            children: <Widget>[
+                              Text("Date:"),
+                              Expanded(
+                                  child: Text(DateFormat("dd MMM yyyy")
+                                      .format(transferDate))),
+                              FlatButton(
+                                child: Icon(
+                                  Icons.calendar_today,
+                                  color: Colors.blue,
+                                ),
+                                onPressed: () => _selectDate(context),
+                              )
+                            ],
+                          ),
+                        ),
                     TextFormField(
                       keyboardType: TextInputType.number,
                       onChanged: (input) { setState(() {
