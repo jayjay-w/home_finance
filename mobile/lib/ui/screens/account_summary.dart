@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/account.dart';
 import 'package:homefinance/models/user.dart';
+import 'package:homefinance/ui/screens/account_transactions.dart';
+import 'package:homefinance/ui/screens/receive_money.dart';
+import 'package:homefinance/ui/screens/spend_money.dart';
 import 'package:intl/intl.dart';
 
 class AccountSummaryScreen extends StatefulWidget {
@@ -20,7 +23,7 @@ class _AccountSummaryScreenState extends State<AccountSummaryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.account.accountName),
+        title: Text("Summary: " + widget.account.accountName),
         actions: <Widget>[
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -58,11 +61,28 @@ class _AccountSummaryScreenState extends State<AccountSummaryScreen> {
                     SizedBox(),
                     Divider(),
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text("Add Income", style: TextStyle(fontSize: 20, color: Colors.blue),),
-                        Expanded(child: Text("Add Expense", style: TextStyle(fontSize: 20, color: Colors.blue), textAlign: TextAlign.center,)),
-                        Text("View Month", style: TextStyle(fontSize: 20, color: Colors.blue))
+                        GestureDetector(onTap: () {
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (_) => ReceiveMoneyScreen()
+                          ));
+                        },  
+                        child: Text("Add Income", style: TextStyle(fontSize: 20, color: Colors.blue),)),
+
+                        GestureDetector( onTap: () {
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (_) => SpendMoneyScreen()
+                          ));
+                        }, 
+                        child: Text("Add Expense", style: TextStyle(fontSize: 20, color: Colors.blue), textAlign: TextAlign.center,)),
+
+                        GestureDetector( onTap: () {
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (_) => AccountTransactions(account: widget.account,)
+                          ));
+                        },  
+                        child: Text("View Month", style: TextStyle(fontSize: 20, color: Colors.blue)))
                       ],
                     )
                 ],

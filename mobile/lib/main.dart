@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:homefinance/ui/screens/account_summary.dart';
+import 'package:homefinance/ui/screens/account_transactions.dart';
 import 'package:homefinance/ui/screens/accounts.dart';
 import 'package:homefinance/ui/screens/edit_account.dart';
 import 'package:homefinance/ui/screens/expenses.dart';
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
         TransfersScreen.id: (context) => TransfersScreen(),
         ExpensesScreen.id: (context) => ExpensesScreen(),
         SpendMoneyScreen.id: (context) => SpendMoneyScreen(),
+        AccountTransactions.id: (context) => AccountTransactions(),
       },
     );
   }

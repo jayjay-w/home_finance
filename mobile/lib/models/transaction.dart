@@ -12,6 +12,7 @@ class Trans {
   final String description;
   final String notes;
   final String currency;
+  String comment;
 
   Trans({
     this.id,

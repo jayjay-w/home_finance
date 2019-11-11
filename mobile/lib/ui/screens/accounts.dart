@@ -6,6 +6,8 @@ import 'package:homefinance/models/user.dart';
 import 'package:homefinance/services/database_service.dart';
 import 'package:homefinance/ui/screens/account_summary.dart';
 import 'package:homefinance/ui/screens/edit_account.dart';
+import 'package:homefinance/ui/screens/receive_money.dart';
+import 'package:homefinance/ui/screens/spend_money.dart';
 import 'package:homefinance/ui/screens/transfer.dart';
 import 'package:intl/intl.dart';
 
@@ -54,6 +56,16 @@ class _AccountsScreenState extends State<AccountsScreen> {
             //Transfer button clicked
             Navigator.push(context, MaterialPageRoute(
                   builder: (_) => TransferScreen()
+              ));
+          } else if (index == 1) {
+            //Expense button clicked
+            Navigator.push(context, MaterialPageRoute(
+                  builder: (_) => SpendMoneyScreen()
+              ));
+          } else if (index == 2) {
+            //Income button clicked
+            Navigator.push(context, MaterialPageRoute(
+                  builder: (_) => ReceiveMoneyScreen()
               ));
           }
         },
