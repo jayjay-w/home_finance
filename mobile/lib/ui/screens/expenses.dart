@@ -28,7 +28,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-          stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('transactions').where('transType', isEqualTo: 'Expense').snapshots(),
+          stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('transactions').where('transType', isEqualTo: 'Expense').orderBy('transactionDate').snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());

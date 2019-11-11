@@ -3,14 +3,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/account.dart';
+import 'package:homefinance/models/user.dart';
 import 'package:homefinance/services/database_service.dart';
 import 'package:homefinance/ui/widgets/currency_dropdown.dart';
 
 class EditAccountScreen extends StatefulWidget {
-  final String userId;
+  final User user;
   final Account account;
 
-  EditAccountScreen({this.userId, this.account});
+  EditAccountScreen({this.user, this.account});
   static final String id = 'edit_account';
   @override
   _EditAccountScreenState createState() => _EditAccountScreenState();
@@ -21,7 +22,10 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 
   String _accountName, _accountType;
   String _accountBalance;
-  String currencyValue = 'KES';
+  String currencyValue;
+  List<String> _accountTypes = Account.accountTypes();
+  List<DropdownMenuItem<String>> _dropDownMenuItems;
+
 
 
   @override
@@ -30,6 +34,9 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
     _accountName = "";
     _accountType = "Cash";
     _accountBalance = "0.00";
+    _accountType = _accountTypes[0];
+    _dropDownMenuItems = buildAccountTypeDropdown();
+    currencyValue = widget.user.defaultCurrency;
 
     if (widget.account != null) {
       _accountName = widget.account.accountName;
@@ -40,21 +47,36 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 
   }
 
+  List<DropdownMenuItem<String>> buildAccountTypeDropdown() {
+    List<DropdownMenuItem<String>> items = List();
+    for (String str in _accountTypes) {
+        items.add(
+          DropdownMenuItem(
+            value: str, child: Text(str), 
+          ),
+        );
+    }
+
+    return items;
+  }
+
   _save() {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       Account account;
-      account = Account(uid: widget.userId, accountName: _accountName, accountType: _accountType, openingBalance: double.parse(_accountBalance), currency: currencyValue, dateCreated: Timestamp.now());
-      if (widget.account == null) {
-         account.currentBalance = double.parse(_accountBalance);
-         account.allDebits = 0.00;
-         account.allCredits = 0.00;
-         DatabaseService.addAccount(account, widget.userId);
-      } else {
-         DatabaseService.updateAccount(widget.account.accountId, account, widget.userId);
-      }
+      account = Account(uid: widget.user.userId, accountName: _accountName, accountType: _accountType, openingBalance: double.parse(_accountBalance), currency: currencyValue, dateCreated: Timestamp.now());
+       if (widget.account == null) {
+          account.currentBalance = double.parse(_accountBalance);
+          account.allDebits = 0.00;
+          account.allCredits = 0.00;
+          DatabaseService.addAccount(account, widget.user.userId);
+       } else {
+          DatabaseService.updateAccount(widget.account.accountId, account, widget.user.userId);
+       }
      
       Navigator.pop(context);
+
+      print(account.toJson());
     }
   }
   _onCurrencyChanged(val, symbol) {
@@ -90,18 +112,33 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
               children: <Widget>[
                 TextFormField(
                   autocorrect: false,
+                  textCapitalization: TextCapitalization.words,
                   initialValue: _accountName,
                   decoration: InputDecoration(labelText: 'Name'),
                   validator: (input) => input.length < 2 ? 'Enter an account name' : null,
                   onSaved: (input) => _accountName = input,
                 ),
 
-                TextFormField(
-                  autocorrect: false,
-                  initialValue: _accountType,
-                  decoration: InputDecoration(labelText: 'Account Type'),
-                  onSaved: (input) => _accountType = input,
+                Row(
+                  children: <Widget>[
+                    Text("Account Type: "),
+                    DropdownButton(
+                  items: _dropDownMenuItems, 
+                  elevation: 16,
+                  style: TextStyle(
+                    color: Colors.blue
+                  ),
+                  underline: Container(
+                    height: 2,
+                    color: Colors.blueAccent,
+                  ),
+                  value: _accountType, 
+                  onChanged: (string) { setState(() {
+                    _accountType = string; 
+                  }); },),
+                  ],
                 ),
+              
 
                 TextFormField(
                   autocorrect: false,

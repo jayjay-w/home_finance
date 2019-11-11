@@ -25,7 +25,7 @@ class _AccountTransactionsState extends State<AccountTransactions> {
         title: Text("Transactions: " + widget.account.accountName),
       ),
        body: StreamBuilder<QuerySnapshot>(
-          stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('transactions').snapshots(),
+          stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('transactions').orderBy('transactionDate').snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());

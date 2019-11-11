@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +31,6 @@ class _TransferScreenState extends State<TransferScreen> {
     transferDate = DateTime.now();
     sourceAccId = '';
     destAccId = '';
-    //user = StateWidget.of(context).state.user;
   }
 
   Future<Null> _selectDate(BuildContext context) async {

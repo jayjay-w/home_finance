@@ -35,7 +35,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
           actions: <Widget>[
             FlatButton(child: Icon(Icons.add, size: 32, color: Colors.white,), onPressed: () {
               Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => EditAccountScreen(userId: widget.user.userId,)
+                  builder: (_) => EditAccountScreen(user: widget.user,)
               ));
             },)
           ],

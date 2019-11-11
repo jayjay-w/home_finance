@@ -5,7 +5,9 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/services.dart';
 
 import 'package:homefinance/models/user.dart';
+import 'package:homefinance/ui/widgets/currency_dropdown.dart';
 import 'package:homefinance/util/auth.dart';
+import 'package:homefinance/util/state_widget.dart';
 import 'package:homefinance/util/validator.dart';
 import 'package:homefinance/ui/widgets/loading.dart';
 
@@ -19,6 +21,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _lastName = new TextEditingController();
   final TextEditingController _email = new TextEditingController();
   final TextEditingController _password = new TextEditingController();
+  String _defaultCurrency = "USD";
 
   bool _autoValidate = false;
   bool _loadingVisible = false;
@@ -102,6 +105,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
 
+     _onCurrencyChanged(val, symbol) {
+        setState(() {
+          _defaultCurrency = val;
+        });
+      }
+
+    final currency = Column(
+                  children: <Widget>[
+                    Text('Default Currency'),
+                    CurrencyDropDown(
+                        currencyValue: _defaultCurrency, onChanged: _onCurrencyChanged),
+                  ],
+                );
+
     final password = TextFormField(
       autofocus: false,
       obscureText: true,
@@ -133,6 +150,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               lastName: _lastName.text,
               email: _email.text,
               password: _password.text,
+              defaultCurrency: _defaultCurrency,
               context: context);
         },
         padding: EdgeInsets.all(12),
@@ -165,15 +183,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      logo,
-                      SizedBox(height: 48.0),
+                      //logo,
+                      SizedBox(height: 24.0),
                       firstName,
-                      SizedBox(height: 24.0),
+                      SizedBox(height: 12.0),
                       lastName,
-                      SizedBox(height: 24.0),
+                      SizedBox(height: 12.0),
                       email,
-                      SizedBox(height: 24.0),
+                      SizedBox(height: 12.0),
                       password,
+                      SizedBox(height: 12.0),
+                      currency,
                       SizedBox(height: 12.0),
                       signUpButton,
                       signInLabel
@@ -199,6 +219,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       String lastName,
       String email,
       String password,
+      String defaultCurrency,
       BuildContext context}) async {
     if (_formKey.currentState.validate()) {
       try {
@@ -211,11 +232,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
             email: email,
             firstName: firstName,
             lastName: lastName,
+            defaultCurrency: defaultCurrency
           ));
         });
         //now automatically login user too
-        //await StateWidget.of(context).logInUser(email, password);
-        await Navigator.pushNamed(context, '/signin');
+        await StateWidget.of(context).logInUser(email, password).then((value){
+           Navigator.pushNamed(context, '/');
+        });
+       
+        //await Navigator.pushNamed(context, '/signin');
       } catch (e) {
         _changeLoadingVisible();
         print("Sign Up Error: $e");

@@ -46,6 +46,10 @@ class Account {
     this.allCredits
   });
 
+  static List<String> accountTypes() {
+    return ['Cash','Checking','Savings','Debit','Virtual','Mobile Wallet','Online Wallet','Asset'];
+  }
+
   factory Account.fromJson(Map<String, dynamic> json) => new Account(
         accountName: json["accountName"],
         accountNo: json["accountNo"],

@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/transaction.dart';
 import 'package:homefinance/services/database_service.dart';
-import 'package:homefinance/ui/screens/receive_money.dart';
 import 'package:homefinance/ui/screens/transfer.dart';
 import 'package:homefinance/util/state_widget.dart';
 import 'package:intl/intl.dart';
@@ -29,7 +28,7 @@ class _TransfersScreenState extends State<TransfersScreen> {
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-          stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('transactions').where('transType', isEqualTo: 'Transfer').snapshots(),
+          stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('transactions').where('transType', isEqualTo: 'Transfer').orderBy('transactionDate').snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());
@@ -67,7 +66,8 @@ class _TransfersScreenState extends State<TransfersScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Row(
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                  StreamBuilder(
                                   stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('accounts').document(trans.debitAccountId).snapshots(),
@@ -80,7 +80,7 @@ class _TransfersScreenState extends State<TransfersScreen> {
                                   stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('accounts').document(trans.creditAccountId).snapshots(),
                                   builder: (context, snapshot) {
                                     if (!snapshot.hasData) return Center(child: CircularProgressIndicator(),);
-                                    return Text(" to " + snapshot.data["accountName"].toString());
+                                    return Text("To " + snapshot.data["accountName"].toString());
                                   },
                                 ),
                               ],

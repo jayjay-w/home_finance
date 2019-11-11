@@ -26,6 +26,8 @@ dependencies:
   firebase_analytics: 3.0.0
   firebase_core: ^0.4.0
   intl: ^0.16.0
+  #image picker
+  cached_network_image: ^1.1.1
 
 dev_dependencies:
   flutter_test:

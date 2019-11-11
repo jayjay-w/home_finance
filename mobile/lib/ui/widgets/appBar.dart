@@ -7,9 +7,10 @@ AppBar makeAppBar(BuildContext context) {
     leading: IconButton(
       icon: Icon(Icons.menu),
       iconSize: 30,
-      color: Colors.white, 
+      color: Colors.blue, 
       onPressed: () {
-      StateWidget.of(context).logOutUser();},
+      //StateWidget.of(context).logOutUser();
+      },
     ),
     title: Text(
       "Home Finance",
@@ -25,7 +26,7 @@ AppBar makeAppBar(BuildContext context) {
           icon: Icon(Icons.supervised_user_circle),
           iconSize: 30,
           color: Colors.white,
-          onPressed: () {  Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfileScreen()),); },
+          onPressed: () {  Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfileScreen(userId: StateWidget.of(context).state.user.userId ,)),); },
         )
       ],
   );

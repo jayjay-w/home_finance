@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:homefinance/models/account.dart';
 import 'package:homefinance/models/transaction.dart';
+import 'package:homefinance/models/user.dart';
 
 final _firestore = Firestore.instance;
 final accountsRef = _firestore.collection('accounts');
@@ -18,6 +19,14 @@ class DatabaseService {
         acc.toJson()
       );
     }
+
+    static void updateUser(User user) {
+    usersRef.document(user.userId).updateData({
+      'firstName': user.firstName,
+      'lastName': user.lastName,
+      'profileImageUrl': user.imageURL
+    });
+  }
 
     static void updateAccount(String accountId, Account acc, String uid) async {
       usersRef.document(uid).collection('accounts').document(accountId).setData(

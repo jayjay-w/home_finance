@@ -20,12 +20,16 @@ class User {
   String firstName;
   String lastName;
   String email;
+  String imageURL;
+  String defaultCurrency;
 
   User({
     this.userId,
     this.firstName,
     this.lastName,
     this.email,
+    this.defaultCurrency,
+    this.imageURL
   });
 
   factory User.fromJson(Map<String, dynamic> json) => new User(
@@ -33,6 +37,8 @@ class User {
         firstName: json["firstName"],
         lastName: json["lastName"],
         email: json["email"],
+        defaultCurrency: json["defaultCurrency"],
+        imageURL: json["imageURL"] ?? ""
       );
 
   Map<String, dynamic> toJson() => {
@@ -40,6 +46,8 @@ class User {
         "firstName": firstName,
         "lastName": lastName,
         "email": email,
+        "defaultCurrency": defaultCurrency,
+        imageURL: imageURL
       };
 
   factory User.fromDocument(DocumentSnapshot doc) {

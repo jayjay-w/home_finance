@@ -1,11 +1,11 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/account.dart';
-import 'package:homefinance/models/user.dart';
 import 'package:homefinance/services/database_service.dart';
 import 'package:homefinance/util/state_widget.dart';
-import 'package:homefinance/util/validator.dart';
 import 'package:intl/intl.dart';
 
 class ReceiveMoneyScreen extends StatefulWidget {

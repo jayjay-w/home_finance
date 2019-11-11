@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
   }
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+      return MaterialApp(
       title: 'Home Finance',
       theme: buildTheme(),
       //onGenerateRoute: Navigation.router.generator,

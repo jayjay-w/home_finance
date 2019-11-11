@@ -12,6 +12,6 @@ class StateModel {
     this.isLoading = false,
     this.firebaseUserAuth,
     this.user,
-    this.settings,
+    this.settings
   });
 }
