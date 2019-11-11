@@ -2,33 +2,33 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/transaction.dart';
 import 'package:homefinance/services/database_service.dart';
-import 'package:homefinance/ui/screens/receive_money.dart';
+import 'package:homefinance/ui/screens/spend_money.dart';
 import 'package:homefinance/util/state_widget.dart';
 import 'package:intl/intl.dart';
 
-class IncomeScreen extends StatefulWidget {
-  static final String id = "income";
+class ExpensesScreen extends StatefulWidget {
+  static final String id = "expenses";
   @override
-  _IncomeScreenState createState() => _IncomeScreenState();
+  _ExpensesScreenState createState() => _ExpensesScreenState();
 }
 
-class _IncomeScreenState extends State<IncomeScreen> {
+class _ExpensesScreenState extends State<ExpensesScreen> {
   final currencyFormatter = new NumberFormat("#,##0.00", "en_US");
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Income"),
+        title: Text("Expenses"),
         actions: <Widget>[
           FlatButton(child: Icon(Icons.add, size: 32, color: Colors.white,), onPressed: () {
               Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => ReceiveMoneyScreen()
+                  builder: (_) => SpendMoneyScreen()
               ));
             },)
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-          stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('transactions').where('transType', isEqualTo: 'Income').snapshots(),
+          stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('transactions').where('transType', isEqualTo: 'Expense').snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());
@@ -68,7 +68,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
                           children: <Widget>[
                             Text(trans.description, style: TextStyle(fontWeight: FontWeight.bold),),
                             StreamBuilder(
-                              stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('accounts').document(trans.creditAccountId).snapshots(),
+                              stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('accounts').document(trans.debitAccountId).snapshots(),
                               builder: (context, snapshot) {
                                 if (!snapshot.hasData) return Center(child: CircularProgressIndicator(),);
                                 return Text(" " + snapshot.data["accountName"].toString());

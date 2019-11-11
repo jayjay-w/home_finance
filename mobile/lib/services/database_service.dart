@@ -54,6 +54,22 @@ class DatabaseService {
       creditAccount(uid, accountId, amount);
     }
 
+    static void spendMoney(String uid, String description, String notes, Timestamp dateReceived, double amount, String accountId) async {
+      Trans newTrans = new Trans(
+        description: description,
+        notes: notes,
+        creditAccountId: "none",
+        debitAccountId: accountId,
+        transactionDate: dateReceived,
+        transactionAmount: amount,
+        transType: "Expense",
+        currency: "KES"
+        );
+      
+      usersRef.document(uid).collection('transactions').document().setData(newTrans.toJson());
+      debitAccount(uid, accountId, amount);
+    }
+
     static void creditAccount(String uid, String accId, double amount) {
       usersRef.document(uid).collection('accounts').document(accId).updateData(
         {
