@@ -4,6 +4,7 @@ import 'package:homefinance/ui/screens/accounts.dart';
 import 'package:homefinance/ui/screens/edit_account.dart';
 import 'package:homefinance/ui/screens/income.dart';
 import 'package:homefinance/ui/screens/receive_money.dart';
+import 'package:homefinance/ui/screens/transfers.dart';
 import 'package:homefinance/ui/screens/user_profile.dart';
 import 'package:homefinance/util/state_widget.dart';
 import 'package:homefinance/ui/theme.dart';
@@ -33,7 +34,8 @@ class MyApp extends StatelessWidget {
         EditAccountScreen.id: (context) => EditAccountScreen(),
         AccountSummaryScreen.id: (context) => AccountSummaryScreen(),
         ReceiveMoneyScreen.id: (context) => ReceiveMoneyScreen(),
-        IncomeScreen.id: (context) => IncomeScreen()
+        IncomeScreen.id: (context) => IncomeScreen(),
+        TransfersScreen.id: (context) => TransfersScreen(),
       },
     );
   }

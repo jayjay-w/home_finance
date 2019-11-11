@@ -1,5 +1,6 @@
 import 'package:homefinance/ui/screens/income.dart';
 import 'package:homefinance/ui/screens/receive_money.dart';
+import 'package:homefinance/ui/screens/transfers.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -154,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               }
                               return Column(
                                   children: <Widget>[
-                                    dashboardListWidget("Transfers", "Kes " + currencyFormatter.format(transfers), Icons.sync, Colors.blue, (){ }),
+                                    dashboardListWidget("Transfers", "Kes " + currencyFormatter.format(transfers), Icons.sync, Colors.blue, (){ Navigator.pushNamed(context, TransfersScreen.id); }),
                                   
                                   dashboardListWidget("Expenses", "Kes " + currencyFormatter.format(expenses), Icons.arrow_downward, Colors.red, (){ }),
                                   dashboardListWidget("Income", "Kes " + currencyFormatter.format(income), Icons.arrow_upward, Colors.green, (){ Navigator.pushNamed(context, IncomeScreen.id);}),
