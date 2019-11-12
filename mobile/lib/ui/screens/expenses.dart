@@ -31,7 +31,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-          stream: usersRef.document(widget.userID).collection('transactions').where('transType', isEqualTo: 'Expense').orderBy('transactionDate').snapshots(),
+          stream: transactionRef.where('owner', isEqualTo: widget.userID).where('transType', isEqualTo: 'Expense').orderBy('transactionDate').snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());
@@ -70,11 +70,12 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(trans.description, style: TextStyle(fontWeight: FontWeight.bold),),
+                            Text(trans.notes),
                             StreamBuilder(
-                              stream: usersRef.document(widget.userID).collection('accounts').document(trans.debitAccountId).snapshots(),
+                              stream: accountsRef.document(trans.debitAccountId).snapshots(),
                               builder: (context, snapshot) {
                                 if (!snapshot.hasData) return Center(child: CircularProgressIndicator(),);
-                                return Text(" " + snapshot.data["accountName"].toString());
+                                return Text("" + snapshot.data["accountName"].toString());
                               },
                             ),
                             Text(DateFormat("dd MMM yyyy").format(trans.transactionDate.toDate()))

@@ -84,7 +84,7 @@ class _TransferScreenState extends State<TransferScreen> {
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: usersRef.document(widget.userID).collection('accounts').snapshots(),
+        stream: accountsRef.where('uid', isEqualTo: widget.userID).snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator(),);
@@ -96,7 +96,7 @@ class _TransferScreenState extends State<TransferScreen> {
               accountItems.add(
                 DropdownMenuItem(
                   child: Text(
-                    acc.accountName,
+                    acc.accountName + " (" + currencyFormatter.format(acc.currentBalance) +  ")",
                   ),
                   value: acc.accountId,
                 )

@@ -52,7 +52,7 @@ class _SpendMoneyScreenState extends State<SpendMoneyScreen> {
     if (_description.trim().length < 1) {
       Flushbar(
         title: "Error",
-        message: "Please describe this income",
+        message: "Please describe this expense",
         duration: Duration(seconds: 3),
       ).show(context);
       return;
@@ -94,7 +94,7 @@ class _SpendMoneyScreenState extends State<SpendMoneyScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Receive Money"),
+          title: Text("Spend Money"),
           actions: <Widget>[
             FlatButton(
                 color: Colors.blue,
@@ -106,9 +106,7 @@ class _SpendMoneyScreenState extends State<SpendMoneyScreen> {
           ],
         ),
         body: StreamBuilder<QuerySnapshot>(
-            stream: usersRef
-                .document(widget.userID)
-                .collection('accounts')
+            stream: accountsRef.where('uid', isEqualTo: widget.userID)
                 .snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
@@ -146,6 +144,20 @@ class _SpendMoneyScreenState extends State<SpendMoneyScreen> {
                           onSaved: (input) {
                             setState(() {
                               _description = input;
+                            });
+                          },
+                        ),
+                        TextFormField(
+                          autocorrect: false,
+                          initialValue: _notes,
+                          decoration:
+                              InputDecoration(labelText: 'Notes'),
+                          validator: (input) => input.length < 2
+                              ? 'Notes'
+                              : null,
+                          onSaved: (input) {
+                            setState(() {
+                              _notes = input;
                             });
                           },
                         ),

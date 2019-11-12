@@ -40,27 +40,23 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _loadingVisible = false;
   String defaultCurrency = "";
 
-  Stream _transactionsStream;
+  Stream _transStream;
   final currencyFormatter = new NumberFormat("#,##0.00", "en_US");
   
 
-  DateTime _startDate = DateTime(2019,8,1);
-  DateTime _endDate= DateTime(2019,08,31);
+  DateTime _startDate = DateTime(DateTime.now().year, DateTime.now().month, 1);
+  DateTime _endDate = DateTime.now().add(Duration(days: 30));
+  bool stateLoaded = false;
   
   @override
   void initState() {
     super.initState();
-    _startDate = DateTime(2019,8,1);
-    _endDate= DateTime(2019,08,31);
+    _startDate = DateTime(DateTime.now().year, DateTime.now().month,  1);
+    _endDate = _startDate.add(Duration(days: 30));
     if (appState == null) appState = new StateModel(user: widget.user, firebaseUserAuth: widget.fbUser);
     appState.user = widget.user;
+    stateLoaded = true;
   }
-
-  getTransactionSnapshots() {
-       setState(() {
-         
-       });
-    }
 
   Widget dashboardListWidget(
       String title, String value, IconData icon, Color color, Function tapped) {
@@ -108,11 +104,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-      Stream _transStream = transactionRef.where('owner', isEqualTo: widget.userId)
-                                    .where('transactionDate', isGreaterThanOrEqualTo: _startDate, isLessThan: _endDate)
-                                    .where('transType', isEqualTo: 'Income')
-                                    .snapshots()
-                                    ;
       return Scaffold(
         backgroundColor: Colors.white,
         body: LoadingScreen(
@@ -124,12 +115,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   Column(
                     children: <Widget>[
                       MonthSelectorWidget(onChanged: (val) {
-                        setState(() {
-                           _startDate = val;
-                            _endDate = _startDate.add(Duration(days: 30));
-                            print(_startDate.toString());  
-                        });
-                       
+                        try {
+                          if (stateLoaded)  {
+                                  setState(() {
+                                    _startDate = val;
+                                    _endDate = _startDate.add(Duration(days: 30));
+                                  });
+                          }
+                        } catch(ex) { print (ex); }
                       },),
                       Divider(thickness: 2, height: 10, color: Colors.blueGrey,),
                       Padding(
@@ -167,7 +160,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         GestureDetector(
                           onTap: () {},
                           child: StreamBuilder<QuerySnapshot>(
-                            stream:  _transStream,
+                            stream:  transactionRef.where('owner', isEqualTo: widget.userId)
+                                    .where('transactionDate', isGreaterThanOrEqualTo: _startDate, isLessThan: _endDate)
+                                    .snapshots()
+                                    ,
                             builder: (context, snapshot) {       
                               defaultCurrency = widget.defaultCurrency;
                               double income = 0.00;
@@ -195,14 +191,21 @@ class _HomeScreenState extends State<HomeScreen> {
                             },
                           ),
                         ),
-                        dashboardListWidget("Budget", defaultCurrency + " " + "0.00", Icons.assessment, Colors.blue, null),
+                       // dashboardListWidget("Budget", defaultCurrency + " " + "0.00", Icons.assessment, Colors.blue, null),
                           ],
                         ),
                       )
                     ],
                     
                   ),
-                  
+                  Text("Latest transactions..."),
+                  Row(
+                    children: <Widget>[
+                      // ListView.builder(
+                        
+                      // )
+                    ],
+                  )
                 ],
                 
               ),
@@ -212,4 +215,11 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
   
+  getTransactions() {
+    return [
+      {'transType': 'Income', 'amount': 2500, 'transactionDate': DateTime.now()},
+      {'transType': 'Expense', 'amount': 500, 'transactionDate': DateTime.now()},
+      {'transType': 'Transfer', 'amount': 2400, 'transactionDate': DateTime.now()},
+    ];
+  }
 }

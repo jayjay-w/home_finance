@@ -31,7 +31,7 @@ class _TransfersScreenState extends State<TransfersScreen> {
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-          stream: usersRef.document(widget.userID).collection('transactions').where('transType', isEqualTo: 'Transfer').orderBy('transactionDate').snapshots(),
+          stream: transactionRef.where('owner', isEqualTo: widget.userID).where('transType', isEqualTo: 'Transfer').orderBy('transactionDate').snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());
@@ -73,14 +73,14 @@ class _TransfersScreenState extends State<TransfersScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                  StreamBuilder(
-                                  stream: usersRef.document(widget.userID).collection('accounts').document(trans.debitAccountId).snapshots(),
+                                  stream: accountsRef.document(trans.debitAccountId).snapshots(),
                                   builder: (context, snapshot) {
                                     if (!snapshot.hasData) return Center(child: CircularProgressIndicator(),);
                                     return Text("From " + snapshot.data["accountName"].toString());
                                   },
                                 ),
                                 StreamBuilder(
-                                  stream: usersRef.document(widget.userID).collection('accounts').document(trans.creditAccountId).snapshots(),
+                                  stream: accountsRef.document(trans.creditAccountId).snapshots(),
                                   builder: (context, snapshot) {
                                     if (!snapshot.hasData) return Center(child: CircularProgressIndicator(),);
                                     return Text("To " + snapshot.data["accountName"].toString());
