@@ -31,7 +31,7 @@ class _MonthSelectorWidgetState extends State<MonthSelectorWidget> {
   _triggerChange() {
     setState(() {
     _monthName =  DateFormat("MMMM yyyy").format(DateTime(_year, _month)); 
-    //widget.onChanged(new DateTime(_year, _month));
+     widget.onChanged(new DateTime(_year, _month));
     });
   }
 

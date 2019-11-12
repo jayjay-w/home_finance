@@ -41,7 +41,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
           ],
                   ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: usersRef.document(widget.user.userId).collection('accounts').snapshots(),
+        stream: accountsRef.where('uid', isEqualTo: widget.user.userId).snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
@@ -55,17 +55,17 @@ class _AccountsScreenState extends State<AccountsScreen> {
           if (index == 0) {
             //Transfer button clicked
             Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => TransferScreen()
+                  builder: (_) => TransferScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency,)
               ));
           } else if (index == 1) {
             //Expense button clicked
             Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => SpendMoneyScreen()
+                  builder: (_) => SpendMoneyScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency)
               ));
           } else if (index == 2) {
             //Income button clicked
             Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => ReceiveMoneyScreen()
+                  builder: (_) => ReceiveMoneyScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency)
               ));
           }
         },

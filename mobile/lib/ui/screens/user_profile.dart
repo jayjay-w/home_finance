@@ -29,7 +29,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         body: FutureBuilder(
           future: usersRef.document(widget.userID).get(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-            print('Loaded user ' + widget.userID);
             if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());
             }
@@ -152,7 +151,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                 color: Colors.blue,
                                 textColor: Colors.white,
                                 child: Text("Log Out"),
-                                onPressed: () { AuthService.logOutUser(context); },
+                                onPressed: () { AuthService.logOutUser(context); Navigator.pushNamed(context, '/'); },
                               ),
                             )
                     ],

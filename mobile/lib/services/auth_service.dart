@@ -10,13 +10,9 @@ class AuthService {
 
   static void loginUser(BuildContext context, String email, String password) async {
     try {
-      AuthResult result = await _auth.signInWithEmailAndPassword(email: email, password: password);
-      FirebaseUser currentUser = result.user;
-      if (currentUser != null) {
-        print (currentUser.uid + ' logged in');
-      }
+      _auth.signInWithEmailAndPassword(email: email, password: password);      
     } catch (ex) {
-      print (ex);
+      throw (ex);
     }
   }
 
@@ -52,7 +48,7 @@ class AuthService {
       }
 
     } catch(ex) {
-      print (ex);
+      throw (ex);
     }
   }
 

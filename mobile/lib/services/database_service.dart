@@ -9,13 +9,14 @@ import 'package:homefinance/models/user.dart';
 final _firestore = Firestore.instance;
 final accountsRef = _firestore.collection('accounts');
 final usersRef = _firestore.collection('users');
+final transactionRef = _firestore.collection('transactions');
 
 
 
 class DatabaseService {
   
     static void addAccount(Account acc, String uid) async {
-      usersRef.document(uid).collection('accounts').document().setData(
+      accountsRef.document().setData(
         acc.toJson()
       );
     }
@@ -29,26 +30,27 @@ class DatabaseService {
   }
 
     static void updateAccount(String accountId, Account acc, String uid) async {
-      usersRef.document(uid).collection('accounts').document(accountId).setData(
+      accountsRef.document(accountId).setData(
         acc.toJson()
       );
     }
 
     static Future<QuerySnapshot> getAccountTransactions(String accountId, String uid) async {
-      Future<QuerySnapshot> transactions = usersRef.document(uid).collection('transactions').getDocuments();
+      Future<QuerySnapshot> transactions = transactionRef.where('owner', isEqualTo: uid).getDocuments();
       return transactions;
     }
 
     static void transferMoney(String uid, String sourceAccountId, String targetAccountId, Timestamp date, double amount) async {
       Trans newTrans = new Trans(currency: "KES", transType: "Transfer", debitAccountId: sourceAccountId, creditAccountId: targetAccountId, transactionAmount: amount, transactionDate: date);
       
-      usersRef.document(uid).collection('transactions').document().setData(newTrans.toJson());
+      transactionRef.document().setData(newTrans.toJson());
       creditAccount(uid, targetAccountId, amount);
       debitAccount(uid, sourceAccountId, amount);
     }
 
     static void receiveMoney(String uid, String description, String notes, Timestamp dateReceived, double amount, String accountId) async {
       Trans newTrans = new Trans(
+        owner: uid,
         description: description,
         notes: notes,
         creditAccountId: accountId,
@@ -59,7 +61,7 @@ class DatabaseService {
         currency: "KES"
         );
       
-      usersRef.document(uid).collection('transactions').document().setData(newTrans.toJson());
+      transactionRef.document().setData(newTrans.toJson());
       creditAccount(uid, accountId, amount);
     }
 
@@ -75,12 +77,12 @@ class DatabaseService {
         currency: "KES"
         );
       
-      usersRef.document(uid).collection('transactions').document().setData(newTrans.toJson());
+      transactionRef.document().setData(newTrans.toJson());
       debitAccount(uid, accountId, amount);
     }
 
     static void creditAccount(String uid, String accId, double amount) {
-      usersRef.document(uid).collection('accounts').document(accId).updateData(
+      accountsRef.document(accId).updateData(
         {
         'currentBalance': FieldValue.increment(amount),
         'allCredits': FieldValue.increment(amount)
@@ -88,7 +90,7 @@ class DatabaseService {
     }
 
     static void debitAccount(String uid, String accId, double amount) {
-      usersRef.document(uid).collection('accounts').document(accId).updateData(
+      accountsRef.document(accId).updateData(
         {
           'currentBalance': FieldValue.increment(0 - amount),
           'allDebits' : FieldValue.increment(amount)

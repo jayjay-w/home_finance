@@ -12,6 +12,7 @@ class Trans {
   final String description;
   final String notes;
   final String currency;
+  final String owner;
   String comment;
 
   Trans({
@@ -25,7 +26,8 @@ class Trans {
     this.transType,
     this.description,
     this.notes,
-    this.currency
+    this.currency,
+    this.owner
   });
 
   factory Trans.fromDocument(DocumentSnapshot doc) {
@@ -40,7 +42,8 @@ class Trans {
       transactionDate: doc["transactionDate"],
       description: doc["description"] ?? "",
       notes: doc["notes"] ?? "",
-      currency: doc["currency"] ?? "USD"
+      currency: doc["currency"] ?? "USD",
+      owner: doc["owner"]
     );
   }
 
@@ -55,6 +58,7 @@ class Trans {
         "transType": transType,
         "description" : description ?? "",
         "notes": notes ?? "",
-        "currency": currency ?? "USD"
+        "currency": currency ?? "USD",
+        "owner": owner
       };
 }

@@ -26,16 +26,16 @@ class _IncomeScreenState extends State<IncomeScreen> {
         actions: <Widget>[
           FlatButton(child: Icon(Icons.add, size: 32, color: Colors.white,), onPressed: () {
               Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => ReceiveMoneyScreen()
+                  builder: (_) => ReceiveMoneyScreen(userID: widget.userID,)
               ));
             },)
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-          stream: usersRef.document(widget.userID).collection('transactions').where('transType', isEqualTo: 'Income').orderBy('transactionDate').snapshots(),
+          stream: transactionRef.where('owner', isEqualTo: widget.userID).where('transType', isEqualTo: 'Income').snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return Center(child: CircularProgressIndicator());
+              return Center(child: Text("Loading..."));
             } else {
               return _buildList(context, snapshot.data.documents);
               //return Text("");
@@ -72,12 +72,13 @@ class _IncomeScreenState extends State<IncomeScreen> {
                           children: <Widget>[
                             Text(trans.description, style: TextStyle(fontWeight: FontWeight.bold),),
                             StreamBuilder(
-                              stream: usersRef.document(widget.userID).collection('accounts').document(trans.creditAccountId).snapshots(),
+                              stream: accountsRef.document(trans.creditAccountId).snapshots(),
                               builder: (context, snapshot) {
                                 if (!snapshot.hasData) return Center(child: CircularProgressIndicator(),);
                                 return Text(" " + snapshot.data["accountName"].toString());
                               },
                             ),
+                            Text(" " + trans.notes),
                             Text(DateFormat("dd MMM yyyy").format(trans.transactionDate.toDate()))
                           ],
                         ),

@@ -38,19 +38,24 @@ class User {
         lastName: json["lastName"],
         email: json["email"],
         defaultCurrency: json["defaultCurrency"],
-        imageURL: json["imageURL"] ?? ""
+        imageURL: json["profileImageUrl"] ?? ""
       );
 
   Map<String, dynamic> toJson() => {
-        "userId": userId,
         "firstName": firstName,
         "lastName": lastName,
         "email": email,
         "defaultCurrency": defaultCurrency,
-        imageURL: imageURL
+        "profileImageUrl": imageURL
       };
 
   factory User.fromDocument(DocumentSnapshot doc) {
-    return User.fromJson(doc.data);
+    return User(
+      userId: doc.documentID,
+      firstName: doc["firstName"],
+      lastName: doc["lastName"],
+      email: doc["email"] ?? "",
+      imageURL: doc["profileImageUrl"]
+    );
   }
 }

@@ -80,8 +80,6 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
        }
      
       Navigator.pop(context);
-
-      print(account.toJson());
     }
   }
   _onCurrencyChanged(val, symbol) {

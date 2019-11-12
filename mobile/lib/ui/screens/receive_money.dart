@@ -5,6 +5,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/account.dart';
 import 'package:homefinance/services/database_service.dart';
+import 'package:homefinance/ui/screens/home.dart';
 import 'package:intl/intl.dart';
 
 class ReceiveMoneyScreen extends StatefulWidget {
@@ -31,11 +32,11 @@ class _ReceiveMoneyScreenState extends State<ReceiveMoneyScreen> {
 
   @override
   void initState() {
+    super.initState();
     _description = "";
     _notes = "";
     _incomeDate = DateTime.now();
     _amount = 0.00;
-    super.initState();
   }
 
   _save() {
@@ -107,9 +108,7 @@ class _ReceiveMoneyScreenState extends State<ReceiveMoneyScreen> {
           ],
         ),
         body: StreamBuilder<QuerySnapshot>(
-            stream: usersRef
-                .document(widget.userID)
-                .collection('accounts')
+            stream: accountsRef.where('uid', isEqualTo: widget.userID)
                 .snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
@@ -147,6 +146,20 @@ class _ReceiveMoneyScreenState extends State<ReceiveMoneyScreen> {
                           onSaved: (input) {
                             setState(() {
                               _description = input;
+                            });
+                          },
+                        ),
+                        TextFormField(
+                          autocorrect: false,
+                          initialValue: _notes,
+                          decoration:
+                              InputDecoration(labelText: 'Description...'),
+                          validator: (input) => input.length < 2
+                              ? 'Enter a brief description of this income'
+                              : null,
+                          onSaved: (input) {
+                            setState(() {
+                              _notes = input;
                             });
                           },
                         ),

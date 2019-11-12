@@ -25,7 +25,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
         actions: <Widget>[
           FlatButton(child: Icon(Icons.add, size: 32, color: Colors.white,), onPressed: () {
               Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => SpendMoneyScreen()
+                  builder: (_) => SpendMoneyScreen(userID: widget.userID, currency: widget.currency,)
               ));
             },)
         ],
