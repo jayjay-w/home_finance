@@ -1,9 +1,9 @@
 import 'dart:async';
 
+import 'package:homefinance/models/user.dart';
 import 'package:homefinance/ui/screens/expenses.dart';
 import 'package:homefinance/ui/screens/income.dart';
 import 'package:homefinance/ui/screens/transfers.dart';
-import 'package:homefinance/ui/widgets/categorySelector.dart';
 import 'package:homefinance/ui/widgets/month_selector_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,11 +15,16 @@ import 'package:homefinance/models/transaction.dart';
 import 'package:homefinance/services/database_service.dart';
 import 'package:homefinance/ui/screens/accounts.dart';
 import 'package:homefinance/ui/widgets/appBar.dart';
-import 'package:homefinance/util/state_widget.dart';
-import 'package:homefinance/ui/screens/sign_in.dart';
 import 'package:homefinance/ui/widgets/loading.dart';
 
 class HomeScreen extends StatefulWidget {
+  static final String id = 'home_screen';
+  final User user;
+  final String defaultCurrency;
+  final String userId;
+
+  HomeScreen({this.user, this.defaultCurrency,this.userId});
+
   _HomeScreenState createState() => _HomeScreenState();
 }
 
@@ -29,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String defaultCurrency = "";
 
   Stream _transactionsStream;
+  final currencyFormatter = new NumberFormat("#,##0.00", "en_US");
   
 
   DateTime _startDate = DateTime(2019,8,1);
@@ -94,30 +100,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    appState = StateWidget.of(context).state;
-    if (appState.user == null) return SignInScreen();
-
-    if (!appState.isLoading &&
-        (appState.firebaseUserAuth == null ||
-            appState.user == null ||
-            appState.settings == null)) {
-      return SignInScreen();
-    } else {
-      if (appState.isLoading) {
-        _loadingVisible = true;
-      } else {
-        _loadingVisible = false;
-      }
-      final currencyFormatter = new NumberFormat("#,##0.00", "en_US");
-
-      if (StateWidget.of(context) == null || StateWidget.of(context).state == null || StateWidget.of(context).state.user == null) 
-        return SignInScreen();
-
+    
       return Scaffold(
         backgroundColor: Colors.white,
         body: LoadingScreen(
             child: Scaffold(
-              appBar: makeAppBar(context),
+              appBar: makeAppBar(context, widget.user.userId),
               body: Column(
                 children: <Widget>[
                   // CategorySelector(),
@@ -134,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Column(
                           children: <Widget>[
                             StreamBuilder<QuerySnapshot>(
-                           stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('accounts').snapshots(),
+                           stream: usersRef.document(widget.user.userId).collection('accounts').snapshots(),
                            builder: (context, snapshot) {
                             if (!snapshot.hasData) {
                               return Center(child: CircularProgressIndicator(),);
@@ -160,15 +148,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         GestureDetector(
                           onTap: () {},
                           child: StreamBuilder<QuerySnapshot>(
-                            stream:  usersRef.document(StateWidget.of(context).state.user.userId).collection('transactions')
+                            stream:  usersRef.document(widget.user.userId).collection('transactions')
                                           .where('transactionDate', isGreaterThanOrEqualTo: _startDate)
                                           .where('transactionDate', isLessThan:  _endDate)
                                     .snapshots(),
                             builder: (context, snapshot) {       
-                              defaultCurrency = StateWidget.of(context).state.user.defaultCurrency;
-                              double income = 1.00;
-                              double expenses = 1.00;
-                              double transfers = 1.00;
+                              defaultCurrency = widget.defaultCurrency;
+                              double income = 0.00;
+                              double expenses = 0.00;
+                              double transfers = 0.00;
 
                               if (snapshot == null || snapshot.hasError || !snapshot.hasData) {
                                return Center(child: CircularProgressIndicator(),);
@@ -208,5 +196,5 @@ class _HomeScreenState extends State<HomeScreen> {
             inAsyncCall: _loadingVisible),
       );
     }
-  }
+  
 }

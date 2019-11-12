@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:homefinance/models/transaction.dart';
 import 'package:homefinance/services/database_service.dart';
 import 'package:homefinance/ui/screens/transfer.dart';
-import 'package:homefinance/util/state_widget.dart';
 import 'package:intl/intl.dart';
 
 class TransfersScreen extends StatefulWidget {
   static final String id = "transfers";
+  final String currency;
+  final String userID;
+
+  TransfersScreen({this.currency, this.userID});
   @override
   _TransfersScreenState createState() => _TransfersScreenState();
 }
@@ -28,7 +31,7 @@ class _TransfersScreenState extends State<TransfersScreen> {
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-          stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('transactions').where('transType', isEqualTo: 'Transfer').orderBy('transactionDate').snapshots(),
+          stream: usersRef.document(widget.userID).collection('transactions').where('transType', isEqualTo: 'Transfer').orderBy('transactionDate').snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());
@@ -70,14 +73,14 @@ class _TransfersScreenState extends State<TransfersScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                  StreamBuilder(
-                                  stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('accounts').document(trans.debitAccountId).snapshots(),
+                                  stream: usersRef.document(widget.userID).collection('accounts').document(trans.debitAccountId).snapshots(),
                                   builder: (context, snapshot) {
                                     if (!snapshot.hasData) return Center(child: CircularProgressIndicator(),);
                                     return Text("From " + snapshot.data["accountName"].toString());
                                   },
                                 ),
                                 StreamBuilder(
-                                  stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('accounts').document(trans.creditAccountId).snapshots(),
+                                  stream: usersRef.document(widget.userID).collection('accounts').document(trans.creditAccountId).snapshots(),
                                   builder: (context, snapshot) {
                                     if (!snapshot.hasData) return Center(child: CircularProgressIndicator(),);
                                     return Text("To " + snapshot.data["accountName"].toString());

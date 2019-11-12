@@ -5,10 +5,14 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/account.dart';
 import 'package:homefinance/services/database_service.dart';
-import 'package:homefinance/util/state_widget.dart';
 import 'package:intl/intl.dart';
 
 class SpendMoneyScreen extends StatefulWidget {
+  final String currency;
+  final String userID;
+
+  SpendMoneyScreen({this.currency, this.userID});
+
   static final String id = 'spend_money';
   @override
   _SpendMoneyScreenState createState() => _SpendMoneyScreenState();
@@ -55,7 +59,7 @@ class _SpendMoneyScreenState extends State<SpendMoneyScreen> {
     }
 
     DatabaseService.spendMoney(
-        StateWidget.of(context).state.user.userId,
+        widget.userID,
         _description,
         _notes,
         Timestamp.fromDate(_expenseDate),
@@ -103,7 +107,7 @@ class _SpendMoneyScreenState extends State<SpendMoneyScreen> {
         ),
         body: StreamBuilder<QuerySnapshot>(
             stream: usersRef
-                .document(StateWidget.of(context).state.user.userId)
+                .document(widget.userID)
                 .collection('accounts')
                 .snapshots(),
             builder: (context, snapshot) {

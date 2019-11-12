@@ -11,6 +11,10 @@ import 'package:intl/intl.dart';
 
 class TransferScreen extends StatefulWidget {
   static final String id = 'transfer';
+  final String currency;
+  final String userID;
+
+  TransferScreen({this.currency, this.userID});
   @override
   _TransferScreenState createState() => _TransferScreenState();
 }
@@ -57,7 +61,7 @@ class _TransferScreenState extends State<TransferScreen> {
                 return;
               }
 
-              DatabaseService.transferMoney(StateWidget.of(context).state.user.userId, sourceAccId, destAccId, Timestamp.fromDate(transferDate), amount);
+              DatabaseService.transferMoney(widget.userID, sourceAccId, destAccId, Timestamp.fromDate(transferDate), amount);
               Navigator.pop(context);
               Flushbar(
                   title: "Transfer complete",
@@ -81,7 +85,7 @@ class _TransferScreenState extends State<TransferScreen> {
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('accounts').snapshots(),
+        stream: usersRef.document(widget.userID).collection('accounts').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator(),);

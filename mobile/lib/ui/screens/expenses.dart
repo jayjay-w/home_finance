@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:homefinance/models/transaction.dart';
 import 'package:homefinance/services/database_service.dart';
 import 'package:homefinance/ui/screens/spend_money.dart';
-import 'package:homefinance/util/state_widget.dart';
 import 'package:intl/intl.dart';
 
 class ExpensesScreen extends StatefulWidget {
   static final String id = "expenses";
+  final String currency;
+  final String userID;
+
+  ExpensesScreen({this.currency, this.userID});
   @override
   _ExpensesScreenState createState() => _ExpensesScreenState();
 }
@@ -28,7 +31,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-          stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('transactions').where('transType', isEqualTo: 'Expense').orderBy('transactionDate').snapshots(),
+          stream: usersRef.document(widget.userID).collection('transactions').where('transType', isEqualTo: 'Expense').orderBy('transactionDate').snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());
@@ -68,7 +71,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                           children: <Widget>[
                             Text(trans.description, style: TextStyle(fontWeight: FontWeight.bold),),
                             StreamBuilder(
-                              stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('accounts').document(trans.debitAccountId).snapshots(),
+                              stream: usersRef.document(widget.userID).collection('accounts').document(trans.debitAccountId).snapshots(),
                               builder: (context, snapshot) {
                                 if (!snapshot.hasData) return Center(child: CircularProgressIndicator(),);
                                 return Text(" " + snapshot.data["accountName"].toString());

@@ -2,15 +2,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/user.dart';
+import 'package:homefinance/services/auth_service.dart';
 import 'package:homefinance/services/database_service.dart';
 import 'package:homefinance/ui/screens/user_profile_edit.dart';
-import 'package:homefinance/util/auth.dart';
-import 'package:homefinance/util/state_widget.dart';
 
 class UserProfileScreen extends StatefulWidget {
-  final String userId;
+ static final String id = "income";
+  final String currency;
+  final String userID;
 
-  UserProfileScreen({this.userId});
+  UserProfileScreen({this.currency, this.userID});
 
   @override
   _UserProfileScreenState createState() => _UserProfileScreenState();
@@ -26,9 +27,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       ),
         backgroundColor: Colors.white,
         body: FutureBuilder(
-          future: usersRef.document(widget.userId).get(),
+          future: usersRef.document(widget.userID).get(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-            print('Loaded user ' + widget.userId);
+            print('Loaded user ' + widget.userID);
             if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());
             }
@@ -151,7 +152,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                 color: Colors.blue,
                                 textColor: Colors.white,
                                 child: Text("Log Out"),
-                                onPressed: () { StateWidget.of(context).logOutUser(); Navigator.pushNamed(context, '/signin'); },
+                                onPressed: () { AuthService.logOutUser(context); },
                               ),
                             )
                     ],

@@ -20,6 +20,8 @@ class EditAccountScreen extends StatefulWidget {
 class _EditAccountScreenState extends State<EditAccountScreen> {
   final _formKey = GlobalKey<FormState>();
 
+  bool isEditing = false;
+
   String _accountName, _accountType;
   String _accountBalance;
   String currencyValue;
@@ -43,6 +45,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
       _accountType = widget.account.accountType;
       _accountBalance = widget.account.openingBalance.toString();
       currencyValue = widget.account.currency;
+      isEditing = true;
     }
 
   }
@@ -65,13 +68,15 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
       _formKey.currentState.save();
       Account account;
       account = Account(uid: widget.user.userId, accountName: _accountName, accountType: _accountType, openingBalance: double.parse(_accountBalance), currency: currencyValue, dateCreated: Timestamp.now());
-       if (widget.account == null) {
+       if (!isEditing) {
           account.currentBalance = double.parse(_accountBalance);
           account.allDebits = 0.00;
           account.allCredits = 0.00;
           DatabaseService.addAccount(account, widget.user.userId);
        } else {
-          DatabaseService.updateAccount(widget.account.accountId, account, widget.user.userId);
+          widget.account.accountName = _accountName;
+          widget.account.accountType = _accountType;
+          DatabaseService.updateAccount(widget.account.accountId, widget.account, widget.user.userId);
        }
      
       Navigator.pop(context);
@@ -140,20 +145,27 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                 ),
               
 
-                TextFormField(
-                  autocorrect: false,
-                  keyboardType: TextInputType.number,
-                  initialValue: _accountBalance.toString(),
-                  decoration: InputDecoration(labelText: 'Balance'),
-                  onSaved: (input) => _accountBalance = input,
+                Visibility(
+                  visible: !isEditing,
+                  child: TextFormField(
+                    
+                    autocorrect: false,
+                    keyboardType: TextInputType.number,
+                    initialValue: _accountBalance.toString(),
+                    decoration: InputDecoration(labelText: 'Balance'),
+                    onSaved: (input) => _accountBalance = input,
+                  ),
                 ),
 
-                Column(
-                  children: <Widget>[
-                    Text('Currency'),
-                    CurrencyDropDown(
-                        currencyValue: currencyValue, onChanged: _onCurrencyChanged),
-                  ],
+                Visibility(
+                  visible: !isEditing,
+                  child: Column(
+                    children: <Widget>[
+                      Text('Currency'),
+                      CurrencyDropDown(
+                          currencyValue: currencyValue, onChanged: _onCurrencyChanged),
+                    ],
+                  ),
                 ),
               ]
           )

@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:homefinance/models/account.dart';
 import 'package:homefinance/models/transaction.dart';
 import 'package:homefinance/services/database_service.dart';
-import 'package:homefinance/util/state_widget.dart';
 import 'package:intl/intl.dart';
 
 class AccountTransactions extends StatefulWidget {
   static String id = "account_transactions";
   final Account account;
+  final String currency;
+  final String userID;
 
-  AccountTransactions({this.account});
+
+  AccountTransactions({this.account,this.currency, this.userID});
 
   @override
   _AccountTransactionsState createState() => _AccountTransactionsState();
@@ -25,7 +27,7 @@ class _AccountTransactionsState extends State<AccountTransactions> {
         title: Text("Transactions: " + widget.account.accountName),
       ),
        body: StreamBuilder<QuerySnapshot>(
-          stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('transactions').orderBy('transactionDate').snapshots(),
+          stream: usersRef.document(widget.userID).collection('transactions').orderBy('transactionDate').snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());
@@ -77,7 +79,7 @@ class _AccountTransactionsState extends State<AccountTransactions> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             trans.transType == 'Transfer' ? StreamBuilder(
-                              stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('accounts').document(trans.comment == 'TransferFrom' ? trans.creditAccountId : trans.debitAccountId).snapshots(),
+                              stream: usersRef.document(widget.userID).collection('accounts').document(trans.comment == 'TransferFrom' ? trans.creditAccountId : trans.debitAccountId).snapshots(),
                               builder: (context, snap) {
                                 if (!snap.hasData) return Center(child: CircularProgressIndicator(),);
                                 return Text((trans.comment == 'TransferFrom' ? 'Transfer To ' : 'Transfer From ') + snap.data["accountName"].toString(), style: TextStyle(fontWeight: FontWeight.bold),);

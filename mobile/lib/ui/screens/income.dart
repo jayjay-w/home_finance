@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:homefinance/models/transaction.dart';
 import 'package:homefinance/services/database_service.dart';
 import 'package:homefinance/ui/screens/receive_money.dart';
-import 'package:homefinance/util/state_widget.dart';
 import 'package:intl/intl.dart';
 
 class IncomeScreen extends StatefulWidget {
   static final String id = "income";
+  final String currency;
+  final String userID;
+
+  IncomeScreen({this.currency, this.userID});
+
   @override
   _IncomeScreenState createState() => _IncomeScreenState();
 }
@@ -28,7 +32,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-          stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('transactions').where('transType', isEqualTo: 'Income').orderBy('transactionDate').snapshots(),
+          stream: usersRef.document(widget.userID).collection('transactions').where('transType', isEqualTo: 'Income').orderBy('transactionDate').snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());
@@ -68,7 +72,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
                           children: <Widget>[
                             Text(trans.description, style: TextStyle(fontWeight: FontWeight.bold),),
                             StreamBuilder(
-                              stream: usersRef.document(StateWidget.of(context).state.user.userId).collection('accounts').document(trans.creditAccountId).snapshots(),
+                              stream: usersRef.document(widget.userID).collection('accounts').document(trans.creditAccountId).snapshots(),
                               builder: (context, snapshot) {
                                 if (!snapshot.hasData) return Center(child: CircularProgressIndicator(),);
                                 return Text(" " + snapshot.data["accountName"].toString());

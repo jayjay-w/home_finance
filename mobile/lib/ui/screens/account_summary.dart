@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:homefinance/models/account.dart';
 import 'package:homefinance/models/user.dart';
 import 'package:homefinance/ui/screens/account_transactions.dart';
+import 'package:homefinance/ui/screens/edit_account.dart';
 import 'package:homefinance/ui/screens/receive_money.dart';
 import 'package:homefinance/ui/screens/spend_money.dart';
 import 'package:intl/intl.dart';
@@ -25,9 +26,16 @@ class _AccountSummaryScreenState extends State<AccountSummaryScreen> {
       appBar: AppBar(
         title: Text("Summary: " + widget.account.accountName),
         actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Icon(Icons.edit),
+          GestureDetector(
+            onTap: () { 
+              Navigator.push(context, MaterialPageRoute(
+                              builder: (_) => EditAccountScreen(account: widget.account, user: widget.user,)
+                          ));
+             },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(Icons.edit),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
