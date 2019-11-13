@@ -56,8 +56,31 @@ class _ReceiveMoneyScreenState extends State<ReceiveMoneyScreen> {
   }
 
   _delete() {
-    if (isEditing) DatabaseService.deleteTransaction(widget.userID, widget.transaction);
-    Navigator.pop(context);
+    if (!isEditing) return;
+    
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirm Delete"),
+          content: Text("Are you sure you want to delete this transaction? This action cannot be undone"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("No"),
+              onPressed: () { Navigator.pop(context); },
+            ),
+            FlatButton(
+              child: Text("Tes", style: TextStyle(color: Colors.red),),
+              onPressed: () {
+                if (isEditing) DatabaseService.deleteTransaction(widget.userID, widget.transaction);
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+            )
+          ],
+        );
+      }
+    );
   }
 
   _save() {
