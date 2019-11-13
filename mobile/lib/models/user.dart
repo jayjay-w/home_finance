@@ -21,6 +21,7 @@ class User {
   String lastName;
   String email;
   String imageURL;
+  String currencySymbol;
   String defaultCurrency;
 
   User({
@@ -29,6 +30,7 @@ class User {
     this.lastName,
     this.email,
     this.defaultCurrency,
+    this.currencySymbol,
     this.imageURL
   });
 
@@ -37,7 +39,8 @@ class User {
         firstName: json["firstName"],
         lastName: json["lastName"],
         email: json["email"],
-        defaultCurrency: json["defaultCurrency"],
+        defaultCurrency: json["defaultCurrency"] ?? "USD",
+        currencySymbol: json["currencySymbol"] ?? "\$",
         imageURL: json["profileImageUrl"] ?? ""
       );
 
@@ -45,7 +48,8 @@ class User {
         "firstName": firstName,
         "lastName": lastName,
         "email": email,
-        "defaultCurrency": defaultCurrency,
+        "defaultCurrency": defaultCurrency ?? "USD",
+        "currencySymbol": currencySymbol ?? "\$",
         "profileImageUrl": imageURL
       };
 

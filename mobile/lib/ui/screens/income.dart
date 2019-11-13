@@ -87,7 +87,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
                           ],
                         ),
                       ),
-                      Text( "KES " + currencyFormatter.format(trans.transactionAmount), style: trans.transactionAmount >= 0 ? TextStyle(color: Colors.green) : TextStyle(color: Colors.red)),
+                      Text( widget.currency + " " + currencyFormatter.format(trans.transactionAmount), style: TextStyle(color: Colors.green)),
                     ],
                   ),
                   trailing:  GestureDetector(child: Icon(Icons.arrow_forward_ios),),

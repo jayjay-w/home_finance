@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:homefinance/services/auth_service.dart';
 import 'package:homefinance/services/theme_service.dart';
 import 'package:homefinance/ui/screens/authentication/login_screen.dart';
+import 'package:homefinance/ui/widgets/currency_dropdown.dart';
 
 class UserRegistrationScreen extends StatefulWidget {
   static final String id = 'register_screen';
@@ -11,12 +12,15 @@ class UserRegistrationScreen extends StatefulWidget {
 
 class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
   String _fName, _lName, _email, _password;
+  String _currency = "USD";
+  String _currencySymbol = "\$";
   final _formKey = GlobalKey<FormState>();
+
 
   _submit() {
      if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      AuthService.registerUser(context, _fName, _lName, _email, _password, 'KES');
+      AuthService.registerUser(context, _fName, _lName, _email, _password, _currency, _currencySymbol);
     }
   }
 
@@ -64,6 +68,16 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
                           decoration: InputDecoration(labelText: "Email"),
                           validator: (input) => !input.contains('@') ? 'Enter a valid email' : null,
                           onSaved: (input) => _email = input,
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                        child: CurrencyDropDown(
+                          currencyValue: _currency,
+                          onChanged: (curr, sym) { setState(() {
+                           _currency = curr;
+                           _currencySymbol = sym; 
+                          }); },                          
                         ),
                       ),
                       Padding(

@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:homefinance/services/auth_service.dart';
+import 'package:homefinance/services/database_service.dart';
 import 'package:homefinance/services/theme_service.dart' as prefix0;
 import 'package:homefinance/ui/screens/account_summary.dart';
 import 'package:homefinance/ui/screens/account_transactions.dart';
@@ -25,10 +28,17 @@ class MyApp extends StatelessWidget {
     builder: (BuildContext context, snapshot) {
       if (snapshot.hasData) {
         print(snapshot.data.uid + '...logged in');
-        return MyHomePage(
-          user: User(
-            userId: snapshot.data.uid, defaultCurrency: 'KES'
-          ),defaultCurrency: 'KES',userId: snapshot.data.uid,fbUser: snapshot.data,);
+
+        return StreamBuilder<DocumentSnapshot> (
+          stream: usersRef.document(snapshot.data.uid).snapshots(),
+          builder: (context, document) {
+            User user = User.fromDocument(document.data);
+            return MyHomePage(
+            user: user,defaultCurrency: user.defaultCurrency,userId: snapshot.data.uid,fbUser: snapshot.data,);
+          },
+        );
+
+        
       } else {
         print('not logged in');
         return LoginScreen();

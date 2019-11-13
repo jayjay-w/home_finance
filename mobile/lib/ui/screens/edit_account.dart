@@ -20,7 +20,7 @@ class EditAccountScreen extends StatefulWidget {
 
 class _EditAccountScreenState extends State<EditAccountScreen> {
   final _formKey = GlobalKey<FormState>();
-
+  bool multiCurrency = false;
   bool isEditing = false;
 
   String _accountName, _accountType;
@@ -164,7 +164,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                 ),
 
                 Visibility(
-                  visible: !isEditing,
+                  visible: !isEditing && multiCurrency,
                   child: Column(
                     children: <Widget>[
                       Text('Currency'),

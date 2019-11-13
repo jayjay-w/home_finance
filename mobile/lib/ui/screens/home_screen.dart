@@ -17,10 +17,11 @@ class MyHomePage extends StatefulWidget {
   static final String id = 'my_home_screen';
   final User user;
   final String defaultCurrency;
+  final String currencySymbol;
   final String userId;
   final FirebaseUser fbUser;
 
-  MyHomePage({this.user, this.defaultCurrency,this.userId,this.fbUser});
+  MyHomePage({this.user, this.defaultCurrency,this.userId,this.fbUser,this.currencySymbol});
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -111,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       icon: Icon(Icons.supervised_user_circle),
                       color: Colors.white,
                       iconSize: 30.0,
-                      onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfileScreen(userID: widget.userId ,)),);},
+                      onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfileScreen(userID: widget.user.userId , user: widget.user,)),);},
                     )
                   ],
                 ),
@@ -137,17 +138,16 @@ class _MyHomePageState extends State<MyHomePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           StreamBuilder<QuerySnapshot>(
-                            stream: accountsRef.where('uid', isEqualTo: widget.userId).snapshots(),
-                            builder: (context, snapshot) {
-                              if (!snapshot.hasData) {
-                                return Center(child: CircularProgressIndicator(),);
-                              }
+                            stream: accountsRef.where('uid', isEqualTo: widget.user.userId).snapshots(),
+                            builder: (context, snapshot) {                              
                               double accountTotals = 0;
-                              for (DocumentSnapshot doc in snapshot.data.documents) {
-                                  accountTotals += doc['currentBalance'];
+                              if (snapshot.hasData) {
+                                for (DocumentSnapshot doc in snapshot.data.documents) {
+                                    accountTotals += doc['currentBalance'];
+                                }
                               }
                               return Text(
-                                  widget.user.defaultCurrency + " " + currencyFormatter.format(accountTotals),
+                                  widget.currencySymbol + " " + currencyFormatter.format(accountTotals),
                                   style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 26.0,
@@ -221,7 +221,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       onPressed: () {
                                         //Transfer pressed
                                          Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) => TransfersScreen(userID: widget.userId, currency: widget.defaultCurrency),
+                                      builder: (BuildContext context) => TransfersScreen(userID: widget.user.userId, currency: widget.currencySymbol),
                                     ));
                                       }
                                     ),
@@ -244,7 +244,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       onPressed: () {
                                         //Income pressed
                                          Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) => IncomeScreen(userID: widget.userId, currency: widget.defaultCurrency),
+                                      builder: (BuildContext context) => IncomeScreen(userID: widget.user.userId, currency: widget.currencySymbol),
                                     ));
                                       }),
                                   ),
@@ -266,7 +266,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       onPressed: () {
                                         //Expense pressed
                                          Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) => ExpensesScreen(userID: widget.userId, currency: widget.defaultCurrency),
+                                      builder: (BuildContext context) => ExpensesScreen(userID: widget.user.userId, currency: widget.currencySymbol),
                                     ));
                                       },
                                     ),
@@ -300,7 +300,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: StreamBuilder<QuerySnapshot>(
-                            stream: transactionRef.where('owner', isEqualTo: widget.userId).where('transactionDate', isGreaterThanOrEqualTo: _startDate, isLessThan: _endDate).snapshots(),
+                            stream: transactionRef.where('owner', isEqualTo: widget.user.userId).where('transactionDate', isGreaterThanOrEqualTo: _startDate, isLessThan: _endDate).snapshots(),
                             builder: (context, snapshot) {
                               
                               double transfers = 0;
@@ -318,9 +318,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
                               return Column(
                                 children: <Widget>[
-                                  dashboardListWidget("Transfers", widget.defaultCurrency + currencyFormatter.format(transfers), Icons.refresh, Colors.blue, () {}),
-                                  dashboardListWidget("Income", widget.defaultCurrency + currencyFormatter.format(income), Icons.arrow_upward, Colors.green, () {}),
-                                  dashboardListWidget("Expenses", widget.defaultCurrency + currencyFormatter.format(expenses), Icons.arrow_downward, Colors.red, () {}),
+                                  dashboardListWidget("Transfers", widget.currencySymbol + " " + currencyFormatter.format(transfers), Icons.refresh, Colors.blue, () {}),
+                                  dashboardListWidget("Income", widget.currencySymbol + " " + currencyFormatter.format(income), Icons.arrow_upward, Colors.green, () {}),
+                                  dashboardListWidget("Expenses", widget.currencySymbol + " " + currencyFormatter.format(expenses), Icons.arrow_downward, Colors.red, () {}),
                                 ],
                               );
                             },
@@ -348,7 +348,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25),
               child: StreamBuilder<QuerySnapshot>(
-                stream: transactionRef.where('owner', isEqualTo: widget.userId).where('transType').orderBy('transactionDate', descending: true).limit(10).snapshots(),
+                stream: transactionRef.where('owner', isEqualTo: widget.user.userId).where('transType').orderBy('transactionDate', descending: true).limit(10).snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return Center(child: CircularProgressIndicator());

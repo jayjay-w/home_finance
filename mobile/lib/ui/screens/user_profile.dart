@@ -11,8 +11,9 @@ class UserProfileScreen extends StatefulWidget {
  static final String id = "income";
   final String currency;
   final String userID;
+  User user;
 
-  UserProfileScreen({this.currency, this.userID});
+  UserProfileScreen({this.currency, this.userID, this.user});
 
   @override
   _UserProfileScreenState createState() => _UserProfileScreenState();
@@ -28,15 +29,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         title: Text("User Profile"),
       ),
         backgroundColor: Colors.white,
-        body: FutureBuilder(
-          future: usersRef.document(widget.userID).get(),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (!snapshot.hasData) {
-              return Center(child: CircularProgressIndicator());
-            }
-            User user = User.fromDocument(snapshot.data);
-            
-            return ListView(
+        body: ListView(
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.fromLTRB(30, 30, 30, 0),
@@ -46,9 +39,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         radius: 50,
                         backgroundColor: Colors.grey,
                         backgroundImage:
-                            user.imageURL == null || user.imageURL.isEmpty 
+                            widget.user.imageURL == null || widget.user.imageURL.isEmpty 
                             ? AssetImage('assets/images/user-placeholder.jpg')
-                            : CachedNetworkImageProvider(user.imageURL)
+                            : CachedNetworkImageProvider(widget.user.imageURL)
                             , 
                       ),
                       Expanded(
@@ -120,7 +113,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                   style: TextStyle(fontSize: 18),
                                 ),
                                 onPressed: () { Navigator.push(context, MaterialPageRoute(
-                                  builder: (_) => EditProfileScreen(user: user,), )); },
+                                  builder: (_) => EditProfileScreen(user: widget.user,), )); },
                               ),
                             )
                           ],
@@ -136,7 +129,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        user.firstName + ' ' + user.lastName, 
+                        widget.user.firstName + ' ' + widget.user.lastName, 
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
@@ -144,7 +137,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         height: 15,
                       ),
                       Text(
-                       user.email,
+                       widget.user.email,
                         style: TextStyle(fontSize: 15),
                       ),
                       Divider(),
@@ -160,8 +153,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   ),
                 )
               ],
-            );
-          },
-        ));
+            ),
+        );
   }
 }
