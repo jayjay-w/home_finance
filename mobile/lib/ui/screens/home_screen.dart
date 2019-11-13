@@ -10,6 +10,7 @@ import 'package:homefinance/ui/screens/expenses.dart';
 import 'package:homefinance/ui/screens/income.dart';
 import 'package:homefinance/ui/screens/transfers.dart';
 import 'package:homefinance/ui/screens/user_profile.dart';
+import 'package:homefinance/ui/widgets/month_selector_widget.dart';
 import 'package:intl/intl.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -26,7 +27,16 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final currencyFormatter = new NumberFormat("#,##0.00", "en_US");
+  DateTime _startDate = DateTime(DateTime.now().year, DateTime.now().month, 1);
+  DateTime _endDate = DateTime(DateTime.now().year, DateTime.now().month, 1).add(Duration(days: 30));
+  bool stateLoading = true;
 
+
+  @override
+  void initState() {
+    super.initState();
+    stateLoading = false;
+  }
   
   Widget dashboardListWidget(
       String title, String value, IconData icon, Color color, Function tapped) {
@@ -218,9 +228,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ),
                                   SizedBox(height: 8.0),
                                   Text('Transfer',
-                                      style: TextStyle(
-                                          color: Colors.black54,
-                                          fontWeight: FontWeight.bold))
+                                      style: boldGrey)
                                 ],
                               ),
                               Column(
@@ -242,9 +250,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ),
                                   SizedBox(height: 8.0),
                                   Text('Income',
-                                      style: TextStyle(
-                                          color: Colors.black54,
-                                          fontWeight: FontWeight.bold))
+                                      style: boldGrey)
                                 ],
                               ),
                               Column(
@@ -276,23 +282,38 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
                      
-                        Divider(),
-                        SizedBox(height: 15.0),
+                        //Divider(),
+                        //SizedBox(height: 15.0),
+                        Container(
+                          child: MonthSelectorWidget(onChanged: (val) { 
+                                try {
+                                  if (!stateLoading) {
+                                setState(() {
+                                  _startDate = val; 
+                                  _endDate = _startDate.add(Duration(days: 30));
+                              }); 
+                            }
+                                } catch(ex) { print(''); }
+                          },
+                          ),
+                        ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: StreamBuilder<QuerySnapshot>(
-                            stream: transactionRef.where('owner', isEqualTo: widget.userId).snapshots(),
+                            stream: transactionRef.where('owner', isEqualTo: widget.userId).where('transactionDate', isGreaterThanOrEqualTo: _startDate, isLessThan: _endDate).snapshots(),
                             builder: (context, snapshot) {
-                              if (!snapshot.hasData) { return Center(child: CircularProgressIndicator()); }
+                              
                               double transfers = 0;
                               double income = 0;
                               double expenses = 0;
 
-                              for (DocumentSnapshot doc in snapshot.data.documents) {
-                                Trans trans = Trans.fromDocument(doc);
-                                if (trans.transType == 'Transfer') { transfers += trans.transactionAmount; }
-                                if (trans.transType == 'Income') { income += trans.transactionAmount; }
-                                if (trans.transType == 'Expense') { expenses += trans.transactionAmount; }
+                              if (snapshot.hasData) {
+                                for (DocumentSnapshot doc in snapshot.data.documents) {
+                                  Trans trans = Trans.fromDocument(doc);
+                                  if (trans.transType == 'Transfer') { transfers += trans.transactionAmount; }
+                                  if (trans.transType == 'Income') { income += trans.transactionAmount; }
+                                  if (trans.transType == 'Expense') { expenses += trans.transactionAmount; }
+                                }
                               }
 
                               return Column(

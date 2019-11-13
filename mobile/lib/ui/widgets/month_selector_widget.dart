@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:homefinance/services/theme_service.dart';
 import 'package:intl/intl.dart';
 
 class MonthSelectorWidget extends StatefulWidget {
@@ -53,22 +54,19 @@ class _MonthSelectorWidgetState extends State<MonthSelectorWidget> {
           onPressed: () {
             _decreaseMonth();
           },
-          child: Icon(Icons.arrow_back_ios),
+          child: Icon(Icons.arrow_back_ios, size: 12,),
         ),
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(2.0),
             child: Text(
               _monthName,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Colors.grey,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24),
+              style: TextStyle(color: boldGrey.color, fontWeight: boldGrey.fontWeight, fontSize: 20),
             ),
           ),
         ),
-        FlatButton(onPressed: () { _increaseMonth(); }, child: Icon(Icons.arrow_forward_ios)),
+        FlatButton(onPressed: () { _increaseMonth(); }, child: Icon(Icons.arrow_forward_ios, size: 12,)),
       ],
     );
   }

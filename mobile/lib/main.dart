@@ -24,11 +24,13 @@ class MyApp extends StatelessWidget {
     return StreamBuilder<FirebaseUser>(stream: FirebaseAuth.instance.onAuthStateChanged,
     builder: (BuildContext context, snapshot) {
       if (snapshot.hasData) {
+        print(snapshot.data.uid + '...logged in');
         return MyHomePage(
           user: User(
             userId: snapshot.data.uid, defaultCurrency: 'KES'
           ),defaultCurrency: 'KES',userId: snapshot.data.uid,fbUser: snapshot.data,);
       } else {
+        print('not logged in');
         return LoginScreen();
       }
     },
@@ -39,7 +41,7 @@ class MyApp extends StatelessWidget {
  Widget build(BuildContext context) {
     return MaterialApp(
         title: "Home Finance",
-        debugShowCheckedModeBanner: true,
+        debugShowCheckedModeBanner: false,
        theme: ThemeData(
          primaryColor: prefix0.primaryColor,
         primaryIconTheme: Theme.of(context).primaryIconTheme.copyWith(
