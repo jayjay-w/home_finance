@@ -62,7 +62,9 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
             children: <Widget>[
               GestureDetector(
                 onTap: () {
-                  
+                   Navigator.push(context, MaterialPageRoute(
+                    builder: (_) => SpendMoneyScreen(userID: widget.userID, currency: widget.currency, transaction: trans,)
+                  ));
                 },
                 child: ListTile(
                   title: Row(

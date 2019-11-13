@@ -55,6 +55,11 @@ class _ReceiveMoneyScreenState extends State<ReceiveMoneyScreen> {
     }
   }
 
+  _delete() {
+    if (isEditing) DatabaseService.deleteTransaction(widget.userID, widget.transaction);
+    Navigator.pop(context);
+  }
+
   _save() {
     if (!_formKey.currentState.validate()) return;
     _formKey.currentState.save();
@@ -76,9 +81,8 @@ class _ReceiveMoneyScreenState extends State<ReceiveMoneyScreen> {
       return;
     }
 
-    if (isEditing) {
-      DatabaseService.deleteTransaction(widget.transaction.id);
-    }
+    if (isEditing) DatabaseService.deleteTransaction(widget.userID, widget.transaction);
+
     DatabaseService.receiveMoney(
         widget.userID,
         _description,
@@ -124,7 +128,17 @@ class _ReceiveMoneyScreenState extends State<ReceiveMoneyScreen> {
                 child: Text("Save"),
                 onPressed: () {
                   _save();
-                })
+                }),
+                Visibility(
+                  visible: isEditing,
+                  child: FlatButton(
+                  color: Colors.red,
+                  textColor: Colors.white,
+                  child: Text("Delete"),
+                  onPressed: () {
+                    _delete();
+                  }),
+                ),
           ],
         ),
         body: StreamBuilder<QuerySnapshot>(

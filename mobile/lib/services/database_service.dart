@@ -48,8 +48,18 @@ class DatabaseService {
       debitAccount(uid, sourceAccountId, amount);
     }
 
-    static void deleteTransaction(String transId) async {
-      await transactionRef.document(transId).delete();
+    static void deleteTransaction(String uid, Trans transaction) async {
+      if (transaction.transType == 'Transfer') {
+        creditAccount(uid, transaction.debitAccountId, transaction.transactionAmount);
+        debitAccount(uid, transaction.creditAccountId, transaction.transactionAmount);
+      }
+      if (transaction.transType == 'Income') {
+        debitAccount(uid, transaction.creditAccountId, transaction.transactionAmount);
+      }
+      if (transaction.transType == 'Expense') {
+        creditAccount(uid, transaction.debitAccountId, transaction.transactionAmount);
+      }
+      await transactionRef.document(transaction.id).delete();
     }
 
     static void receiveMoney(String uid, String description, String notes, Timestamp dateReceived, double amount, String accountId) async {

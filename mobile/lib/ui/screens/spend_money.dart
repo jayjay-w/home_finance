@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/account.dart';
+import 'package:homefinance/models/transaction.dart';
 import 'package:homefinance/services/database_service.dart';
 import 'package:homefinance/services/theme_service.dart';
 import 'package:intl/intl.dart';
@@ -11,8 +12,9 @@ import 'package:intl/intl.dart';
 class SpendMoneyScreen extends StatefulWidget {
   final String currency;
   final String userID;
+  Trans transaction;
 
-  SpendMoneyScreen({this.currency, this.userID});
+  SpendMoneyScreen({this.currency, this.userID, this.transaction});
 
   static final String id = 'spend_money';
   @override
@@ -27,6 +29,9 @@ class _SpendMoneyScreenState extends State<SpendMoneyScreen> {
   String _notes;
   double _amount;
 
+  String _transactionId;
+  bool isEditing = false;
+
   final currencyFormatter = new NumberFormat("#,##0.00", "en_US");
 
   @override
@@ -35,7 +40,25 @@ class _SpendMoneyScreenState extends State<SpendMoneyScreen> {
     _notes = "";
     _expenseDate = DateTime.now();
     _amount = 0.00;
+
+    if (widget.transaction != null) {
+      isEditing = true;
+      _transactionId = widget.transaction.id;
+      _accountId = widget.transaction.debitAccountId;
+      _description = widget.transaction.description;
+      _notes = widget.transaction.notes;
+      _expenseDate = widget.transaction.transactionDate.toDate();
+      _amount = widget.transaction.transactionAmount;
+    }
+
     super.initState();
+  }
+
+  _delete() {
+    if (isEditing)  {
+      DatabaseService.deleteTransaction(widget.userID, widget.transaction);
+      Navigator.pop(context);
+    }
   }
 
   _save() {
@@ -57,6 +80,10 @@ class _SpendMoneyScreenState extends State<SpendMoneyScreen> {
         duration: Duration(seconds: 3),
       ).show(context);
       return;
+    }
+
+    if (isEditing) {
+      DatabaseService.deleteTransaction(widget.userID, widget.transaction);
     }
 
     DatabaseService.spendMoney(
@@ -96,15 +123,25 @@ class _SpendMoneyScreenState extends State<SpendMoneyScreen> {
     return Scaffold(
         appBar: AppBar(
         backgroundColor: primaryColor,
-          title: Text("Spend Money"),
+          title: Text("Expense"),
           actions: <Widget>[
             FlatButton(
-                color: Colors.blue,
+                color: primaryColor,
                 textColor: Colors.white,
                 child: Text("Save"),
                 onPressed: () {
                   _save();
-                })
+                }),
+                Visibility(
+                  visible: isEditing,
+                  child: FlatButton(
+                  color: Colors.red,
+                  textColor: Colors.white,
+                  child: Text("Delete"),
+                  onPressed: () {
+                    _delete();
+                  }),
+                )
           ],
         ),
         body: StreamBuilder<QuerySnapshot>(
@@ -197,6 +234,7 @@ class _SpendMoneyScreenState extends State<SpendMoneyScreen> {
                         Divider(),
                         TextFormField(
                           keyboardType: TextInputType.number,
+                          initialValue: _amount.toString(),
                           onChanged: (input) {
                             setState(() {
                               _amount = double.parse(input);
