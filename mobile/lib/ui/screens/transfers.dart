@@ -27,7 +27,7 @@ class _TransfersScreenState extends State<TransfersScreen> {
         actions: <Widget>[
           FlatButton(child: Icon(Icons.add, size: 32, color: Colors.white,), onPressed: () {
               Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => TransferScreen()
+                  builder: (_) => TransferScreen(userID: widget.userID, currency: widget.currency,)
               ));
             },)
         ],
@@ -62,7 +62,9 @@ class _TransfersScreenState extends State<TransfersScreen> {
             children: <Widget>[
               GestureDetector(
                 onTap: () {
-                  
+                  Navigator.push(context, MaterialPageRoute(
+                  builder: (_) => TransferScreen(userID: widget.userID, transaction: trans, currency: widget.currency,)
+              ));
                 },
                 child: ListTile(
                   title: Row(

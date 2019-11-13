@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/account.dart';
+import 'package:homefinance/models/transaction.dart';
 import 'package:homefinance/models/user.dart';
 import 'package:homefinance/services/database_service.dart';
 import 'package:homefinance/services/theme_service.dart';
@@ -13,8 +14,9 @@ class TransferScreen extends StatefulWidget {
   static final String id = 'transfer';
   final String currency;
   final String userID;
+  final Trans transaction;
 
-  TransferScreen({this.currency, this.userID});
+  TransferScreen({this.currency, this.userID,this.transaction});
   @override
   _TransferScreenState createState() => _TransferScreenState();
 }
@@ -28,6 +30,9 @@ class _TransferScreenState extends State<TransferScreen> {
   double amount;
   DateTime transferDate;
 
+  String transactionID;
+  bool isEditing = false;
+
   @override
   void initState() {
     super.initState();
@@ -35,6 +40,16 @@ class _TransferScreenState extends State<TransferScreen> {
     transferDate = DateTime.now();
     sourceAccId = '';
     destAccId = '';
+
+    if (widget.transaction != null) {
+      isEditing = true;
+      amount = widget.transaction.transactionAmount;
+      transferDate = widget.transaction.transactionDate.toDate();
+      transactionID = widget.transaction.id;
+      sourceAccId = widget.transaction.debitAccountId;
+      destAccId = widget.transaction.creditAccountId;
+    }
+
   }
 
   Future<Null> _selectDate(BuildContext context) async {
@@ -51,6 +66,13 @@ class _TransferScreenState extends State<TransferScreen> {
     }
   }
 
+  _delete() {
+    if (isEditing) {
+      DatabaseService.deleteTransaction(widget.userID, widget.transaction);
+      Navigator.pop(context);
+    }
+  }
+
   _save() {
      if (sourceAccId == destAccId) {
                 Flushbar(
@@ -59,6 +81,10 @@ class _TransferScreenState extends State<TransferScreen> {
                   duration: Duration(seconds: 5),
                 )..show(context);
                 return;
+              }
+
+              if (isEditing) {
+                DatabaseService.deleteTransaction(widget.userID, widget.transaction);
               }
 
               DatabaseService.transferMoney(widget.userID, sourceAccId, destAccId, Timestamp.fromDate(transferDate), amount);
@@ -78,11 +104,20 @@ class _TransferScreenState extends State<TransferScreen> {
         title: Text("Transfer Money"),
         actions: <Widget>[
           FlatButton(
-            color: Colors.blue,
+            color: primaryColor,
             textColor: Colors.white,
             onPressed: () { _save(); }, 
             child: Text("Save", style: TextStyle(fontSize: 18),),
-          )
+          ),
+           Visibility(
+             visible: isEditing,
+             child: FlatButton(
+              color: Colors.red,
+              textColor: Colors.white,
+              onPressed: () { _delete(); }, 
+              child: Text("Delete", style: TextStyle(fontSize: 18),),
+          ),
+           ),
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -151,6 +186,7 @@ class _TransferScreenState extends State<TransferScreen> {
                         ),
                     TextFormField(
                       keyboardType: TextInputType.number,
+                      initialValue: amount.toString(),
                       onChanged: (input) { setState(() {
                         amount = double.parse(input);
                       }); },
