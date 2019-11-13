@@ -63,7 +63,9 @@ class _IncomeScreenState extends State<IncomeScreen> {
             children: <Widget>[
               GestureDetector(
                 onTap: () {
-                  
+                   Navigator.push(context, MaterialPageRoute(
+                  builder: (_) => ReceiveMoneyScreen(userID: widget.userID, transaction: trans,)
+              ));
                 },
                 child: ListTile(
                   title: Row(

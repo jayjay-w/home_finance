@@ -48,6 +48,10 @@ class DatabaseService {
       debitAccount(uid, sourceAccountId, amount);
     }
 
+    static void deleteTransaction(String transId) async {
+      await transactionRef.document(transId).delete();
+    }
+
     static void receiveMoney(String uid, String description, String notes, Timestamp dateReceived, double amount, String accountId) async {
       Trans newTrans = new Trans(
         owner: uid,

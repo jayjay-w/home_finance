@@ -336,7 +336,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 30.0),
+              padding: EdgeInsets.only(left: 25.0, top: 30.0),
               child: Text(
                 'Recent Transactions',
                 style: TextStyle(
@@ -346,38 +346,41 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(left: 25.0, bottom: 25.0),
-              child: Container(
-                height: 150.0,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: <Widget>[
-                    TransactionCard(
-                      title: 'Rent',
-                      value: 25000.00,
-                      color: Colors.purple,
-                    ),
-                    TransactionCard(
-                      title: 'Cable/Internet',
-                      value: 4000.0,
-                      color: Colors.blue,
-                    ),
-                    TransactionCard(
-                      title: 'Electricity',
-                      value: 3000.0,
-                      color: Colors.orange,
-                    ),
-                    TransactionCard(
-                      title: 'Loan Repayment',
-                      value: 15000.0,
-                      color: Colors.pink,
-                    ),
-                  ],
-                ),
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: StreamBuilder<QuerySnapshot>(
+                stream: transactionRef.where('owner', isEqualTo: widget.userId).where('transType').orderBy('transactionDate', descending: true).limit(10).snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(child: CircularProgressIndicator());
+                  } else {
+                    return _buildList(context, snapshot.data.documents);
+                  }
+                },
               ),
             )
           ],
         ),
+      ),
+    );
+  }
+
+    Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
+    return SizedBox(
+      height: 130,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: snapshot.map((data) => _buildListItem(context, data)).toList(),
+      ),
+    );
+  }
+
+  Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
+    Trans trans = Trans.fromDocument(data);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: TransactionCard
+      (
+        transaction: trans
       ),
     );
   }
@@ -400,31 +403,34 @@ class CustomShapeClipper extends CustomClipper<Path> {
 }
 
 class TransactionCard extends StatelessWidget {
-  final String title;
-  final double value;
-  final Color color;
+  final Trans transaction;
 
-  TransactionCard({this.title, this.value, this.color});
+  TransactionCard({this.transaction});
 
   @override
   Widget build(BuildContext context) {
+  final currencyFormatter = new NumberFormat("#,##0.00", "en_US");
     return Padding(
       padding: EdgeInsets.only(right: 15.0),
       child: Container(
         width: 130.0,
         decoration: BoxDecoration(
-            color: color,
+            color: transaction.getColor(),
             borderRadius: BorderRadius.all(Radius.circular(25.0))),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
+          padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(title,
+              Text(transaction.transType,
                   style: TextStyle(
                       color: Colors.white, fontWeight: FontWeight.bold)),
-              SizedBox(height: 30.0),
-              Text('$value',
+              SizedBox(height: 5.0),
+              Text(clipString(transaction.description, 13)),
+              Text(clipString(transaction.notes, 13)),
+              Text(DateFormat("dd MMM yyyy").format(transaction.transactionDate.toDate()), style: TextStyle(color: Colors.white),),
+              SizedBox(height: 5.0),
+              Text(currencyFormatter.format(transaction.transactionAmount),
                   style: TextStyle(
                       fontSize: 18.0,
                       color: Colors.white,

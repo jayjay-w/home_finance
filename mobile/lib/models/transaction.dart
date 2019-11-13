@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 class Trans {
   final Timestamp transactionDate;
@@ -29,6 +30,19 @@ class Trans {
     this.currency,
     this.owner
   });
+
+  Color getColor() {
+    if (transType == 'Income') 
+      return Colors.lightGreen;
+
+     if (transType == 'Expense') 
+      return Colors.redAccent;
+    
+     if (transType == 'Transfer') 
+      return Colors.lightBlue;
+
+    return Colors.pink;
+  }
 
   factory Trans.fromDocument(DocumentSnapshot doc) {
     return Trans(

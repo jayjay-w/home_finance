@@ -4,9 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/account.dart';
+import 'package:homefinance/models/transaction.dart';
 import 'package:homefinance/services/database_service.dart';
 import 'package:homefinance/services/theme_service.dart';
-import 'package:homefinance/ui/screens/home.dart';
 import 'package:intl/intl.dart';
 
 class ReceiveMoneyScreen extends StatefulWidget {
@@ -14,8 +14,9 @@ class ReceiveMoneyScreen extends StatefulWidget {
 
   final String currency;
   final String userID;
+  final Trans transaction;
 
-  ReceiveMoneyScreen({this.currency, this.userID});
+  ReceiveMoneyScreen({this.currency, this.userID, this.transaction});
 
   @override
   _ReceiveMoneyScreenState createState() => _ReceiveMoneyScreenState();
@@ -28,6 +29,9 @@ class _ReceiveMoneyScreenState extends State<ReceiveMoneyScreen> {
   DateTime _incomeDate;
   String _notes;
   double _amount;
+  String _transactionId;
+
+  bool isEditing = false;
 
   final currencyFormatter = new NumberFormat("#,##0.00", "en_US");
 
@@ -38,6 +42,17 @@ class _ReceiveMoneyScreenState extends State<ReceiveMoneyScreen> {
     _notes = "";
     _incomeDate = DateTime.now();
     _amount = 0.00;
+
+    if (widget.transaction != null) {
+      isEditing = true;
+      _description = widget.transaction.description;
+      _accountId = widget.transaction.creditAccountId;
+      _notes = widget.transaction.notes;
+      _transactionId = widget.transaction.id;
+      _amount = widget.transaction.transactionAmount;
+      _incomeDate = widget.transaction.transactionDate.toDate();
+      print (widget.transaction.id);
+    }
   }
 
   _save() {
@@ -61,6 +76,9 @@ class _ReceiveMoneyScreenState extends State<ReceiveMoneyScreen> {
       return;
     }
 
+    if (isEditing) {
+      DatabaseService.deleteTransaction(widget.transaction.id);
+    }
     DatabaseService.receiveMoney(
         widget.userID,
         _description,
@@ -101,7 +119,7 @@ class _ReceiveMoneyScreenState extends State<ReceiveMoneyScreen> {
           title: Text("Receive Money"),
           actions: <Widget>[
             FlatButton(
-                color: Colors.blue,
+                color: primaryColor,
                 textColor: Colors.white,
                 child: Text("Save"),
                 onPressed: () {
@@ -199,6 +217,7 @@ class _ReceiveMoneyScreenState extends State<ReceiveMoneyScreen> {
                         Divider(),
                         TextFormField(
                           keyboardType: TextInputType.number,
+                          initialValue: _amount.toString(),
                           onChanged: (input) {
                             setState(() {
                               _amount = double.parse(input);
