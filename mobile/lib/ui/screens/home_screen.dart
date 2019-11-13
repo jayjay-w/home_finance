@@ -443,7 +443,7 @@ class TransactionCard extends StatelessWidget {
               SizedBox(height: 5.0),
               Text(user.currencySymbol + currencyFormatter.format(transaction.transactionAmount),
                   style: TextStyle(
-                      fontSize: 18.0,
+                      fontSize: 14.0,
                       color: Colors.white,
                       fontWeight: FontWeight.bold))
             ],
