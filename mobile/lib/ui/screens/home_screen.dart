@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/transaction.dart';
 import 'package:homefinance/models/user.dart';
@@ -78,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     if (widget.user == null) {
-      return Center(child: CircularProgressIndicator(),);
+      return Container(color: Colors.white, child: Center(child: CircularProgressIndicator(),));
     }
     return Scaffold(
       backgroundColor: Color.fromRGBO(244, 244, 244, 1),
@@ -220,7 +219,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       onPressed: () {
                                         //Transfer pressed
                                          Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) => TransfersScreen(userID: widget.user.userId, currency: widget.user.currencySymbol),
+                                      builder: (BuildContext context) => TransfersScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency),
                                     ));
                                       }
                                     ),
@@ -243,7 +242,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       onPressed: () {
                                         //Income pressed
                                          Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) => IncomeScreen(userID: widget.user.userId, currency: widget.user.currencySymbol),
+                                      builder: (BuildContext context) => IncomeScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency),
                                     ));
                                       }),
                                   ),
@@ -265,7 +264,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       onPressed: () {
                                         //Expense pressed
                                          Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) => ExpensesScreen(userID: widget.user.userId, currency: widget.user.currencySymbol),
+                                      builder: (BuildContext context) => ExpensesScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency),
                                     ));
                                       },
                                     ),

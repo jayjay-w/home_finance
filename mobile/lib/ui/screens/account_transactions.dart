@@ -93,7 +93,7 @@ class _AccountTransactionsState extends State<AccountTransactions> {
                           ],
                         ),
                       ),
-                      Text( "KES " + currencyFormatter.format(trans.transactionAmount), style: trans.transType == 'Income' || trans.comment == 'TransferTo' ? TextStyle(color: Colors.green) : TextStyle(color: Colors.red)),
+                      Text( trans.currency + currencyFormatter.format(trans.transactionAmount), style: trans.transType == 'Income' || trans.comment == 'TransferTo' ? TextStyle(color: Colors.green) : TextStyle(color: Colors.red)),
                     ],
                   ),
                   trailing:  GestureDetector(child: Icon(Icons.arrow_forward_ios),),

@@ -12,7 +12,7 @@ class AccountSummaryScreen extends StatefulWidget {
   final Account account;
   final User user;
 
-  AccountSummaryScreen({this.account, this.user});
+  AccountSummaryScreen({this.account, @required this.user});
   static final String id = 'edit_account';
   @override
   _AccountSummaryScreenState createState() => _AccountSummaryScreenState();
@@ -68,21 +68,21 @@ class _AccountSummaryScreenState extends State<AccountSummaryScreen> {
                       children: <Widget>[
                         GestureDetector(onTap: () {
                           Navigator.push(context, MaterialPageRoute(
-                              builder: (_) => ReceiveMoneyScreen()
+                              builder: (_) => ReceiveMoneyScreen(currency: widget.user.defaultCurrency,)
                           ));
                         },  
                         child: Text("Add Income", style: TextStyle(fontSize: 20, color: Colors.blue),)),
 
                         GestureDetector( onTap: () {
                           Navigator.push(context, MaterialPageRoute(
-                              builder: (_) => SpendMoneyScreen()
+                              builder: (_) => SpendMoneyScreen(currency: widget.user.defaultCurrency,)
                           ));
                         }, 
                         child: Text("Add Expense", style: TextStyle(fontSize: 20, color: Colors.blue), textAlign: TextAlign.center,)),
 
                         GestureDetector( onTap: () {
                           Navigator.push(context, MaterialPageRoute(
-                              builder: (_) => AccountTransactions(account: widget.account,)
+                              builder: (_) => AccountTransactions(account: widget.account, currency: widget.user.defaultCurrency,)
                           ));
                         },  
                         child: Text("View Month", style: TextStyle(fontSize: 20, color: Colors.blue)))

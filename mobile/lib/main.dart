@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -65,12 +67,12 @@ class MyApp extends StatelessWidget {
         MyHomePage.id: (context) => MyHomePage(),
         AccountsScreen.id: (context) => AccountsScreen(),
         EditAccountScreen.id: (context) => EditAccountScreen(),
-        AccountSummaryScreen.id: (context) => AccountSummaryScreen(),
-        ReceiveMoneyScreen.id: (context) => ReceiveMoneyScreen(),
-        IncomeScreen.id: (context) => IncomeScreen(),
+        AccountSummaryScreen.id: (context) => AccountSummaryScreen(user: null,),
+        ReceiveMoneyScreen.id: (context) => ReceiveMoneyScreen(currency: null,),
+        IncomeScreen.id: (context) => IncomeScreen(currency: null,),
         TransfersScreen.id: (context) => TransfersScreen(),
-        ExpensesScreen.id: (context) => ExpensesScreen(),
-        SpendMoneyScreen.id: (context) => SpendMoneyScreen(),
+        ExpensesScreen.id: (context) => ExpensesScreen(currency: null,),
+        SpendMoneyScreen.id: (context) => SpendMoneyScreen(currency: null,),
         AccountTransactions.id: (context) => AccountTransactions(),
       },
     );

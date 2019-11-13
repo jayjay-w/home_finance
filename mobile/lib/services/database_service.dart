@@ -40,8 +40,8 @@ class DatabaseService {
       return transactions;
     }
 
-    static void transferMoney(String uid, String sourceAccountId, String targetAccountId, Timestamp date, double amount) async {
-      Trans newTrans = new Trans(owner: uid, currency: "KES", transType: "Transfer", debitAccountId: sourceAccountId, creditAccountId: targetAccountId, transactionAmount: amount, transactionDate: date);
+    static void transferMoney(String uid, String sourceAccountId, String targetAccountId, Timestamp date, double amount, String currency) async {
+      Trans newTrans = new Trans(owner: uid, currency: currency, transType: "Transfer", debitAccountId: sourceAccountId, creditAccountId: targetAccountId, transactionAmount: amount, transactionDate: date);
       
       transactionRef.document().setData(newTrans.toJson());
       creditAccount(uid, targetAccountId, amount);
@@ -74,7 +74,7 @@ class DatabaseService {
       await transactionRef.document(transaction.id).delete();
     }
 
-    static void receiveMoney(String uid, String description, String notes, Timestamp dateReceived, double amount, String accountId) async {
+    static void receiveMoney(String uid, String description, String notes, Timestamp dateReceived, double amount, String accountId, String currencySymbol) async {
       Trans newTrans = new Trans(
         owner: uid,
         description: description,
@@ -84,14 +84,14 @@ class DatabaseService {
         transactionDate: dateReceived,
         transactionAmount: amount,
         transType: "Income",
-        currency: "KES"
+        currency: currencySymbol
         );
       
       transactionRef.document().setData(newTrans.toJson());
       creditAccount(uid, accountId, amount);
     }
 
-    static void spendMoney(String uid, String description, String notes, Timestamp dateReceived, double amount, String accountId) async {
+    static void spendMoney(String uid, String description, String notes, Timestamp dateReceived, double amount, String accountId, String currencySymbol) async {
       Trans newTrans = new Trans(
         description: description,
         notes: notes,
@@ -101,7 +101,7 @@ class DatabaseService {
         transactionDate: dateReceived,
         transactionAmount: amount,
         transType: "Expense",
-        currency: "KES"
+        currency: currencySymbol
         );
       
       transactionRef.document().setData(newTrans.toJson());

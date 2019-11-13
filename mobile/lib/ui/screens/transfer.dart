@@ -16,7 +16,7 @@ class TransferScreen extends StatefulWidget {
   final String userID;
   final Trans transaction;
 
-  TransferScreen({this.currency, this.userID,this.transaction});
+  TransferScreen({@required this.currency, this.userID,this.transaction});
   @override
   _TransferScreenState createState() => _TransferScreenState();
 }
@@ -87,7 +87,7 @@ class _TransferScreenState extends State<TransferScreen> {
                 DatabaseService.deleteTransaction(widget.userID, widget.transaction);
               }
 
-              DatabaseService.transferMoney(widget.userID, sourceAccId, destAccId, Timestamp.fromDate(transferDate), amount);
+              DatabaseService.transferMoney(widget.userID, sourceAccId, destAccId, Timestamp.fromDate(transferDate), amount, widget.currency);
               Navigator.pop(context);
               Flushbar(
                   title: "Transfer complete",

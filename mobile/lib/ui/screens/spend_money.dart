@@ -14,7 +14,7 @@ class SpendMoneyScreen extends StatefulWidget {
   final String userID;
   Trans transaction;
 
-  SpendMoneyScreen({this.currency, this.userID, this.transaction});
+  SpendMoneyScreen({@required this.currency, this.userID, this.transaction});
 
   static final String id = 'spend_money';
   @override
@@ -113,7 +113,8 @@ class _SpendMoneyScreenState extends State<SpendMoneyScreen> {
         _notes,
         Timestamp.fromDate(_expenseDate),
         _amount,
-        _accountId);
+        _accountId,
+        widget.currency);
 
     Navigator.pop(context);
 

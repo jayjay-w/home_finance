@@ -11,7 +11,7 @@ class IncomeScreen extends StatefulWidget {
   final String currency;
   final String userID;
 
-  IncomeScreen({this.currency, this.userID});
+  IncomeScreen({@required this.currency, this.userID});
 
   @override
   _IncomeScreenState createState() => _IncomeScreenState();
@@ -28,7 +28,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
         actions: <Widget>[
           FlatButton(child: Icon(Icons.add, size: 32, color: Colors.white,), onPressed: () {
               Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => ReceiveMoneyScreen(userID: widget.userID,)
+                  builder: (_) => ReceiveMoneyScreen(userID: widget.userID, currency: widget.currency,)
               ));
             },)
         ],
@@ -64,7 +64,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
               GestureDetector(
                 onTap: () {
                    Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => ReceiveMoneyScreen(userID: widget.userID, transaction: trans,)
+                  builder: (_) => ReceiveMoneyScreen(userID: widget.userID, transaction: trans, currency: widget.currency,)
               ));
                 },
                 child: ListTile(

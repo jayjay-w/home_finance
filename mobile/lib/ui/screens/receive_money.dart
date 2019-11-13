@@ -16,7 +16,7 @@ class ReceiveMoneyScreen extends StatefulWidget {
   final String userID;
   final Trans transaction;
 
-  ReceiveMoneyScreen({this.currency, this.userID, this.transaction});
+  ReceiveMoneyScreen({@required this.currency, this.userID, this.transaction});
 
   @override
   _ReceiveMoneyScreenState createState() => _ReceiveMoneyScreenState();
@@ -112,7 +112,8 @@ class _ReceiveMoneyScreenState extends State<ReceiveMoneyScreen> {
         _notes,
         Timestamp.fromDate(_incomeDate),
         _amount,
-        _accountId);
+        _accountId,
+        widget.currency);
 
     Navigator.pop(context);
 

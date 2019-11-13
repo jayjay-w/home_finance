@@ -11,7 +11,7 @@ class ExpensesScreen extends StatefulWidget {
   final String currency;
   final String userID;
 
-  ExpensesScreen({this.currency, this.userID});
+  ExpensesScreen({@required this.currency, this.userID});
   @override
   _ExpensesScreenState createState() => _ExpensesScreenState();
 }
