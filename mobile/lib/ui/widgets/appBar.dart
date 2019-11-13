@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:homefinance/ui/screens/user_profile.dart';
+import 'package:homefinance/services/theme_service.dart';
 
-AppBar makeAppBar(BuildContext context, String userId) {
+AppBar makeAppBar(BuildContext context, String userId, String title, onActionPressed, IconData actionIcon) {
   return AppBar(
-    leading: IconButton(
-      icon: Icon(Icons.menu),
-      iconSize: 30,
-      color: Colors.blue, 
-      onPressed: () {
-      //StateWidget.of(context).logOutUser();
-      },
-    ),
+    backgroundColor: primaryColor,
     title: Text(
-      "Home Finance",
+      title,
       style: TextStyle(
         fontSize: 28,
         fontWeight: FontWeight.bold,
@@ -22,10 +15,10 @@ AppBar makeAppBar(BuildContext context, String userId) {
       elevation: 0,
       actions: <Widget>[
         IconButton(
-          icon: Icon(Icons.supervised_user_circle),
+          icon: Icon(actionIcon),
           iconSize: 30,
           color: Colors.white,
-          onPressed: () {  Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfileScreen(userID: userId ,)),); },
+          onPressed: () {  onActionPressed; },
         )
       ],
   );

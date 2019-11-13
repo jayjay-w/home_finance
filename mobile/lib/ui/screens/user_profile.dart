@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:homefinance/models/user.dart';
 import 'package:homefinance/services/auth_service.dart';
 import 'package:homefinance/services/database_service.dart';
+import 'package:homefinance/services/theme_service.dart';
 import 'package:homefinance/ui/screens/user_profile_edit.dart';
 
 class UserProfileScreen extends StatefulWidget {
@@ -23,6 +24,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
         title: Text("User Profile"),
       ),
         backgroundColor: Colors.white,
@@ -111,7 +113,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             Container(
                               width: 150,
                               child: FlatButton(
-                                color: Colors.blue,
+                                color: primaryColor,
                                 textColor: Colors.white,
                                 child: Text(
                                   "Edit Profile",
@@ -148,7 +150,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       Divider(),
                             Center(
                               child: FlatButton(
-                                color: Colors.blue,
+                                color: primaryColor,
                                 textColor: Colors.white,
                                 child: Text("Log Out"),
                                 onPressed: () { AuthService.logOutUser(context); Navigator.pushNamed(context, '/'); },

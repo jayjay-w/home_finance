@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/user.dart';
 import 'package:homefinance/services/database_service.dart';
+import 'package:homefinance/services/theme_service.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final User user;
@@ -42,6 +43,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: primaryColor,
         title: Text('Edit Profile',),
         actions: <Widget>[
           FlatButton(
@@ -103,7 +105,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       child: FlatButton(
                         onPressed: _submit ,
                         textColor: Colors.white,
-                        color: Colors.blue,
+                        color: primaryColor,
                         child: Text('Save Profile', style: TextStyle(fontSize: 18),),
                       ),
                     ) 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:homefinance/models/account.dart';
 import 'package:homefinance/models/transaction.dart';
 import 'package:homefinance/services/database_service.dart';
+import 'package:homefinance/services/theme_service.dart';
 import 'package:intl/intl.dart';
 
 class AccountTransactions extends StatefulWidget {
@@ -24,6 +25,7 @@ class _AccountTransactionsState extends State<AccountTransactions> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: primaryColor,
         title: Text("Transactions: " + widget.account.accountName),
       ),
        body: StreamBuilder<QuerySnapshot>(

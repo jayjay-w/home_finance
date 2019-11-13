@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/account.dart';
 import 'package:homefinance/models/user.dart';
+import 'package:homefinance/services/theme_service.dart';
 import 'package:homefinance/ui/screens/account_transactions.dart';
 import 'package:homefinance/ui/screens/edit_account.dart';
 import 'package:homefinance/ui/screens/receive_money.dart';
@@ -24,6 +25,7 @@ class _AccountSummaryScreenState extends State<AccountSummaryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: primaryColor,
         title: Text("Summary: " + widget.account.accountName),
         actions: <Widget>[
           GestureDetector(

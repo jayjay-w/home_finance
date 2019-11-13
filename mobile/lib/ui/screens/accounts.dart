@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:homefinance/models/account.dart';
 import 'package:homefinance/models/user.dart';
 import 'package:homefinance/services/database_service.dart';
+import 'package:homefinance/services/theme_service.dart';
 import 'package:homefinance/ui/screens/account_summary.dart';
 import 'package:homefinance/ui/screens/edit_account.dart';
 import 'package:homefinance/ui/screens/receive_money.dart';
 import 'package:homefinance/ui/screens/spend_money.dart';
 import 'package:homefinance/ui/screens/transfer.dart';
+import 'package:homefinance/ui/widgets/appBar.dart';
 import 'package:intl/intl.dart';
 
 class AccountsScreen extends StatefulWidget {
@@ -27,6 +29,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: primaryColor,
           title: Text("Accounts",
               style: TextStyle(
                   fontSize: 28,

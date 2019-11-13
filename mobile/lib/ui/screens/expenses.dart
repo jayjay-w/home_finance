@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/transaction.dart';
 import 'package:homefinance/services/database_service.dart';
+import 'package:homefinance/services/theme_service.dart';
 import 'package:homefinance/ui/screens/spend_money.dart';
 import 'package:intl/intl.dart';
 
@@ -21,6 +22,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: primaryColor,
         title: Text("Expenses"),
         actions: <Widget>[
           FlatButton(child: Icon(Icons.add, size: 32, color: Colors.white,), onPressed: () {

@@ -108,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.white,
         body: LoadingScreen(
             child: Scaffold(
-              appBar: makeAppBar(context, widget.user.userId),
+              appBar: makeAppBar(context, widget.user.userId, "Home Finance", {}, Icons.supervised_user_circle),
               body: Column(
                 children: <Widget>[
                   // CategorySelector(),

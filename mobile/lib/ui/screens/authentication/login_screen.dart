@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:homefinance/services/auth_service.dart';
+import 'package:homefinance/services/theme_service.dart';
 import 'package:homefinance/ui/screens/authentication/signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -63,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: 200,
                         child: FlatButton(
                           onPressed: _submit,
-                          color: Colors.lightBlue,
+                          color: primaryColor,
                           child: Text("Login", style: TextStyle(color: Colors.white, fontSize: 24),),
                         ),
                       ),
@@ -72,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         onTap: () { Navigator.pushNamed(context, UserRegistrationScreen.id); },
                         child: Text(
                           "New User? Click here to register",
-                          style: TextStyle(color: Colors.blue),
+                          style: TextStyle(color: primaryColor),
                         ),
                       )
                     ],

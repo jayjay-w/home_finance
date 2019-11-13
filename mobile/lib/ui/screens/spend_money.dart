@@ -5,6 +5,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/account.dart';
 import 'package:homefinance/services/database_service.dart';
+import 'package:homefinance/services/theme_service.dart';
 import 'package:intl/intl.dart';
 
 class SpendMoneyScreen extends StatefulWidget {
@@ -94,6 +95,7 @@ class _SpendMoneyScreenState extends State<SpendMoneyScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+        backgroundColor: primaryColor,
           title: Text("Spend Money"),
           actions: <Widget>[
             FlatButton(
