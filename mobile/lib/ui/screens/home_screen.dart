@@ -77,7 +77,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print("User: " + widget.user.userId + "=" + widget.user.toJson().toString());
+    if (widget.user == null) {
+      return Center(child: CircularProgressIndicator(),);
+    }
     return Scaffold(
       backgroundColor: Color.fromRGBO(244, 244, 244, 1),
       body: SingleChildScrollView(
@@ -377,7 +379,7 @@ class _MyHomePageState extends State<MyHomePage> {
       padding: const EdgeInsets.only(bottom: 10),
       child: TransactionCard
       (
-        transaction: trans
+        transaction: trans, user: widget.user,
       ),
     );
   }
@@ -401,8 +403,9 @@ class CustomShapeClipper extends CustomClipper<Path> {
 
 class TransactionCard extends StatelessWidget {
   final Trans transaction;
+  final User user;
 
-  TransactionCard({this.transaction});
+  TransactionCard({this.transaction, this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -427,7 +430,7 @@ class TransactionCard extends StatelessWidget {
               Text(clipString(transaction.notes, 13)),
               Text(DateFormat("dd MMM yyyy").format(transaction.transactionDate.toDate()), style: TextStyle(color: Colors.white),),
               SizedBox(height: 5.0),
-              Text(currencyFormatter.format(transaction.transactionAmount),
+              Text(user.currencySymbol + currencyFormatter.format(transaction.transactionAmount),
                   style: TextStyle(
                       fontSize: 18.0,
                       color: Colors.white,

@@ -54,6 +54,9 @@ class User {
       };
 
   factory User.fromDocument(DocumentSnapshot doc) {
+    if (doc == null) {
+      return null;
+    }
     return User(
       userId: doc.documentID,
       firstName: doc["firstName"],
