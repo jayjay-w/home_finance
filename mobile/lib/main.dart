@@ -33,8 +33,7 @@ class MyApp extends StatelessWidget {
           stream: usersRef.document(snapshot.data.uid).snapshots(),
           builder: (context, document) {
             User user = User.fromDocument(document.data);
-            return MyHomePage(
-            user: user,defaultCurrency: user.defaultCurrency,userId: snapshot.data.uid,fbUser: snapshot.data,);
+            return MyHomePage(user: user);
           },
         );
 

@@ -70,7 +70,7 @@ class _ReceiveMoneyScreenState extends State<ReceiveMoneyScreen> {
               onPressed: () { Navigator.pop(context); },
             ),
             FlatButton(
-              child: Text("Tes", style: TextStyle(color: Colors.red),),
+              child: Text("Yes", style: TextStyle(color: Colors.red),),
               onPressed: () {
                 if (isEditing) DatabaseService.deleteTransaction(widget.userID, widget.transaction);
                 Navigator.pop(context);

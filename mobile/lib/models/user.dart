@@ -58,8 +58,10 @@ class User {
       userId: doc.documentID,
       firstName: doc["firstName"],
       lastName: doc["lastName"],
-      email: doc["email"] ?? "",
-      imageURL: doc["profileImageUrl"]
+      email: doc["email"],
+      defaultCurrency: doc["defaultCurrency"] ?? "USD",
+      currencySymbol: doc["currencySymbol"] ?? "\$",
+      imageURL: doc["profileImageUrl"] ?? ""
     );
   }
 }

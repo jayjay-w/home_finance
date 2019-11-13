@@ -48,16 +48,28 @@ class DatabaseService {
       debitAccount(uid, sourceAccountId, amount);
     }
 
+    static void deleteAccount(String uid, Account acc) async {
+      QuerySnapshot creditTransactions = await transactionRef.where('creditAccountId', isEqualTo: acc.accountId).getDocuments();
+      for (DocumentSnapshot doc in creditTransactions.documents) {
+        deleteTransaction(uid, Trans.fromDocument(doc));
+      }
+      QuerySnapshot debitTransactions = await transactionRef.where('debitAccountId', isEqualTo: acc.accountId).getDocuments();
+      for (DocumentSnapshot doc in debitTransactions.documents) {
+        deleteTransaction(uid, Trans.fromDocument(doc));
+      }
+      await accountsRef.document(acc.accountId).delete();
+    }
+
     static void deleteTransaction(String uid, Trans transaction) async {
       if (transaction.transType == 'Transfer') {
-        creditAccount(uid, transaction.debitAccountId, transaction.transactionAmount);
-        debitAccount(uid, transaction.creditAccountId, transaction.transactionAmount);
+        deleteDebit(uid, transaction.debitAccountId, transaction.transactionAmount);
+        deleteCredit(uid, transaction.creditAccountId, transaction.transactionAmount);
       }
       if (transaction.transType == 'Income') {
-        debitAccount(uid, transaction.creditAccountId, transaction.transactionAmount);
+        deleteCredit(uid, transaction.creditAccountId, transaction.transactionAmount);
       }
       if (transaction.transType == 'Expense') {
-        creditAccount(uid, transaction.debitAccountId, transaction.transactionAmount);
+        deleteCredit(uid, transaction.debitAccountId, transaction.transactionAmount);
       }
       await transactionRef.document(transaction.id).delete();
     }
@@ -101,6 +113,22 @@ class DatabaseService {
         {
         'currentBalance': FieldValue.increment(amount),
         'allCredits': FieldValue.increment(amount)
+        });
+    }
+
+    static void deleteCredit(String uid, String accId, double amount) {
+      accountsRef.document(accId).updateData(
+        {
+        'currentBalance': FieldValue.increment(0 - amount),
+        'allCredits': FieldValue.increment(0 - amount)
+        });
+    }
+
+    static void deleteDebit(String uid, String accId, double amount) {
+      accountsRef.document(accId).updateData(
+        {
+        'currentBalance': FieldValue.increment(amount),
+        'allDebits': FieldValue.increment(0 - amount)
         });
     }
 

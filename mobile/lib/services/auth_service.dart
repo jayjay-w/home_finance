@@ -55,7 +55,7 @@ class AuthService {
         _firestore.collection('/users').document(signedInUser.uid).setData(newUser.toJson());
         newUser.userId = result.user.uid;
         Navigator.pushReplacement(context, MaterialPageRoute(
-                    builder: (_) => MyHomePage(user: newUser, currencySymbol: currencySymbol, defaultCurrency: currency,)
+                    builder: (_) => MyHomePage(user: newUser)
                   ));
       }
 

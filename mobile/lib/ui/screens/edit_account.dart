@@ -64,6 +64,35 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
     return items;
   }
 
+  _delete() {
+    if (!isEditing) return;
+    
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirm Delete"),
+          content: Text("Are you sure you want to delete this account? This will result in the removal of this account and all related transactions. This action cannot be undone"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("No"),
+              onPressed: () { Navigator.pop(context); },
+            ),
+            FlatButton(
+              child: Text("Yes", style: TextStyle(color: Colors.red),),
+              onPressed: () {
+                if (isEditing) DatabaseService.deleteAccount(widget.user.userId, widget.account);
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+            )
+          ],
+        );
+      }
+    );
+  }
+
   _save() {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
@@ -111,7 +140,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
             child: FlatButton(
               color: Colors.red,
               textColor: Colors.white,
-              onPressed: () { _save(); },
+              onPressed: () { _delete(); },
               child: Text("Delete", style: TextStyle(fontSize: 18),),
             ),
           )

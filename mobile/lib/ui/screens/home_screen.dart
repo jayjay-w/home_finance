@@ -16,12 +16,8 @@ import 'package:intl/intl.dart';
 class MyHomePage extends StatefulWidget {
   static final String id = 'my_home_screen';
   final User user;
-  final String defaultCurrency;
-  final String currencySymbol;
-  final String userId;
-  final FirebaseUser fbUser;
 
-  MyHomePage({this.user, this.defaultCurrency,this.userId,this.fbUser,this.currencySymbol});
+  MyHomePage({this.user});
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -81,6 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    print("User: " + widget.user.userId + "=" + widget.user.toJson().toString());
     return Scaffold(
       backgroundColor: Color.fromRGBO(244, 244, 244, 1),
       body: SingleChildScrollView(
@@ -147,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 }
                               }
                               return Text(
-                                  widget.currencySymbol + " " + currencyFormatter.format(accountTotals),
+                                  widget.user.currencySymbol + " " + currencyFormatter.format(accountTotals),
                                   style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 26.0,
@@ -221,7 +218,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       onPressed: () {
                                         //Transfer pressed
                                          Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) => TransfersScreen(userID: widget.user.userId, currency: widget.currencySymbol),
+                                      builder: (BuildContext context) => TransfersScreen(userID: widget.user.userId, currency: widget.user.currencySymbol),
                                     ));
                                       }
                                     ),
@@ -244,7 +241,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       onPressed: () {
                                         //Income pressed
                                          Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) => IncomeScreen(userID: widget.user.userId, currency: widget.currencySymbol),
+                                      builder: (BuildContext context) => IncomeScreen(userID: widget.user.userId, currency: widget.user.currencySymbol),
                                     ));
                                       }),
                                   ),
@@ -266,7 +263,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       onPressed: () {
                                         //Expense pressed
                                          Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) => ExpensesScreen(userID: widget.user.userId, currency: widget.currencySymbol),
+                                      builder: (BuildContext context) => ExpensesScreen(userID: widget.user.userId, currency: widget.user.currencySymbol),
                                     ));
                                       },
                                     ),
@@ -318,9 +315,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
                               return Column(
                                 children: <Widget>[
-                                  dashboardListWidget("Transfers", widget.currencySymbol + " " + currencyFormatter.format(transfers), Icons.refresh, Colors.blue, () {}),
-                                  dashboardListWidget("Income", widget.currencySymbol + " " + currencyFormatter.format(income), Icons.arrow_upward, Colors.green, () {}),
-                                  dashboardListWidget("Expenses", widget.currencySymbol + " " + currencyFormatter.format(expenses), Icons.arrow_downward, Colors.red, () {}),
+                                  dashboardListWidget("Transfers", widget.user.currencySymbol + " " + currencyFormatter.format(transfers), Icons.refresh, Colors.blue, () {}),
+                                  dashboardListWidget("Income", widget.user.currencySymbol + " " + currencyFormatter.format(income), Icons.arrow_upward, Colors.green, () {}),
+                                  dashboardListWidget("Expenses", widget.user.currencySymbol + " " + currencyFormatter.format(expenses), Icons.arrow_downward, Colors.red, () {}),
                                 ],
                               );
                             },
