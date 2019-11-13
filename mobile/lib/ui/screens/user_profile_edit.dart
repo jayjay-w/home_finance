@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/user.dart';
+import 'package:homefinance/services/cloud_storage_service.dart';
 import 'package:homefinance/services/database_service.dart';
 import 'package:homefinance/services/theme_service.dart';
+import 'package:image_picker/image_picker.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final User user;
@@ -19,6 +23,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   String _lastName = '';
   String _profileImageUrl = '';
 
+  File _profileImage;
+
 
   @override
   void initState() {
@@ -28,10 +34,38 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _profileImageUrl = widget.user.imageURL;
   }
 
-  _submit() {
+  _handleImageFromGallery() async {
+    File imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+    if (imageFile != null) {
+      setState(() {
+       _profileImage = imageFile; 
+      });
+    }
+  }
+
+  _displayProfileImage() {
+    if (_profileImage == null) {
+      if (widget.user.imageURL.isEmpty) {
+        return AssetImage('assets/images/user-placeholder.jpg');
+      } else {
+        return CachedNetworkImageProvider(widget.user.imageURL);
+      }
+    } else {
+      return FileImage(_profileImage);
+    }
+  }
+
+  _submit() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       //Update db user
+
+      if (_profileImage == null) {
+        _profileImageUrl = widget.user.imageURL;
+      } else {
+        _profileImageUrl = await CloudStorageService.uploadUserProfileImage(widget.user.imageURL, _profileImage);
+      }
+
       User user = User(userId: widget.user.userId, firstName: _firstName, lastName: _lastName, imageURL: _profileImageUrl);
       DatabaseService.updateUser(user);
       Navigator.pop(context);
@@ -68,14 +102,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     CircleAvatar(
                       radius: 60,
                        backgroundColor: Colors.grey,
-                        backgroundImage:
-                            _profileImageUrl.isEmpty 
-                            ? AssetImage('assets/images/user-placeholder.jpg')
-                            : CachedNetworkImageProvider(_profileImageUrl)
-                            , 
+                        backgroundImage: _displayProfileImage() 
                     ),
                     FlatButton(
-                      onPressed: () {},
+                      onPressed: () { _handleImageFromGallery(); },
                       child: Text('Change Profile Picture', style: TextStyle(fontSize: 16, color: Theme.of(context).accentColor),),
                     ),
                     TextFormField(

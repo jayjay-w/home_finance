@@ -316,9 +316,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
                               return Column(
                                 children: <Widget>[
-                                  dashboardListWidget("Transfers", widget.user.currencySymbol + " " + currencyFormatter.format(transfers), Icons.refresh, Colors.blue, () {}),
-                                  dashboardListWidget("Income", widget.user.currencySymbol + " " + currencyFormatter.format(income), Icons.arrow_upward, Colors.green, () {}),
-                                  dashboardListWidget("Expenses", widget.user.currencySymbol + " " + currencyFormatter.format(expenses), Icons.arrow_downward, Colors.red, () {}),
+                                  dashboardListWidget("Transfers", widget.user.currencySymbol + " " + currencyFormatter.format(transfers), Icons.refresh, Colors.blue, () {
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) => TransfersScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency),
+                                    ));
+                                  }),
+                                  dashboardListWidget("Income", widget.user.currencySymbol + " " + currencyFormatter.format(income), Icons.arrow_upward, Colors.green, () {
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) => IncomeScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency),
+                                    ));
+                                  }),
+                                  dashboardListWidget("Expenses", widget.user.currencySymbol + " " + currencyFormatter.format(expenses), Icons.arrow_downward, Colors.red, () {
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) => ExpensesScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency),
+                                    ));
+                                  }),
                                 ],
                               );
                             },
