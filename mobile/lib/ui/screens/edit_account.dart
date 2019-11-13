@@ -101,10 +101,16 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                   letterSpacing: 2)),
         actions: <Widget>[
           FlatButton(
-            color: Colors.blue,
+            color: primaryColor,
             textColor: Colors.white,
             onPressed: () { _save(); },
             child: Text("Save", style: TextStyle(fontSize: 18),),
+          ),
+          FlatButton(
+            color: Colors.red,
+            textColor: Colors.white,
+            onPressed: () { _save(); },
+            child: Text("Delete", style: TextStyle(fontSize: 18),),
           )
         ],
       ),

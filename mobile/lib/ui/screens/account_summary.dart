@@ -28,20 +28,13 @@ class _AccountSummaryScreenState extends State<AccountSummaryScreen> {
         backgroundColor: primaryColor,
         title: Text("Summary: " + widget.account.accountName),
         actions: <Widget>[
-          GestureDetector(
-            onTap: () { 
-              Navigator.push(context, MaterialPageRoute(
-                              builder: (_) => EditAccountScreen(account: widget.account, user: widget.user,)
-                          ));
-             },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Icon(Icons.edit),
-            ),
-          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Icon(Icons.delete),
+            child: IconButton(icon: Icon(Icons.edit), onPressed: () {
+               Navigator.push(context, MaterialPageRoute(
+                              builder: (_) => EditAccountScreen(account: widget.account, user: widget.user,)
+                          ));
+            }),
           )
         ],
       ),
