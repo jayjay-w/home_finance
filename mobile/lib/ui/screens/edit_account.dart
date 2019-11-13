@@ -106,11 +106,14 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
             onPressed: () { _save(); },
             child: Text("Save", style: TextStyle(fontSize: 18),),
           ),
-          FlatButton(
-            color: Colors.red,
-            textColor: Colors.white,
-            onPressed: () { _save(); },
-            child: Text("Delete", style: TextStyle(fontSize: 18),),
+          Visibility(
+            visible: isEditing,
+            child: FlatButton(
+              color: Colors.red,
+              textColor: Colors.white,
+              onPressed: () { _save(); },
+              child: Text("Delete", style: TextStyle(fontSize: 18),),
+            ),
           )
         ],
       ),

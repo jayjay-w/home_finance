@@ -10,7 +10,6 @@ import 'package:homefinance/ui/screens/edit_account.dart';
 import 'package:homefinance/ui/screens/receive_money.dart';
 import 'package:homefinance/ui/screens/spend_money.dart';
 import 'package:homefinance/ui/screens/transfer.dart';
-import 'package:homefinance/ui/widgets/appBar.dart';
 import 'package:intl/intl.dart';
 
 class AccountsScreen extends StatefulWidget {
@@ -113,7 +112,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
                   title: Row(
                     children: <Widget>[
                       Expanded(child: Text(account.accountName, style: TextStyle(fontWeight: FontWeight.bold),)),
-                      Text(account.currency + " " + currencyFormatter.format(account.currentBalance), style: account.currentBalance >= 0 ? TextStyle(color: Colors.green) : TextStyle(color: Colors.red)),
+                      Text(widget.user.defaultCurrency + " " + currencyFormatter.format(account.currentBalance), style: account.currentBalance >= 0 ? TextStyle(color: Colors.green) : TextStyle(color: Colors.red)),
                     ],
                   ),
                   trailing:  GestureDetector(child: Icon(Icons.arrow_forward_ios),),
