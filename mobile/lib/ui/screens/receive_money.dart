@@ -51,36 +51,43 @@ class _ReceiveMoneyScreenState extends State<ReceiveMoneyScreen> {
       _transactionId = widget.transaction.id;
       _amount = widget.transaction.transactionAmount;
       _incomeDate = widget.transaction.transactionDate.toDate();
-      print (widget.transaction.id);
+      print(widget.transaction.id);
     }
   }
 
   _delete() {
     if (!isEditing) return;
-    
+
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Confirm Delete"),
-          content: Text("Are you sure you want to delete this transaction? This action cannot be undone"),
-          actions: <Widget>[
-            FlatButton(
-              child: Text("No"),
-              onPressed: () { Navigator.pop(context); },
-            ),
-            FlatButton(
-              child: Text("Yes", style: TextStyle(color: Colors.red),),
-              onPressed: () {
-                if (isEditing) DatabaseService.deleteTransaction(widget.userID, widget.transaction);
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-            )
-          ],
-        );
-      }
-    );
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Confirm Delete"),
+            content: Text(
+                "Are you sure you want to delete this transaction? This action cannot be undone"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("No"),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              FlatButton(
+                child: Text(
+                  "Yes",
+                  style: TextStyle(color: Colors.red),
+                ),
+                onPressed: () {
+                  if (isEditing)
+                    DatabaseService.deleteTransaction(
+                        widget.userID, widget.transaction);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          );
+        });
   }
 
   _save() {
@@ -104,16 +111,11 @@ class _ReceiveMoneyScreenState extends State<ReceiveMoneyScreen> {
       return;
     }
 
-    if (isEditing) DatabaseService.deleteTransaction(widget.userID, widget.transaction);
+    if (isEditing)
+      DatabaseService.deleteTransaction(widget.userID, widget.transaction);
 
-    DatabaseService.receiveMoney(
-        widget.userID,
-        _description,
-        _notes,
-        Timestamp.fromDate(_incomeDate),
-        _amount,
-        _accountId,
-        widget.currency);
+    DatabaseService.receiveMoney(widget.userID, _description, _notes,
+        Timestamp.fromDate(_incomeDate), _amount, _accountId, widget.currency);
 
     Navigator.pop(context);
 
@@ -122,7 +124,6 @@ class _ReceiveMoneyScreenState extends State<ReceiveMoneyScreen> {
       message: "Received " + currencyFormatter.format(_amount) + ".",
       duration: Duration(seconds: 5),
     )..show(context);
-
   }
 
   Future<Null> _selectDate(BuildContext context) async {
@@ -143,7 +144,7 @@ class _ReceiveMoneyScreenState extends State<ReceiveMoneyScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        backgroundColor: primaryColor,
+          backgroundColor: primaryColor,
           title: Text("Receive Money"),
           actions: <Widget>[
             FlatButton(
@@ -153,75 +154,76 @@ class _ReceiveMoneyScreenState extends State<ReceiveMoneyScreen> {
                 onPressed: () {
                   _save();
                 }),
-                Visibility(
-                  visible: isEditing,
-                  child: FlatButton(
+            Visibility(
+              visible: isEditing,
+              child: FlatButton(
                   color: Colors.red,
                   textColor: Colors.white,
                   child: Text("Delete"),
                   onPressed: () {
                     _delete();
                   }),
-                ),
+            ),
           ],
         ),
-        body: StreamBuilder<QuerySnapshot>(
-            stream: accountsRef.where('uid', isEqualTo: widget.userID)
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else {
-                List<DropdownMenuItem> accountItems = [];
-                for (int i = 0; i < snapshot.data.documents.length; i++) {
-                  Account acc =
-                      Account.fromDocument(snapshot.data.documents[i]);
+        body: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: <Widget>[
+                TextFormField(
+                  autocorrect: false,
+                  initialValue: _description,
+                  decoration: InputDecoration(labelText: 'Received From...'),
+                  validator: (input) => input.length < 2
+                      ? 'Enter the source of this income'
+                      : null,
+                  onSaved: (input) {
+                    setState(() {
+                      _description = input;
+                    });
+                  },
+                ),
+                TextFormField(
+                  autocorrect: false,
+                  initialValue: _notes,
+                  decoration: InputDecoration(labelText: 'Description...'),
+                  validator: (input) => input.length < 2
+                      ? 'Enter a brief description of this income'
+                      : null,
+                  onSaved: (input) {
+                    setState(() {
+                      _notes = input;
+                    });
+                  },
+                ),
+                StreamBuilder<QuerySnapshot>(
+                    stream: accountsRef
+                        .where('uid', isEqualTo: widget.userID)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else {
+                        List<DropdownMenuItem> accountItems = [];
+                        for (int i = 0;
+                            i < snapshot.data.documents.length;
+                            i++) {
+                          Account acc =
+                              Account.fromDocument(snapshot.data.documents[i]);
 
-                  accountItems.add(DropdownMenuItem(
-                    child: Text(
-                      acc.accountName,
-                    ),
-                    value: acc.accountId,
-                  ));
-                }
+                          accountItems.add(DropdownMenuItem(
+                            child: Text(
+                              acc.accountName,
+                            ),
+                            value: acc.accountId,
+                          ));
+                        }
 
-                return Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      children: <Widget>[
-                        TextFormField(
-                          autocorrect: false,
-                          initialValue: _description,
-                          decoration:
-                              InputDecoration(labelText: 'Received From...'),
-                          validator: (input) => input.length < 2
-                              ? 'Enter the source of this income'
-                              : null,
-                          onSaved: (input) {
-                            setState(() {
-                              _description = input;
-                            });
-                          },
-                        ),
-                        TextFormField(
-                          autocorrect: false,
-                          initialValue: _notes,
-                          decoration:
-                              InputDecoration(labelText: 'Description...'),
-                          validator: (input) => input.length < 2
-                              ? 'Enter a brief description of this income'
-                              : null,
-                          onSaved: (input) {
-                            setState(() {
-                              _notes = input;
-                            });
-                          },
-                        ),
-                        DropdownButton(
+                        return DropdownButton(
                           items: accountItems,
                           hint: Text('Destination Account'),
                           value: _accountId == null || _accountId.isEmpty
@@ -233,42 +235,43 @@ class _ReceiveMoneyScreenState extends State<ReceiveMoneyScreen> {
                               _accountId = index;
                             });
                           },
+                        );
+                        ;
+                      }
+                    }),
+                GestureDetector(
+                  onTap: () => _selectDate(context),
+                  child: Row(
+                    children: <Widget>[
+                      Text("Date:"),
+                      Expanded(
+                          child: Text(
+                              DateFormat("dd MMM yyyy").format(_incomeDate))),
+                      FlatButton(
+                        child: Icon(
+                          Icons.calendar_today,
+                          color: Colors.blue,
                         ),
-                        GestureDetector(
-                          onTap: () => _selectDate(context),
-                          child: Row(
-                            children: <Widget>[
-                              Text("Date:"),
-                              Expanded(
-                                  child: Text(DateFormat("dd MMM yyyy")
-                                      .format(_incomeDate))),
-                              FlatButton(
-                                child: Icon(
-                                  Icons.calendar_today,
-                                  color: Colors.blue,
-                                ),
-                                onPressed: () => _selectDate(context),
-                              )
-                            ],
-                          ),
-                        ),
-                        Divider(),
-                        TextFormField(
-                          keyboardType: TextInputType.number,
-                          initialValue: _amount.toString(),
-                          onChanged: (input) {
-                            setState(() {
-                              _amount = double.parse(input);
-                            });
-                          },
-                          //validator: (value) => Validator.validateNumber(value),
-                          decoration: InputDecoration(hintText: "Amount"),
-                        ),
-                      ],
-                    ),
+                        onPressed: () => _selectDate(context),
+                      )
+                    ],
                   ),
-                );
-              }
-            }));
+                ),
+                Divider(),
+                TextFormField(
+                  keyboardType: TextInputType.number,
+                  initialValue: _amount.toString(),
+                  onChanged: (input) {
+                    setState(() {
+                      _amount = double.parse(input);
+                    });
+                  },
+                  //validator: (value) => Validator.validateNumber(value),
+                  decoration: InputDecoration(hintText: "Amount"),
+                ),
+              ],
+            ),
+          ),
+        ));
   }
 }
