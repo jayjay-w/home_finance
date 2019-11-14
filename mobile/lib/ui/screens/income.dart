@@ -4,6 +4,7 @@ import 'package:homefinance/models/transaction.dart';
 import 'package:homefinance/services/database_service.dart';
 import 'package:homefinance/services/theme_service.dart';
 import 'package:homefinance/ui/screens/receive_money.dart';
+import 'package:homefinance/ui/widgets/month_selector_widget.dart';
 import 'package:intl/intl.dart';
 
 class IncomeScreen extends StatefulWidget {
@@ -19,6 +20,16 @@ class IncomeScreen extends StatefulWidget {
 
 class _IncomeScreenState extends State<IncomeScreen> {
   final currencyFormatter = new NumberFormat("#,##0.00", "en_US");
+   DateTime _startDate = DateTime(DateTime.now().year, DateTime.now().month, 1);
+  DateTime _endDate = DateTime(DateTime.now().year, DateTime.now().month, 1).add(Duration(days: 30));
+  bool stateLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    stateLoading = false;
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,16 +44,42 @@ class _IncomeScreenState extends State<IncomeScreen> {
             },)
         ],
       ),
-      body: StreamBuilder<QuerySnapshot>(
-          stream: transactionRef.where('owner', isEqualTo: widget.userID).where('transType', isEqualTo: 'Income').snapshots(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Center(child: Text("Loading..."));
-            } else {
-              return _buildList(context, snapshot.data.documents);
-              //return Text("");
-            }
-          },
+      body: Column(
+        children: <Widget>[
+          Container(
+                          child: MonthSelectorWidget(onChanged: (val) { 
+                                try {
+                                  if (!stateLoading) {
+                                setState(() {
+                                  _startDate = val; 
+                                  _endDate = _startDate.add(Duration(days: 30));
+                              }); 
+                            }
+                                } catch(ex) { print(''); }
+                          },
+                          ),
+                        ),
+          Expanded(
+            child: Container(
+              child: StreamBuilder<QuerySnapshot>(
+                          stream: transactionRef
+                            .where('owner', isEqualTo: widget.userID)
+                            .where('transType', isEqualTo: 'Income')
+                            .where('transactionDate', isGreaterThanOrEqualTo: _startDate,isLessThan:  _endDate)
+                            .orderBy('transactionDate').snapshots(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return Center(child: CircularProgressIndicator());
+                            } else {
+                              return _buildList(context, snapshot.data.documents);
+                              //return Text("");
+                            }
+                          },
+                      ),
+            ),
+          ),
+         
+        ],
       ),
     );
   }
