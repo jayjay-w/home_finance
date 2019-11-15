@@ -7,6 +7,7 @@ import 'package:homefinance/models/account.dart';
 import 'package:homefinance/models/transaction.dart';
 import 'package:homefinance/services/database_service.dart';
 import 'package:homefinance/services/theme_service.dart';
+import 'package:homefinance/ui/widgets/category_sub_category_widget.dart';
 import 'package:intl/intl.dart';
 
 class SpendMoneyScreen extends StatefulWidget {
@@ -194,6 +195,7 @@ class _SpendMoneyScreenState extends State<SpendMoneyScreen> {
                     key: _formKey,
                     child: Column(
                       children: <Widget>[
+                        CategoryAndSubCategorySelector(),
                         TextFormField(
                           autocorrect: false,
                           initialValue: _description,
