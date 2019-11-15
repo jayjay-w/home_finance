@@ -4,6 +4,7 @@ import 'package:homefinance/models/category.dart';
 import 'package:homefinance/services/database_service.dart';
 import 'package:homefinance/services/theme_service.dart';
 import 'package:homefinance/ui/screens/subcategory_list.dart';
+import 'package:homefinance/ui/widgets/common_widgets.dart';
 
 class CategoryListScreen extends StatefulWidget {
    static String id = "category_list_screen";
@@ -25,82 +26,6 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
     super.initState();
   }
 
-  _deleteCategory(Category cat) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Confirm Delete"),
-          content: Text("Are you sure you want to delete " + cat.name + "?"),
-          actions: <Widget>[
-            FlatButton(
-              child: Text("No"),
-              onPressed: () { Navigator.pop(context); },
-            ),
-            FlatButton(
-              child: Text("Yes"),
-              onPressed: () {
-                DatabaseService.DeleteCategory(cat);
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-            )
-          ],
-        );
-      }
-    );
-  }
-
-  _showEditDialog(bool isNew, Category cat) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Category"),
-          content: Form(
-            key: _formKey,
-            child: Column(
-              children: <Widget>[
-                TextFormField(
-                  autocorrect: false,
-                  textCapitalization: TextCapitalization.words,
-                  initialValue: isNew ? "" : cat.name,
-                  decoration: InputDecoration(labelText: 'Category Name'),
-                  validator: (input) => input.length < 2 ? 'Enter a category name' : null,
-                  onSaved: (input) { cat.name = input; _editCategoryName = input; },
-                ),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-                child: Text("Delete Category"),
-                onPressed: () { _deleteCategory(cat); },
-            ),  
-            FlatButton(
-              child: Text("No"),
-              onPressed: () { Navigator.pop(context); },
-            ),
-            FlatButton(
-              child: Text("Yes", style: TextStyle(color: Colors.red),),
-              onPressed: () {
-                if (_formKey.currentState.validate()) {
-                  _formKey.currentState.save();
-                  isNew ? DatabaseService.AddCategory(Category(name: _editCategoryName), widget.userID) : 
-                     DatabaseService.UpdateCategory(cat) ;
-                  setState(() {
-                    _editCategoryName = "";
-                  });
-                  Navigator.pop(context);
-                }
-              },
-            )
-          ],
-        );
-      }
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,7 +36,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
-              _showEditDialog(true, null);
+              showEditCategoryDialog(true, null, context, widget.userID);
             },
           )
         ],
@@ -161,7 +86,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
         ),
       trailing: IconButton(
         icon: Icon(Icons.edit),
-        onPressed: () { _showEditDialog(false, cat); },
+        onPressed: () { showEditCategoryDialog(false, cat, context, widget.userID); },
       ),
     );    
   }

@@ -33,6 +33,8 @@ class _SpendMoneyScreenState extends State<SpendMoneyScreen> {
   String _transactionId;
   bool isEditing = false;
 
+  String _categoryID, _subCategoryId;
+
   final currencyFormatter = new NumberFormat("#,##0.00", "en_US");
 
   @override
@@ -41,6 +43,8 @@ class _SpendMoneyScreenState extends State<SpendMoneyScreen> {
     _notes = "";
     _expenseDate = DateTime.now();
     _amount = 0.00;
+    _categoryID = "";
+    _subCategoryId = "";
 
     if (widget.transaction != null) {
       isEditing = true;
@@ -195,7 +199,15 @@ class _SpendMoneyScreenState extends State<SpendMoneyScreen> {
                     key: _formKey,
                     child: Column(
                       children: <Widget>[
-                        CategoryAndSubCategorySelector(),
+                        CategoryAndSubCategorySelector(
+                          onChanged: (catId, subCatId) {
+                            setState(() {
+                              _categoryID = catId;
+                              _subCategoryId = subCatId;
+                            });
+                          },
+                          userId: widget.userID,
+                          ),
                         TextFormField(
                           autocorrect: false,
                           initialValue: _description,
