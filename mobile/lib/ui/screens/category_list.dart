@@ -129,7 +129,16 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(cat.name, style: TextStyle(fontWeight: FontWeight.bold),),
-                        Text("0 subcategories", style: TextStyle(fontSize: 12),),
+                        StreamBuilder<QuerySnapshot> (
+                          stream: subCategoryRef.where('categoryId', isEqualTo: cat.id).snapshots(),
+                          builder: (context, snapshot) {
+                            int subCategoryCount = 0;
+                            if (snapshot.hasData) {
+                              subCategoryCount = snapshot.data.documents.length;
+                            }
+                            return Text("$subCategoryCount subcategories", style: TextStyle(fontSize: 12));
+                          },
+                        ),
                       ],
                     ),
                   ),
