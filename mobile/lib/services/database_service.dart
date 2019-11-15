@@ -33,6 +33,10 @@ class DatabaseService {
       categoryRef.document(cat.id).setData(cat.toJson());
     } 
 
+    static void DeleteCategory(Category cat) {
+      categoryRef.document(cat.id).delete();
+    }
+
     static void addSubCategory(Category parentCategory, SubCategory subCategory, String uid) {
       subCategory.owner = uid;
       subCategory.categoryId = parentCategory.id;
@@ -41,6 +45,10 @@ class DatabaseService {
 
     static void updateSubCategory(SubCategory subCat) {
       subCategoryRef.document(subCat.id).setData(subCat.toJson());
+    }
+
+    static void deleteSubCategory(SubCategory subCat) {
+      subCategoryRef.document(subCat.id).delete();
     }
 
     static void updateUser(User user) {

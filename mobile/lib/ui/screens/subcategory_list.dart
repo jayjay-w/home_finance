@@ -33,7 +33,33 @@ class _SubCategoryListScreenState extends State<SubCategoryListScreen> {
     super.initState();
   }
 
-  _showEditDialog(bool isNew, Category cat) {
+  _deleteSubcategory(SubCategory subcat) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirm Delete"),
+          content: Text("Are you sure you want to delete " + subcat.name + "?"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("No"),
+              onPressed: () { Navigator.pop(context); },
+            ),
+            FlatButton(
+              child: Text("Yes"),
+              onPressed: () {
+                DatabaseService.deleteSubCategory(subcat);
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+            )
+          ],
+        );
+      }
+    );
+  }
+
+  _showEditDialog(bool isNew, SubCategory subcat) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -46,34 +72,44 @@ class _SubCategoryListScreenState extends State<SubCategoryListScreen> {
                 TextFormField(
                   autocorrect: false,
                   textCapitalization: TextCapitalization.words,
-                  initialValue: _editCategoryName,
-                  decoration: InputDecoration(labelText: 'Category Name'),
+                  initialValue: isNew ? "" : subcat.name,
+                  decoration: InputDecoration(labelText: 'Subcategory Name'),
                   validator: (input) => input.length < 2 ? 'Enter a category name' : null,
                   onSaved: (input) => _editCategoryName = input,
                 ),
                 TextFormField(
                   autocorrect: false,
                   textCapitalization: TextCapitalization.words,
-                  initialValue: currencyFormatter.format(_budget),
+                  initialValue: isNew ? "0.00" : subcat.budget.toString(),
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(labelText: 'Monthly Budget'),
-                  validator: (input) => input.length < 2 ? 'Enter the monthly limit for this item' : null,
-                  onSaved: (input) => _budget = double.parse(input),
+                  validator: (input) => double.parse(input) < 0 ? 'Enter the monthly limit for this item' : null,
+                  onSaved: (input) { _budget = double.parse(input); },
                 ),
               ],
             ),
           ),
           actions: <Widget>[
             FlatButton(
-              child: Text("No"),
+                child: Text("Delete Subcategory"),
+                onPressed: () { _deleteSubcategory(subcat); },
+            ),           
+            FlatButton(
+              child: Text("Cancel"),
               onPressed: () { Navigator.pop(context); },
             ),
             FlatButton(
-              child: Text("Yes", style: TextStyle(color: Colors.red),),
+              child: Text("Save", style: TextStyle(color: Colors.red),),
               onPressed: () {
                 if (_formKey.currentState.validate()) {
                   _formKey.currentState.save();
-                  DatabaseService.addSubCategory(widget.parentCategory, SubCategory(name: _editCategoryName, budget: _budget), widget.userID);
+                  if (isNew) {
+                    DatabaseService.addSubCategory(widget.parentCategory, SubCategory(name: _editCategoryName, budget: _budget), widget.userID);
+                  } else {
+                    subcat.name = _editCategoryName;
+                    subcat.budget = _budget;
+                    DatabaseService.updateSubCategory(subcat);
+                  }
                   setState(() {
                     _editCategoryName = "";
                   });
@@ -104,25 +140,6 @@ class _SubCategoryListScreenState extends State<SubCategoryListScreen> {
       ),
       body: Column(
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.all(8),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: TextField(
-                    controller: catController,
-                  ),
-                ),
-                FlatButton(
-                  onPressed: () {
-                    widget.parentCategory.name = catController.text;
-                    DatabaseService.UpdateCategory(widget.parentCategory);
-                  },
-                  child: Icon(Icons.check, color: Colors.green,),
-                )
-              ],
-            ),
-          ),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: subCategoryRef.where('categoryId', isEqualTo: widget.parentCategory.id).snapshots(),
@@ -154,30 +171,13 @@ class _SubCategoryListScreenState extends State<SubCategoryListScreen> {
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
     final subcat = SubCategory.fromDocument(data);
 
-    return  Column(
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 8),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(subcat.name, style: TextStyle(fontWeight: FontWeight.bold),),
-                  ],
-                ),
-              ),
-
-              // Text(cat.order.toString()),
-              IconButton(
-                icon: Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 12,), onPressed: () { /* edit subcategory */ } ,
-              )
-            ],
-          ),
-        ),
-        Divider(height: 0.2,)
-      ],
+    return  ListTile(
+      onTap: () {
+        _showEditDialog(false, subcat);
+      },
+      title: Text(subcat.name),
+      subtitle: Text(widget.currency + currencyFormatter.format(subcat.budget) + "/month"),
+      trailing: Icon(Icons.arrow_forward_ios),
     );
   }
 }

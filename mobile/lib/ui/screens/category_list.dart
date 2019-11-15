@@ -25,6 +25,32 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
     super.initState();
   }
 
+  _deleteCategory(Category cat) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirm Delete"),
+          content: Text("Are you sure you want to delete " + cat.name + "?"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("No"),
+              onPressed: () { Navigator.pop(context); },
+            ),
+            FlatButton(
+              child: Text("Yes"),
+              onPressed: () {
+                DatabaseService.DeleteCategory(cat);
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+            )
+          ],
+        );
+      }
+    );
+  }
+
   _showEditDialog(bool isNew, Category cat) {
     showDialog(
       context: context,
@@ -38,15 +64,19 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                 TextFormField(
                   autocorrect: false,
                   textCapitalization: TextCapitalization.words,
-                  initialValue: _editCategoryName,
+                  initialValue: isNew ? "" : cat.name,
                   decoration: InputDecoration(labelText: 'Category Name'),
                   validator: (input) => input.length < 2 ? 'Enter a category name' : null,
-                  onSaved: (input) => _editCategoryName = input,
+                  onSaved: (input) { cat.name = input; _editCategoryName = input; },
                 ),
               ],
             ),
           ),
           actions: <Widget>[
+            FlatButton(
+                child: Text("Delete Category"),
+                onPressed: () { _deleteCategory(cat); },
+            ),  
             FlatButton(
               child: Text("No"),
               onPressed: () { Navigator.pop(context); },
@@ -56,7 +86,8 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
               onPressed: () {
                 if (_formKey.currentState.validate()) {
                   _formKey.currentState.save();
-                  DatabaseService.AddCategory(Category(name: _editCategoryName), widget.userID);
+                  isNew ? DatabaseService.AddCategory(Category(name: _editCategoryName), widget.userID) : 
+                     DatabaseService.UpdateCategory(cat) ;
                   setState(() {
                     _editCategoryName = "";
                   });
@@ -111,46 +142,27 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
     final cat = Category.fromDocument(data);
-
-    return  GestureDetector(
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(
-                      builder: (_) => SubCategoryListScreen(userID: widget.userID, currency: widget.currency, parentCategory: cat,)
-                      ));
-        },
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 8),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(cat.name, style: TextStyle(fontWeight: FontWeight.bold),),
-                        StreamBuilder<QuerySnapshot> (
-                          stream: subCategoryRef.where('categoryId', isEqualTo: cat.id).snapshots(),
-                          builder: (context, snapshot) {
-                            int subCategoryCount = 0;
-                            if (snapshot.hasData) {
-                              subCategoryCount = snapshot.data.documents.length;
-                            }
-                            return Text("$subCategoryCount subcategories", style: TextStyle(fontSize: 12));
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Text(cat.order.toString()),
-                  Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 12,)
-                ],
-              ),
-            ),
-            Divider(height: 0.2,)
-          ],
+    return  ListTile(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) => SubCategoryListScreen(userID: widget.userID, currency: widget.currency, parentCategory: cat),
+                                    ));
+      },
+      title: Text(cat.name),
+      subtitle: StreamBuilder<QuerySnapshot> (
+          stream: subCategoryRef.where('categoryId', isEqualTo: cat.id).snapshots(),
+          builder: (context, snapshot) {
+            int subCategoryCount = 0;
+            if (snapshot.hasData) {
+              subCategoryCount = snapshot.data.documents.length;
+            }                            
+            return Text("$subCategoryCount subcategories");
+          },
         ),
-    );
+      trailing: IconButton(
+        icon: Icon(Icons.edit),
+        onPressed: () { _showEditDialog(false, cat); },
+      ),
+    );    
   }
 }

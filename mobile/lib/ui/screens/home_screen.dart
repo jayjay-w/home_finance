@@ -305,7 +305,6 @@ class _MyHomePageState extends State<MyHomePage> {
                               double transfers = 0;
                               double income = 0;
                               double expenses = 0;
-                              double budget = 0;
 
                               if (snapshot.hasData) {
                                 for (DocumentSnapshot doc in snapshot.data.documents) {
@@ -332,21 +331,34 @@ class _MyHomePageState extends State<MyHomePage> {
                                     Navigator.of(context).push(MaterialPageRoute(
                                       builder: (BuildContext context) => ExpensesScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency),
                                     ));
-                                  }),
-                                   dashboardListWidget("Budget", widget.user.currencySymbol + " " + currencyFormatter.format(budget), Icons.change_history, Colors.purple, () {
-                                    Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) => BudgetScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency),
-                                    ));
-                                  }),
+                                  }),                                  
                                 ],
                               );
-                            },
+                            },                          
+                          ),                          
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                          child: StreamBuilder<QuerySnapshot>(
+                                    stream: subCategoryRef.where('owner', isEqualTo: widget.user.userId).snapshots(),
+                                  builder: (context, snapshot) {
+                                    double budget = 0;
 
-                          
-                          ),
+                                    if (snapshot.hasData) {
+                                      for (DocumentSnapshot doc in snapshot.data.documents) {
+                                          budget += doc["budget"];
+                                      }
+                                    }
+
+                                   return dashboardListWidget("Budget", widget.user.currencySymbol + " " + currencyFormatter.format(budget), Icons.change_history, Colors.purple, () {
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) => BudgetScreen(userID: widget.user.userId, currency: widget.user.currencySymbol),
+                                    ));
+                                  });
+                                }
+                        ),
                         )
-                         //Empty row after icons
-                      ],
+                        ],
                     ),
                   ),
                 ),
