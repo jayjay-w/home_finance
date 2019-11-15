@@ -5,6 +5,7 @@ import 'package:homefinance/models/user.dart';
 import 'package:homefinance/services/database_service.dart';
 import 'package:homefinance/services/theme_service.dart';
 import 'package:homefinance/ui/screens/accounts.dart';
+import 'package:homefinance/ui/screens/budget.dart';
 import 'package:homefinance/ui/screens/expenses.dart';
 import 'package:homefinance/ui/screens/income.dart';
 import 'package:homefinance/ui/screens/transfers.dart';
@@ -201,8 +202,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Column(
                       children: <Widget>[
                         Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 40.0, vertical: 40.0),
+                          padding: EdgeInsets.only(
+                              left: 20.0, right: 20, top: 20.0, bottom: 20),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
@@ -296,7 +297,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                           child: StreamBuilder<QuerySnapshot>(
                             stream: transactionRef.where('owner', isEqualTo: widget.user.userId).where('transactionDate', isGreaterThanOrEqualTo: _startDate, isLessThan: _endDate).snapshots(),
                             builder: (context, snapshot) {
@@ -304,6 +305,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               double transfers = 0;
                               double income = 0;
                               double expenses = 0;
+                              double budget = 0;
 
                               if (snapshot.hasData) {
                                 for (DocumentSnapshot doc in snapshot.data.documents) {
@@ -329,6 +331,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                   dashboardListWidget("Expenses", widget.user.currencySymbol + " " + currencyFormatter.format(expenses), Icons.arrow_downward, Colors.red, () {
                                     Navigator.of(context).push(MaterialPageRoute(
                                       builder: (BuildContext context) => ExpensesScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency),
+                                    ));
+                                  }),
+                                   dashboardListWidget("Budget", widget.user.currencySymbol + " " + currencyFormatter.format(budget), Icons.change_history, Colors.purple, () {
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) => BudgetScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency),
                                     ));
                                   }),
                                 ],

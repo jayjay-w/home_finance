@@ -13,3 +13,5 @@ pubspec.lock
 doc/api/
 mobile/ios/Flutter/flutter_export_environment.sh
 *.log
+.vscode/
+.DS_Store

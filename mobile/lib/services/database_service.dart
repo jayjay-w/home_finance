@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:homefinance/models/account.dart';
+import 'package:homefinance/models/category.dart';
 import 'package:homefinance/models/transaction.dart';
 import 'package:homefinance/models/user.dart';
 
@@ -10,7 +11,8 @@ final _firestore = Firestore.instance;
 final accountsRef = _firestore.collection('accounts');
 final usersRef = _firestore.collection('users');
 final transactionRef = _firestore.collection('transactions');
-
+final categoryRef = _firestore.collection('categories');
+final subCategoryRef = _firestore.collection('subcategories');
 
 
 class DatabaseService {
@@ -19,6 +21,26 @@ class DatabaseService {
       accountsRef.document().setData(
         acc.toJson()
       );
+    }
+
+    static void AddCategory(Category cat, String uid) async {
+      cat.owner = uid;
+      cat.order = 999;
+      categoryRef.document().setData(cat.toJson());
+    }
+
+    static void UpdateCategory(Category cat) {
+      categoryRef.document(cat.id).setData(cat.toJson());
+    } 
+
+    static void addSubCategory(Category parentCategory, SubCategory subCategory, String uid) {
+      subCategory.owner = uid;
+      subCategory.categoryId = parentCategory.id;
+      subCategoryRef.document().setData(subCategory.toJson());
+    }
+
+    static void updateSubCategory(SubCategory subCat) {
+      subCategoryRef.document(subCat.id).setData(subCat.toJson());
     }
 
     static void updateUser(User user) {

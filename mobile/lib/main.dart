@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:homefinance/services/auth_service.dart';
 import 'package:homefinance/services/database_service.dart';
 import 'package:homefinance/services/theme_service.dart' as prefix0;
 import 'package:homefinance/ui/screens/account_summary.dart';
@@ -11,6 +10,8 @@ import 'package:homefinance/ui/screens/account_transactions.dart';
 import 'package:homefinance/ui/screens/accounts.dart';
 import 'package:homefinance/ui/screens/authentication/login_screen.dart';
 import 'package:homefinance/ui/screens/authentication/signup_screen.dart';
+import 'package:homefinance/ui/screens/budget.dart';
+import 'package:homefinance/ui/screens/category_list.dart';
 import 'package:homefinance/ui/screens/edit_account.dart';
 import 'package:homefinance/ui/screens/expenses.dart';
 import 'package:homefinance/ui/screens/home.dart';
@@ -18,6 +19,7 @@ import 'package:homefinance/ui/screens/home_screen.dart';
 import 'package:homefinance/ui/screens/income.dart';
 import 'package:homefinance/ui/screens/receive_money.dart';
 import 'package:homefinance/ui/screens/spend_money.dart';
+import 'package:homefinance/ui/screens/subcategory_list.dart';
 import 'package:homefinance/ui/screens/transfers.dart';
 
 import 'models/user.dart';
@@ -74,6 +76,9 @@ class MyApp extends StatelessWidget {
         ExpensesScreen.id: (context) => ExpensesScreen(currency: null,),
         SpendMoneyScreen.id: (context) => SpendMoneyScreen(currency: null,),
         AccountTransactions.id: (context) => AccountTransactions(),
+        BudgetScreen.id: (context) => BudgetScreen(currency: null,),
+        CategoryListScreen.id: (context) => CategoryListScreen(currency: null,),
+        SubCategoryListScreen.id: (context) => SubCategoryListScreen(currency: null,)
       },
     );
  }
