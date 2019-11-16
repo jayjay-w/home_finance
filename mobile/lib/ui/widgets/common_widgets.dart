@@ -30,9 +30,12 @@ showEditCategoryDialog(bool isNew, Category cat, BuildContext context, String us
             ),
           ),
           actions: <Widget>[
-            FlatButton(
-                child: Text("Delete Category", style: TextStyle(color: Colors.red),),
-                onPressed: () { _deleteCategory(cat, context); },
+            Visibility(
+              visible: !isNew,
+              child: FlatButton(
+                  child: Text("Delete Category", style: TextStyle(color: Colors.red),),
+                  onPressed: () { _deleteCategory(cat, context); },
+              ),
             ), 
             FlatButton(
               child: Text("Cancel"),
@@ -146,9 +149,12 @@ showEditCategoryDialog(bool isNew, Category cat, BuildContext context, String us
             ),
           ),
           actions: <Widget>[
-            FlatButton(
-                child: Text("Delete Subcategory"),
-                onPressed: () { _deleteSubcategory(subcat, context); },
+            Visibility(
+              visible: !isNew,
+              child: FlatButton(
+                  child: Text("Delete Subcategory"),
+                  onPressed: () { _deleteSubcategory(subcat, context); },
+              ),
             ),           
             FlatButton(
               child: Text("Cancel"),
