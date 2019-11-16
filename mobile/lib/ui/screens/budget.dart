@@ -5,6 +5,7 @@ import 'package:homefinance/services/database_service.dart';
 import 'package:homefinance/services/theme_service.dart';
 import 'package:homefinance/ui/screens/category_list.dart';
 import 'package:homefinance/ui/screens/subcategory_list.dart';
+import 'package:homefinance/ui/widgets/budget_progress.dart';
 import 'package:homefinance/ui/widgets/month_selector_widget.dart';
 import 'package:intl/intl.dart';
 
@@ -96,18 +97,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                                     ));
       },
       title: Text(cat.name),
-      subtitle: StreamBuilder<QuerySnapshot> (
-          stream: subCategoryRef.where('categoryId', isEqualTo: cat.id).snapshots(),
-          builder: (context, snapshot) {
-            double subCategoryBudget = 0;
-            if (snapshot.hasData) {
-              for (DocumentSnapshot doc in snapshot.data.documents) {
-                subCategoryBudget += doc["budget"];
-              }
-            }                            
-            return Text(widget.currency + " 0 / " + currencyFormatter.format(subCategoryBudget));
-          },
-        ),
+      subtitle: BudgetProgressWidget(monthStart: _startDate, monthEnd: _endDate, categoryId: cat.id, userId: widget.userID, currencySymbol: widget.currency,),
     );    
   }
 }
