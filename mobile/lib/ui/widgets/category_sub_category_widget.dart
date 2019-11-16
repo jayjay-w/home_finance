@@ -51,7 +51,10 @@ class _CategoryAndSubCategorySelectorState extends State<CategoryAndSubCategoryS
               child: Row(
                 children: <Widget>[
                   Expanded(child: Text(""),),
-                  StreamBuilder<DocumentSnapshot>(
+                  Text(categoryID),
+                  Text("/"),
+                  Text(subCategoryID),
+                  /*StreamBuilder<DocumentSnapshot>(
                     stream: categoryRef.document(categoryID).snapshots(),
                     builder: (ctx, doc) {
                       String categoryText = "Category  -  ";
@@ -80,7 +83,7 @@ class _CategoryAndSubCategorySelectorState extends State<CategoryAndSubCategoryS
                         child: Text(subCategoryText, style: TextStyle(fontSize: 16, color: Colors.purple),),
                     );
                     },
-                  ),
+                  ),*/
                   Expanded(child: Text(""),),
                 ],
               ),
@@ -101,7 +104,9 @@ class _CategoryAndSubCategorySelectorState extends State<CategoryAndSubCategoryS
             actions: <Widget>[
               FlatButton(
                 child: Text("Add New Sub Category"),
-                onPressed: () { showEditCategoryDialog(true, null, context, widget.userId); },
+                onPressed: () { 
+                      showEditSubCategoryDialog(true, null, categoryID, widget.userId, context);
+                  },
               ),
               FlatButton(
                 onPressed: () { Navigator.pop(context); },
@@ -139,7 +144,9 @@ class _CategoryAndSubCategorySelectorState extends State<CategoryAndSubCategoryS
                   subtitle: Text(currencyFormatter.format(data["budget"]) + " per month"),
                   trailing: IconButton(
                     icon: Icon(Icons.edit),
-                    onPressed: () { showEditCategoryDialog(false, Category.fromDocument(data), context, widget.userId); },
+                    onPressed: () { 
+                      showEditSubCategoryDialog(false, SubCategory.fromDocument(data), categoryID, widget.userId, context);
+                      },
                   ),
                 ),
                 ) ).toList(),

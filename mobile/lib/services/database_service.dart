@@ -37,9 +37,9 @@ class DatabaseService {
       categoryRef.document(cat.id).delete();
     }
 
-    static void addSubCategory(Category parentCategory, SubCategory subCategory, String uid) {
+    static void addSubCategory(String parentCategoryId, SubCategory subCategory, String uid) {
       subCategory.owner = uid;
-      subCategory.categoryId = parentCategory.id;
+      subCategory.categoryId = parentCategoryId;
       subCategoryRef.document().setData(subCategory.toJson());
     }
 
