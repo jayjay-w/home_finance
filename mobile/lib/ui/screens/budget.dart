@@ -6,6 +6,7 @@ import 'package:homefinance/services/theme_service.dart';
 import 'package:homefinance/ui/screens/category_list.dart';
 import 'package:homefinance/ui/screens/subcategory_list.dart';
 import 'package:homefinance/ui/widgets/budget_progress.dart';
+import 'package:homefinance/ui/widgets/common_widgets.dart';
 import 'package:homefinance/ui/widgets/month_selector_widget.dart';
 import 'package:intl/intl.dart';
 
@@ -38,10 +39,8 @@ class _BudgetScreenState extends State<BudgetScreen> {
         backgroundColor: primaryColor,
         title: Text("Budget"),
         actions: <Widget>[
-          FlatButton(child: Icon(Icons.edit, size: 32, color: Colors.white,), onPressed: () {
-              Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => CategoryListScreen(userID: widget.userID, currency: widget.currency,)
-              ));
+          FlatButton(child: Icon(Icons.add, size: 32, color: Colors.white,), onPressed: () {
+             showEditCategoryDialog(true, null, context, widget.userID);
             },)
         ],
       ),
