@@ -27,11 +27,13 @@ class _CategoryAndSubCategorySelectorState extends State<CategoryAndSubCategoryS
   final currencyFormatter = new NumberFormat("#,##0.00", "en_US");
   String categoryID = "";
   String subCategoryID = "";
+  String categoryName = "";
+  String subCategoryName = "";
 
   @override
   void initState() {
-    categoryID = "";
-    subCategoryID = "";
+    categoryID = widget.categoryId;
+    subCategoryID = widget.subcategoryId;
     super.initState();
   }
 
@@ -45,45 +47,47 @@ class _CategoryAndSubCategorySelectorState extends State<CategoryAndSubCategoryS
                 borderRadius: BorderRadius.circular(6)),
         child: Column(
           children: <Widget>[
-            Visibility(visible: widget.categoryId == null, child: Center(child: Text("Tap here to select the category/subcategory", textAlign: TextAlign.center,))),
+            Visibility(visible: true, child: Center(child: Text("Tap here to select the category/subcategory", textAlign: TextAlign.center,))),
             Visibility(
-              visible: widget.categoryId == null,
+              visible: true,
               child: Row(
                 children: <Widget>[
                   Expanded(child: Text(""),),
-                  Text(categoryID),
-                  Text("/"),
-                  Text(subCategoryID),
-                  /*StreamBuilder<DocumentSnapshot>(
-                    stream: categoryRef.document(categoryID).snapshots(),
-                    builder: (ctx, doc) {
-                      String categoryText = "Category  -  ";
-                      if (doc.hasData) {
-                        categoryText = doc.data["name"].toString() + " - ";
-                      } 
-                    return Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey, width: 0.1),
-                        borderRadius: BorderRadius.circular(6)),
-                        child: Text(categoryText, style: TextStyle(fontSize: 16, color: Colors.purple),),
-                    );
-                    },
-                  ),
-                  StreamBuilder<DocumentSnapshot>(
-                    stream: subCategoryRef.document(subCategoryID).snapshots(),
-                    builder: (ctx, doc) {
-                      String subCategoryText = " Sub Category";
-                      if (doc.hasData) {
-                        subCategoryText = doc.data["name"].toString() + "  ";
-                      } 
-                    return Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey, width: 0.1),
-                        borderRadius: BorderRadius.circular(6)),
-                        child: Text(subCategoryText, style: TextStyle(fontSize: 16, color: Colors.purple),),
-                    );
-                    },
-                  ),*/
+                  categoryID == null ? Text("") :
+                      categoryID == "" ? Text("") :
+                        Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey, width: 0.1),
+                              borderRadius: BorderRadius.circular(6)),
+                              child: StreamBuilder<DocumentSnapshot>(
+                                stream: categoryRef.document(categoryID).snapshots(),
+                                builder: (context, catDoc) {
+                                  String catName = "Select Category";
+                                  if (catDoc.hasData) {
+                                    catName = catDoc.data["name"];
+                                  } 
+                                  return Text(catName, style: TextStyle(fontSize: 16, color: Colors.purple),);
+                                },
+                              ),
+                          ),
+                          Text("   "),
+                  subCategoryID== null ? Text("") :
+                      subCategoryID == "" ? Text("") :
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey, width: 0.1),
+                              borderRadius: BorderRadius.circular(6)),
+                              child: StreamBuilder<DocumentSnapshot>(
+                                stream: subCategoryRef.document(subCategoryID).snapshots(),
+                                builder: (context, subCatDoc) {
+                                  String subCatName = "Select Subcategory";
+                                  if (subCatDoc.hasData) {
+                                    subCatName = subCatDoc.data["name"];
+                                  } 
+                                  return Text(subCatName, style: TextStyle(fontSize: 16, color: Colors.indigo),);
+                                },
+                              ),
+                          ),
                   Expanded(child: Text(""),),
                 ],
               ),
@@ -99,7 +103,7 @@ class _CategoryAndSubCategorySelectorState extends State<CategoryAndSubCategoryS
         context: context,
       builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Select a sub category"),
+            title: Text("2. Select a sub category"),
             content: _showSubCategoryList(),
             actions: <Widget>[
               FlatButton(
@@ -135,7 +139,8 @@ class _CategoryAndSubCategorySelectorState extends State<CategoryAndSubCategoryS
                   onTap: () { 
                     setState(() {
                       subCategoryID = data.documentID;
-                      widget.onChanged(categoryID, data.documentID);
+                      subCategoryName = data.data["name"];
+                      widget.onChanged(categoryID, data.documentID, categoryName, subCategoryName);
                       Navigator.pop(context);
                       Navigator.pop(context);
                     });
@@ -173,7 +178,7 @@ class _CategoryAndSubCategorySelectorState extends State<CategoryAndSubCategoryS
                   onTap: () { 
                     setState(() {
                       categoryID = data.documentID;
-                      widget.onChanged(categoryID, null);
+                      categoryName = data.data["name"];
                       _showSubCategorySelector();
                     });
                    },
@@ -212,7 +217,7 @@ class _CategoryAndSubCategorySelectorState extends State<CategoryAndSubCategoryS
         context: context,
       builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Select a category"),
+            title: Text("1: Select a category"),
             content: _showCategoryList(),
             actions: <Widget>[
               FlatButton(

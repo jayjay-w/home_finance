@@ -121,7 +121,7 @@ class DatabaseService {
       creditAccount(uid, accountId, amount);
     }
 
-    static void spendMoney(String uid, String description, String notes, Timestamp dateReceived, double amount, String accountId, String currencySymbol) async {
+    static void spendMoney(String uid, String description, String notes, Timestamp dateReceived, double amount, String accountId, String currencySymbol, String categoryId, String subCategoryId) async {
       Trans newTrans = new Trans(
         description: description,
         notes: notes,
@@ -131,7 +131,9 @@ class DatabaseService {
         transactionDate: dateReceived,
         transactionAmount: amount,
         transType: "Expense",
-        currency: currencySymbol
+        currency: currencySymbol,
+        categoryId: categoryId,
+        subCategoryId: subCategoryId
         );
       
       transactionRef.document().setData(newTrans.toJson());

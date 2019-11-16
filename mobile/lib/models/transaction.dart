@@ -14,6 +14,8 @@ class Trans {
   final String notes;
   final String currency;
   final String owner;
+  final String categoryId;
+  final String subCategoryId;
   String comment;
 
   Trans({
@@ -28,7 +30,9 @@ class Trans {
     this.description,
     this.notes,
     this.currency,
-    this.owner
+    this.owner,
+    this.categoryId,
+    this.subCategoryId,
   });
 
   Color getColor() {
@@ -57,7 +61,9 @@ class Trans {
       description: doc["description"] ?? "",
       notes: doc["notes"] ?? "",
       currency: doc["currency"] ?? "USD",
-      owner: doc["owner"]
+      owner: doc["owner"],
+      categoryId: doc["categoryId"] ?? "",
+      subCategoryId: doc["subCategoryId"] ?? ""
     );
   }
 
@@ -73,6 +79,8 @@ class Trans {
         "description" : description ?? "",
         "notes": notes ?? "",
         "currency": currency ?? "USD",
-        "owner": owner
+        "owner": owner,
+        "categoryId": categoryId ?? "",
+        "subCategoryId": subCategoryId?? ""
       };
 }

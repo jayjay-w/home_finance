@@ -54,6 +54,8 @@ class _SpendMoneyScreenState extends State<SpendMoneyScreen> {
       _notes = widget.transaction.notes;
       _expenseDate = widget.transaction.transactionDate.toDate();
       _amount = widget.transaction.transactionAmount;
+      _categoryID = widget.transaction.categoryId;
+      _subCategoryId = widget.transaction.subCategoryId;
     }
 
     super.initState();
@@ -119,7 +121,10 @@ class _SpendMoneyScreenState extends State<SpendMoneyScreen> {
         Timestamp.fromDate(_expenseDate),
         _amount,
         _accountId,
-        widget.currency);
+        widget.currency,
+        _categoryID,
+        _subCategoryId
+        );
 
     Navigator.pop(context);
 
@@ -200,36 +205,38 @@ class _SpendMoneyScreenState extends State<SpendMoneyScreen> {
                     child: Column(
                       children: <Widget>[
                         CategoryAndSubCategorySelector(
-                          onChanged: (catId, subCatId) {
+                          categoryId: _categoryID,
+                          subcategoryId: _subCategoryId,
+                          onChanged: (catId, subCatId, catName, subCatName) {
                             setState(() {
                               _categoryID = catId;
                               _subCategoryId = subCatId;
+                              _description = catName + "/" + subCatName;
                             });
                           },
                           userId: widget.userID,
                           ),
-                        TextFormField(
-                          autocorrect: false,
-                          initialValue: _description,
-                          decoration:
-                              InputDecoration(labelText: 'Description'),
-                          validator: (input) => input.length < 2
-                              ? 'Where was this money spent?'
-                              : null,
-                          onSaved: (input) {
-                            setState(() {
-                              _description = input;
-                            });
-                          },
-                        ),
+                        //  Text(_categoryID),
+                        //  Text(_subCategoryId),
+                        // TextFormField(
+                        //   autocorrect: false,
+                        //   initialValue: _description,
+                        //   decoration:
+                        //       InputDecoration(labelText: 'Description'),
+                        //   validator: (input) => input.length < 2
+                        //       ? 'Where was this money spent?'
+                        //       : null,
+                        //   onSaved: (input) {
+                        //     setState(() {
+                        //       _description = input;
+                        //     });
+                        //   },
+                        // ),
                         TextFormField(
                           autocorrect: false,
                           initialValue: _notes,
                           decoration:
                               InputDecoration(labelText: 'Notes'),
-                          validator: (input) => input.length < 2
-                              ? 'Notes'
-                              : null,
                           onSaved: (input) {
                             setState(() {
                               _notes = input;
