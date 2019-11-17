@@ -89,17 +89,24 @@ class _BudgetScreenState extends State<BudgetScreen> {
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
     final cat = Category.fromDocument(data);
-    return  ListTile(
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) => SubCategoryListScreen(userID: widget.userID, currency: widget.currency, parentCategory: cat),
-                                    ));
-      },
-      title: Text(cat.name),
-      subtitle: BudgetProgressWidget(monthStart: _startDate, monthEnd: _endDate, categoryId: cat.id, userId: widget.userID, currencySymbol: widget.currency,),
-      trailing: IconButton(
-        icon: Icon(Icons.edit),
-        onPressed: () { showEditCategoryDialog(false, cat, context, widget.userID); }),
+    return  Card(
+      elevation: 8.0,
+      margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 8.0, bottom: 4),
+        child: ListTile(
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                                          builder: (BuildContext context) => SubCategoryListScreen(userID: widget.userID, currency: widget.currency, parentCategory: cat),
+                                        ));
+          },
+          title: Text(cat.name),
+          subtitle: BudgetProgressWidget(monthStart: _startDate, monthEnd: _endDate, categoryId: cat.id, userId: widget.userID, currencySymbol: widget.currency,),
+          trailing: IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () { showEditCategoryDialog(false, cat, context, widget.userID); }),
+        ),
+      ),
     );    
   }
 }
