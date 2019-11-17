@@ -101,7 +101,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                                         ));
           },
           title: Text(cat.name),
-          subtitle: BudgetProgressWidget(monthStart: _startDate, monthEnd: _endDate, categoryId: cat.id, userId: widget.userID, currencySymbol: widget.currency,),
+          subtitle: BudgetProgressWidget(isCategory: true, monthStart: _startDate, monthEnd: _endDate, categoryId: cat.id, userId: widget.userID, currencySymbol: widget.currency,),
           trailing: IconButton(
             icon: Icon(Icons.edit),
             onPressed: () { showEditCategoryDialog(false, cat, context, widget.userID); }),
