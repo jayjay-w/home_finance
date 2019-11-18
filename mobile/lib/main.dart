@@ -28,7 +28,8 @@ void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   Widget _getInitialScreen() {
-    return StreamBuilder<FirebaseUser>(stream: FirebaseAuth.instance.onAuthStateChanged,
+    return StreamBuilder<FirebaseUser>(
+    stream: FirebaseAuth.instance.onAuthStateChanged,
     builder: (BuildContext context, snapshot) {
       if (snapshot.hasData) {
         print(snapshot.data.uid + '...logged in');

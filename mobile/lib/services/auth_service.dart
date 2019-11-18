@@ -4,18 +4,25 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/user.dart';
 import 'package:homefinance/services/database_service.dart';
-import 'package:homefinance/ui/screens/home.dart';
 import 'package:homefinance/ui/screens/home_screen.dart';
 
 class AuthService {
   static final _auth = FirebaseAuth.instance;
   static final _firestore = Firestore.instance;
 
-  static void loginUser(BuildContext context, String email, String password) async {
+  static Future<bool>loginUser(BuildContext context, String email, String password) async {
     try {
-      _auth.signInWithEmailAndPassword(email: email, password: password);      
+      AuthResult result = await _auth.signInWithEmailAndPassword(email: email, password: password);      
+      if (result.user == null) {
+        //login failed
+        print ('authentication failed');
+        return false;
+      } else {
+        return true;
+      }
     } catch (ex) {
-      throw (ex);
+        print ('authentication failed');
+      return false;
     }
   }
 

@@ -1,7 +1,9 @@
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:homefinance/services/auth_service.dart';
 import 'package:homefinance/services/theme_service.dart';
 import 'package:homefinance/ui/screens/authentication/signup_screen.dart';
+import 'package:homefinance/ui/widgets/loading.dart';
 
 class LoginScreen extends StatefulWidget {
   static final String id = 'login_screen';
@@ -12,18 +14,52 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   String _email, _password;
+    bool _working = false;
 
-  _submit() {
+  _submit() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      AuthService.loginUser(context, _email, _password);
+      _changeLoadingVisible();
+      bool loginSuccess = await AuthService.loginUser(context, _email, _password);
+      if (!loginSuccess) {
+      _changeLoadingVisible();
+        Flushbar(
+          duration: Duration(seconds: 5),
+          title: "Login Failed",
+          message: "Please check your username and password",
+        );
+      } else {
+        _changeLoadingVisible();
+      }
     }
   }
 
   @override
+    void initState() {
+      super.initState();
+    }
+
+
+  @override
   Widget build(BuildContext context) {
+
+    
     return Scaffold(
-      body: SingleChildScrollView(
+      body: LoadingScreen(
+        child: _showForm(),
+      inAsyncCall: _working,
+      ),
+    );
+  }
+
+  Future<void> _changeLoadingVisible() async {
+    setState(() {
+      _working = !_working;
+    });
+  }
+
+  Widget _showForm() {
+    return SingleChildScrollView(
                 child: Container(
           height: MediaQuery.of(context).size.height,
           child: Column(
@@ -82,7 +118,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 }
