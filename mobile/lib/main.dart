@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homefinance/services/database_service.dart';
@@ -38,6 +39,9 @@ class MyApp extends StatelessWidget {
           stream: usersRef.document(snapshot.data.uid).snapshots(),
           builder: (context, document) {
             User user = User.fromDocument(document.data);
+            
+            FirebaseAdMob.instance.initialize(appId: "ca-app-pub-6470490276899852~5992832557");
+
             return MyHomePage(user: user);
           },
         );

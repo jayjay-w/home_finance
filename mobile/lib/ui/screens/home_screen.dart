@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/transaction.dart';
 import 'package:homefinance/models/user.dart';
@@ -10,6 +11,7 @@ import 'package:homefinance/ui/screens/expenses.dart';
 import 'package:homefinance/ui/screens/income.dart';
 import 'package:homefinance/ui/screens/transfers.dart';
 import 'package:homefinance/ui/screens/user_profile.dart';
+import 'package:homefinance/ui/widgets/charts.dart';
 import 'package:homefinance/ui/widgets/month_selector_widget.dart';
 import 'package:intl/intl.dart';
 
@@ -27,6 +29,14 @@ class _MyHomePageState extends State<MyHomePage> {
   DateTime _startDate = DateTime(DateTime.now().year, DateTime.now().month, 1);
   DateTime _endDate = DateTime(DateTime.now().year, DateTime.now().month, 1).add(Duration(days: 30));
   bool stateLoading = true;
+  BannerAd bottomBanner = BannerAd(
+      adUnitId: "ca-app-pub-6470490276899852/5330132357", // TEST Ad: "ca-app-pub-3940256099942544/6300978111",//
+      size: AdSize.smartBanner,
+      // targetingInfo:
+      listener: (MobileAdEvent evt) {
+        print("BannerAd event is $evt");
+      } ,
+    );
 
 
   @override
@@ -75,14 +85,29 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  void showBottomAd() async {
+    
+       bottomBanner
+      ..load()
+      ..show(
+        anchorOffset: 0.0,
+        horizontalCenterOffset: 0.0,
+        anchorType: AnchorType.bottom
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
+    
+    showBottomAd(); 
+
     if (widget.user == null) {
       return Container(color: Colors.white, child: Center(child: CircularProgressIndicator(),));
     }
     return Scaffold(
       backgroundColor: Color.fromRGBO(244, 244, 244, 1),
       body: SingleChildScrollView(
+        padding: EdgeInsets.only(bottom: 90),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -364,6 +389,28 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ],
             ),
+            //  Padding(
+            //       padding: EdgeInsets.only(top: 20.0, right: 25.0, left: 25.0),
+            //       child: Container(
+            //         width: double.infinity,
+            //         height: 250.0,
+            //         decoration: BoxDecoration(
+            //             color: Colors.white,
+            //             borderRadius: BorderRadius.all(Radius.circular(20.0)),
+            //             boxShadow: [
+            //               BoxShadow(
+            //                   color: Colors.black.withOpacity(0.1),
+            //                   offset: Offset(0.0, 3.0),
+            //                   blurRadius: 15.0)
+            //             ]),
+            //         child: Column(
+            //           children: <Widget>[
+            //             Text("Budget usage by month", style: boldGrey,),
+            //             ChartDemoWidget(),
+            //           ]
+            //         )
+            //       )
+            //  ),
             Padding(
               padding: EdgeInsets.only(left: 25.0, top: 30.0),
               child: Text(

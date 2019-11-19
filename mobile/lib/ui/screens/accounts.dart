@@ -52,39 +52,42 @@ class _AccountsScreenState extends State<AccountsScreen> {
           }
         },
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: (index) {
-          if (index == 0) {
-            //Transfer button clicked
-            Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => TransferScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency,)
-              ));
-          } else if (index == 1) {
-            //Expense button clicked
-            Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => SpendMoneyScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency)
-              ));
-          } else if (index == 2) {
-            //Income button clicked
-            Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => ReceiveMoneyScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency)
-              ));
-          }
-        },
-        items: [
-          BottomNavigationBarItem(
-            title: Text("Transfer"),
-            icon: Icon(Icons.swap_horiz, color: Colors.blue,)
-          ),
-          BottomNavigationBarItem(
-            title: Text("Add Expense"),
-            icon: Icon(Icons.arrow_downward, color: Colors.red)
-          ),
-          BottomNavigationBarItem(
-            title: Text("Add Income"),
-            icon: Icon(Icons.arrow_upward, color: Colors.green,)
-          ),
-        ],
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(bottom: 90.0),
+        child: BottomNavigationBar(
+          onTap: (index) {
+            if (index == 0) {
+              //Transfer button clicked
+              Navigator.push(context, MaterialPageRoute(
+                    builder: (_) => TransferScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency,)
+                ));
+            } else if (index == 1) {
+              //Expense button clicked
+              Navigator.push(context, MaterialPageRoute(
+                    builder: (_) => SpendMoneyScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency)
+                ));
+            } else if (index == 2) {
+              //Income button clicked
+              Navigator.push(context, MaterialPageRoute(
+                    builder: (_) => ReceiveMoneyScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency)
+                ));
+            }
+          },
+          items: [
+            BottomNavigationBarItem(
+              title: Text("Transfer"),
+              icon: Icon(Icons.swap_horiz, color: Colors.blue,)
+            ),
+            BottomNavigationBarItem(
+              title: Text("Add Expense"),
+              icon: Icon(Icons.arrow_downward, color: Colors.red)
+            ),
+            BottomNavigationBarItem(
+              title: Text("Add Income"),
+              icon: Icon(Icons.arrow_upward, color: Colors.green,)
+            ),
+          ],
+        ),
       ),
     );
   }

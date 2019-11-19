@@ -7,7 +7,7 @@ description: Home finance management application.
 # Both the version and the builder number may be overridden in flutter
 # build by specifying --build-name and --build-number, respectively.
 # Read more about versioning at semver.org.
-version: 1.0.0+1
+version: 1.0.2+2
 
 environment:
   sdk: '>=2.0.0-dev.68.0 <3.0.0'
@@ -35,6 +35,10 @@ dependencies:
   intl: ^0.16.0
   flutter_launcher_icons: "^0.7.3"
   percent_indicator: "^2.1.1"
+  #charts
+  flutter_charts: ^0.1.10
+  #admob
+  firebase_admob: ^0.9.0+9
 
 dev_dependencies:
   flutter_test:
