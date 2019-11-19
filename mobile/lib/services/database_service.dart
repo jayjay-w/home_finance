@@ -70,6 +70,33 @@ class DatabaseService {
       return transactions;
     }
 
+    static Future<double> getTotalExpensesInDateRange(String userId, DateTime _startDate, DateTime _endDate ) async {
+        double total = 0.00;
+        QuerySnapshot transList = await transactionRef
+                  .where('owner', isEqualTo: userId)
+                  .where('transType', isEqualTo: 'Expense')
+                  .where('transactionDate', isGreaterThanOrEqualTo: _startDate, isLessThan: _endDate).getDocuments();
+        
+        for (DocumentSnapshot doc in transList.documents) {
+          total += doc.data["transactionAmount"];
+        }
+        return total;
+    }
+
+    static Future<double> getTotalExpensesForCategoryInDateRange(String categoryID, String userId, DateTime _startDate, DateTime _endDate ) async {
+        double total = 0.00;
+        QuerySnapshot transList = await transactionRef
+                  .where('owner', isEqualTo: userId)
+                  .where('categoryId', isEqualTo: categoryID)
+                  .where('transactionDate', isGreaterThanOrEqualTo: _startDate, isLessThan: _endDate).getDocuments();
+        
+        for (DocumentSnapshot doc in transList.documents) {
+          total += doc.data["transactionAmount"];
+        }
+
+        return total;
+    }
+
     static void transferMoney(String uid, String sourceAccountId, String targetAccountId, Timestamp date, double amount, String currency) async {
       Trans newTrans = new Trans(owner: uid, currency: currency, transType: "Transfer", debitAccountId: sourceAccountId, creditAccountId: targetAccountId, transactionAmount: amount, transactionDate: date);
       
