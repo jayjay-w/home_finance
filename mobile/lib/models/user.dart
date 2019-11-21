@@ -34,8 +34,7 @@ class User {
     this.defaultCurrency,
     this.currencySymbol,
     this.imageURL,
-    this.isGoogleUser,
-    this.setUpComplete
+    this.isGoogleUser
   });
 
   factory User.fromJson(Map<String, dynamic> json) => new User(
@@ -46,8 +45,7 @@ class User {
         defaultCurrency: json["defaultCurrency"] ?? "USD",
         currencySymbol: json["currencySymbol"] ?? "\$",
         imageURL: json["profileImageUrl"] ?? "",
-        isGoogleUser: json["isGoogleUser"] ?? false,
-        setUpComplete: json["setupComplete"] ?? false,
+        isGoogleUser: json["isGoogleUser"] ?? false
       );
 
   Map<String, dynamic> toJson() => {
@@ -57,15 +55,14 @@ class User {
         "defaultCurrency": defaultCurrency ?? "USD",
         "currencySymbol": currencySymbol ?? "\$",
         "profileImageUrl": imageURL,
-        "isGoogleUser": isGoogleUser ?? false,
-        "setupComplete": setUpComplete ?? false
+        "isGoogleUser": isGoogleUser ?? false
       };
 
   factory User.fromDocument(DocumentSnapshot doc) {
     if (doc == null || doc.data == null) {
       return null;
     }
-    return User(
+    User ret = User(
       userId: doc.documentID,
       firstName: doc["firstName"],
       lastName: doc["lastName"],
@@ -73,8 +70,9 @@ class User {
       defaultCurrency: doc["defaultCurrency"] ?? "USD",
       currencySymbol: doc["currencySymbol"] ?? "\$",
       imageURL: doc["profileImageUrl"] ?? "",
-      isGoogleUser: doc["isGoogleUser"] ?? false,
-      setUpComplete: doc["setupComplete"] ?? false
+      isGoogleUser: doc["isGoogleUser"] ?? false
     );
+    ret.setUpComplete = doc["setupComplete"];
+    return ret;
   }
 }

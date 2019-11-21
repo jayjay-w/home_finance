@@ -104,8 +104,10 @@ class AuthService {
         defaultCurrency: currency,
         currencySymbol: currencySymbol,
         imageURL: imageUrl,
-        isGoogleUser: isGoogleUser
+        isGoogleUser: isGoogleUser,
       );
+
+
       if (signedInUser != null) {
         _firestore.collection('/users').document(signedInUser.uid).setData(newUser.toJson());
         newUser.userId = signedInUser.uid;

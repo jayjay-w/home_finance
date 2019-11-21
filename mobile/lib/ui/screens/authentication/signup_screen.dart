@@ -20,7 +20,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
   _submit() {
      if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      AuthService.registerUser(context, _fName, _lName, _email, _password, _currency, _currencySymbol);
+      AuthService.registerUser(context, _fName, _lName, _email, _password, _currency, _currencySymbol );
     }
   }
 
@@ -71,16 +71,16 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
                           onSaved: (input) => _email = input,
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                        child: CurrencyDropDown(
-                          currencyValue: _currency,
-                          onChanged: (curr, sym) { setState(() {
-                           _currency = curr;
-                           _currencySymbol = sym; 
-                          }); },                          
-                        ),
-                      ),
+                      // Padding(
+                      //   padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                      //   child: CurrencyDropDown(
+                      //     currencyValue: _currency,
+                      //     onChanged: (curr, sym) { setState(() {
+                      //      _currency = curr;
+                      //      _currencySymbol = sym; 
+                      //     }); },                          
+                      //   ),
+                      // ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                         child: TextFormField(

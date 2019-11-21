@@ -55,7 +55,10 @@ class DatabaseService {
     usersRef.document(user.userId).updateData({
       'firstName': user.firstName,
       'lastName': user.lastName,
-      'profileImageUrl': user.imageURL
+      'profileImageUrl': user.imageURL,
+      'currencySymbol': user.currencySymbol,
+      'defaultCurrency': user.defaultCurrency,
+      'setupComplete': user.setUpComplete
     });
   }
 

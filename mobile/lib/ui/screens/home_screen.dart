@@ -13,6 +13,7 @@ import 'package:homefinance/ui/screens/income.dart';
 import 'package:homefinance/ui/screens/transfers.dart';
 import 'package:homefinance/ui/screens/user_profile.dart';
 import 'package:homefinance/ui/widgets/charts.dart';
+import 'package:homefinance/ui/widgets/currency_dropdown.dart';
 import 'package:homefinance/ui/widgets/month_selector_widget.dart';
 import 'package:homefinance/ui/widgets/user_profile_widget.dart';
 import 'package:intl/intl.dart';
@@ -47,180 +48,65 @@ class _MyHomePageState extends State<MyHomePage> {
     stateLoading = false;
   }
   
-  Widget dashboardListWidget(
-      String title, String value, IconData icon, Color color, Function tapped) {
-    return GestureDetector(
-      onTap: tapped,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 12),
-        child: Container(
-          decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey, width: 0.1),
-              borderRadius: BorderRadius.circular(6)),
-          child: Row(
-            children: <Widget>[
-              Icon(
-                icon,
-                color: color,
-                size: 24,
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 4, left: 12, top: 4),
-                  child: Text(
-                    title,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4, right: 10, top: 4),
-                child: Text(
-                  value,
-                  style: TextStyle(color: color, fontSize: 16),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  void showBottomAd() async {
-    
-       bottomBanner
-      ..load()
-      ..show(
-        anchorOffset: 0.0,
-        horizontalCenterOffset: 0.0,
-        anchorType: AnchorType.bottom
-      );
-  }
 
   @override
   Widget build(BuildContext context) {
     
-    showBottomAd(); 
 
     if (widget.user == null) {
       return Container(color: Colors.white, child: Center(child: CircularProgressIndicator(),));
     }
 
-    if (!widget.user.setUpComplete) {
+    if (widget.user.setUpComplete == null || !widget.user.setUpComplete) {
       //Show a popup for the user to set up their name and currency
-    }
+      return Scaffold(
+        appBar: _makeAppBar(),
+        body: Padding(
+          padding: const EdgeInsets.all(22.0),
+          child: Center(
+            
+            child: Container(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    UserProfileWidget(user: widget.user,),
+                    SizedBox(height: 40,),
+                    Text("Please select your default currency:"),
+                    CurrencyDropDown(currencyValue: "USD", onChanged: (cur, sym) {
+                      widget.user.defaultCurrency = cur;
+                      widget.user.currencySymbol = sym;
 
+                      DatabaseService.updateUser(widget.user);
+
+                    },),
+                    OutlineButton(
+                      splashColor: Colors.grey,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+                        highlightElevation: 0,
+                        borderSide: BorderSide(color: Colors.grey),
+                        onPressed: () { 
+                          widget.user.setUpComplete = true;
+                          DatabaseService.updateUser(widget.user);
+                         },
+                        child: Text(
+                          "Finish Account Setup",
+                          style: TextStyle(color: primaryColor),
+                        ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    
+    showBottomAd(); 
     return Scaffold(
       backgroundColor: Color.fromRGBO(244, 244, 244, 1),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: Column(
-                children: <Widget>[
-                  UserProfileWidget(user: widget.user),
-                   Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        widget.user.firstName + ' ' + widget.user.lastName, 
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        width: 15,
-                      ),
-                      Text(
-                       widget.user.email,
-                        style: TextStyle(fontSize: 15, color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                )
-                ],
-              ),
-              decoration: BoxDecoration(color: Colors.black12),
-            ),
-            ListTile(
-              title: Text("Accounts"),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(
-                                    builder: (_) => AccountsScreen(user: widget.user,)
-                                  ));
-                
-              },
-            ),
-             ListTile(
-              title: Text("Transfers"),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(
-                                    builder: (_) => TransfersScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency,)
-                                  ));
-                
-              },
-            ),
-             ListTile(
-              title: Text("Income"),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(
-                                    builder: (_) => IncomeScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency,)
-                                  ));
-                
-              },
-            ),
-             ListTile(
-              title: Text("Expenses"),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(
-                                    builder: (_) => ExpensesScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency,)
-                                  ));
-                
-              },
-            ),
-             ListTile(
-              title: Text("Budget"),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(
-                                    builder: (_) => BudgetScreen(userID: widget.user.userId, currency: widget.user.currencySymbol,)
-                                  ));
-                
-              },
-            ),
-          ],
-        ),
-      ),
-      appBar: AppBar(
-        elevation: 0.0,
-        actions: <Widget>[
-           IconButton(
-                      icon: Icon(Icons.supervised_user_circle),
-                      color: Colors.white,
-                      iconSize: 30.0,
-                      onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfileScreen(userID: widget.user.userId , user: widget.user,)),);},
-                    )
-        ],
-        title: Row(
-          children: <Widget>[
-            Expanded(child: Text("")),
-            Text("Expense Tracker",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30.0,
-                      fontWeight: FontWeight.bold)),
-             Expanded(child: Text("")),
-          ],
-        ),
-      ),
+      drawer: _makeDrawer(),
+      appBar: _makeAppBar(),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(bottom: 90),
         child: Column(
@@ -538,6 +424,170 @@ class _MyHomePageState extends State<MyHomePage> {
         transaction: trans, user: widget.user,
       ),
     );
+  }
+
+  _makeAppBar() {
+    return AppBar(
+        elevation: 0.0,
+        actions: <Widget>[
+           IconButton(
+                      icon: Icon(Icons.supervised_user_circle),
+                      color: Colors.white,
+                      iconSize: 30.0,
+                      onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfileScreen(userID: widget.user.userId , user: widget.user,)),);},
+                    )
+        ],
+        title: Row(
+          children: <Widget>[
+            Expanded(child: Text("")),
+            Text("Expense Tracker",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold)),
+             Expanded(child: Text("")),
+          ],
+        ),
+      );
+  }
+
+  Widget dashboardListWidget(
+      String title, String value, IconData icon, Color color, Function tapped) {
+    return GestureDetector(
+      onTap: tapped,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: Container(
+          decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey, width: 0.1),
+              borderRadius: BorderRadius.circular(6)),
+          child: Row(
+            children: <Widget>[
+              Icon(
+                icon,
+                color: color,
+                size: 24,
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 4, left: 12, top: 4),
+                  child: Text(
+                    title,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 4, right: 10, top: 4),
+                child: Text(
+                  value,
+                  style: TextStyle(color: color, fontSize: 16),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void showBottomAd() async {
+    
+       bottomBanner
+      ..load()
+      ..show(
+        anchorOffset: 0.0,
+        horizontalCenterOffset: 0.0,
+        anchorType: AnchorType.bottom
+      );
+  }
+  _makeDrawer() {
+    return Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Column(
+                children: <Widget>[
+                  UserProfileWidget(user: widget.user),
+                   Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        widget.user.firstName + ' ' + widget.user.lastName, 
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 15,
+                      ),
+                      Text(
+                       widget.user.email,
+                        style: TextStyle(fontSize: 15, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                )
+                ],
+              ),
+              decoration: BoxDecoration(color: Colors.black12),
+            ),
+            ListTile(
+              title: Text("Accounts"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(
+                                    builder: (_) => AccountsScreen(user: widget.user,)
+                                  ));
+                
+              },
+            ),
+             ListTile(
+              title: Text("Transfers"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(
+                                    builder: (_) => TransfersScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency,)
+                                  ));
+                
+              },
+            ),
+             ListTile(
+              title: Text("Income"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(
+                                    builder: (_) => IncomeScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency,)
+                                  ));
+                
+              },
+            ),
+             ListTile(
+              title: Text("Expenses"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(
+                                    builder: (_) => ExpensesScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency,)
+                                  ));
+                
+              },
+            ),
+             ListTile(
+              title: Text("Budget"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(
+                                    builder: (_) => BudgetScreen(userID: widget.user.userId, currency: widget.user.currencySymbol,)
+                                  ));
+                
+              },
+            ),
+          ],
+        ),
+      );
   }
 }
 
