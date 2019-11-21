@@ -106,6 +106,11 @@ class _MyHomePageState extends State<MyHomePage> {
     if (widget.user == null) {
       return Container(color: Colors.white, child: Center(child: CircularProgressIndicator(),));
     }
+
+    if (!widget.user.setUpComplete) {
+      //Show a popup for the user to set up their name and currency
+    }
+
     return Scaffold(
       backgroundColor: Color.fromRGBO(244, 244, 244, 1),
       drawer: Drawer(

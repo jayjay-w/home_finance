@@ -33,12 +33,18 @@ class MyApp extends StatelessWidget {
     stream: FirebaseAuth.instance.onAuthStateChanged,
     builder: (BuildContext context, snapshot) {
       if (snapshot.hasData) {
-        print(snapshot.data.uid + '...logged in');
-
+        print ('trying to log in ' + snapshot.data.uid);
         return StreamBuilder<DocumentSnapshot> (
           stream: usersRef.document(snapshot.data.uid).snapshots(),
           builder: (context, document) {
             User user = User.fromDocument(document.data);
+            if (user == null || document.data == null) {
+              //data is null...user may have been deleted from the backend
+              print('Not logged in. User data is null...user may have been deleted from the backend');
+              return LoginScreen();
+            }
+            
+            print(user.userId + '...logged in');
             
             FirebaseAdMob.instance.initialize(appId: "ca-app-pub-6470490276899852~5992832557");
 

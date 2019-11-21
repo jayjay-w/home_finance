@@ -34,6 +34,21 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  _googleLogIn() async {
+    _changeLoadingVisible();
+      bool loginSuccess = await AuthService.signInWithGoogle();
+      if (!loginSuccess) {
+      _changeLoadingVisible();
+        Flushbar(
+          duration: Duration(seconds: 5),
+          title: "Login Failed",
+          message: "Please check your username and password",
+        );
+      } else {
+        _changeLoadingVisible();
+      }
+  }
+
   @override
     void initState() {
       super.initState();
@@ -67,7 +82,8 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Text(
-                "Home Finance",
+                "Income / Expense Tracker",
+                textAlign: TextAlign.center,
                 style: TextStyle(fontFamily: 'Roboto', fontSize: 50),
                 ),
                 Form(
@@ -99,14 +115,30 @@ class _LoginScreenState extends State<LoginScreen> {
                       Container(
                         width: 200,
                         child: FlatButton(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+                       
                           onPressed: _submit,
                           color: primaryColor,
                           child: Text("Login", style: TextStyle(color: Colors.white, fontSize: 24),),
                         ),
                       ),
-                       SizedBox(height: 40,),
-                      GestureDetector(
-                        onTap: () { Navigator.pushNamed(context, UserRegistrationScreen.id); },
+                       OutlineButton(
+                        splashColor: Colors.grey,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+                        highlightElevation: 0,
+                        borderSide: BorderSide(color: Colors.grey),
+                        onPressed: _googleLogIn,
+                        child: Text(
+                          "Log in using Google",
+                          style: TextStyle(color: primaryColor),
+                        ),
+                      ),
+                      OutlineButton(
+                        splashColor: Colors.grey,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+                        highlightElevation: 0,
+                        borderSide: BorderSide(color: Colors.grey),
+                        onPressed: () { Navigator.pushNamed(context, UserRegistrationScreen.id); },
                         child: Text(
                           "New User? Click here to register",
                           style: TextStyle(color: primaryColor),

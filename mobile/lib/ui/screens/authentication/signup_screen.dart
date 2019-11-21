@@ -35,7 +35,8 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Text(
-                "Shopping List",
+                "Income / Expense Tracker",
+                textAlign: TextAlign.center,
                 style: TextStyle(fontFamily: 'Roboto', fontSize: 50),
                 ),
                 Form(
@@ -99,8 +100,12 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
                         ),
                       ),
                        SizedBox(height: 40,),
-                      GestureDetector(
-                        onTap: () { Navigator.pushNamed(context, LoginScreen.id); },
+                      OutlineButton(
+                        splashColor: Colors.grey,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+                        highlightElevation: 0,
+                        borderSide: BorderSide(color: Colors.grey),
+                        onPressed: () { Navigator.pushNamed(context, LoginScreen.id); },
                         child: Text(
                           "Already a user? Click here to login",
                           style: TextStyle(color: primaryColor),
