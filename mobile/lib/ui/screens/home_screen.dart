@@ -3,6 +3,7 @@ import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:homefinance/models/transaction.dart';
 import 'package:homefinance/models/user.dart';
+import 'package:homefinance/services/auth_service.dart';
 import 'package:homefinance/services/database_service.dart';
 import 'package:homefinance/services/theme_service.dart';
 import 'package:homefinance/ui/screens/accounts.dart';
@@ -13,6 +14,7 @@ import 'package:homefinance/ui/screens/transfers.dart';
 import 'package:homefinance/ui/screens/user_profile.dart';
 import 'package:homefinance/ui/widgets/charts.dart';
 import 'package:homefinance/ui/widgets/month_selector_widget.dart';
+import 'package:homefinance/ui/widgets/user_profile_widget.dart';
 import 'package:intl/intl.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -106,42 +108,119 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     return Scaffold(
       backgroundColor: Color.fromRGBO(244, 244, 244, 1),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.only(bottom: 90),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                  color: primaryColor, border: Border.all(color: primaryColor)),
-              child: Padding(
-                padding: EdgeInsets.only(top: 30.0, right: 15.0, left: 15.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.menu),
-                      color: Colors.white,
-                      iconSize: 30.0,
-                      onPressed: () {},
-                    ),
-                    Text("Family Budget",
-                                  style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 30.0,
-                                  fontWeight: FontWeight.bold)
-                    ),
-                    IconButton(
+            DrawerHeader(
+              child: Column(
+                children: <Widget>[
+                  UserProfileWidget(user: widget.user),
+                   Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        widget.user.firstName + ' ' + widget.user.lastName, 
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 15,
+                      ),
+                      Text(
+                       widget.user.email,
+                        style: TextStyle(fontSize: 15, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                )
+                ],
+              ),
+              decoration: BoxDecoration(color: Colors.black12),
+            ),
+            ListTile(
+              title: Text("Accounts"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(
+                                    builder: (_) => AccountsScreen(user: widget.user,)
+                                  ));
+                
+              },
+            ),
+             ListTile(
+              title: Text("Transfers"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(
+                                    builder: (_) => TransfersScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency,)
+                                  ));
+                
+              },
+            ),
+             ListTile(
+              title: Text("Income"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(
+                                    builder: (_) => IncomeScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency,)
+                                  ));
+                
+              },
+            ),
+             ListTile(
+              title: Text("Expenses"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(
+                                    builder: (_) => ExpensesScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency,)
+                                  ));
+                
+              },
+            ),
+             ListTile(
+              title: Text("Budget"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(
+                                    builder: (_) => BudgetScreen(userID: widget.user.userId, currency: widget.user.currencySymbol,)
+                                  ));
+                
+              },
+            ),
+          ],
+        ),
+      ),
+      appBar: AppBar(
+        elevation: 0.0,
+        actions: <Widget>[
+           IconButton(
                       icon: Icon(Icons.supervised_user_circle),
                       color: Colors.white,
                       iconSize: 30.0,
                       onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfileScreen(userID: widget.user.userId , user: widget.user,)),);},
                     )
-                  ],
-                ),
-              ),
-            ),
+        ],
+        title: Row(
+          children: <Widget>[
+            Expanded(child: Text("")),
+            Text("Expense Tracker",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold)),
+             Expanded(child: Text("")),
+          ],
+        ),
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.only(bottom: 90),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
             Stack(
               children: <Widget>[
                 ClipPath(
