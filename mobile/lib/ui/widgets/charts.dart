@@ -43,11 +43,14 @@ class _ExpenseProgressWidgetState extends State<ExpenseProgressWidget> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        Text("Budget usage this month " + _totalExpenses.toString(), style: boldGrey,),
+        Padding(
+          padding: const EdgeInsets.only(top: 12.0),
+          child: Text("Expenses by category", style: boldGrey,),
+        ),
         Expanded(
           child: Container(
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
               child: StreamBuilder<QuerySnapshot>(
                   stream: categoryRef.where('owner', isEqualTo: widget.userId).snapshots(),
                   builder: (context, catSnap) {
@@ -80,7 +83,7 @@ class _ExpenseProgressWidgetState extends State<ExpenseProgressWidget> {
         children: <Widget>[
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.only(bottom: 8.0, left: 10, right: 10),
               child: StreamBuilder<QuerySnapshot>(
                 stream: transactionRef.where('owner', isEqualTo: widget.userId)
                                       .where('categoryId', isEqualTo: cat.id)
