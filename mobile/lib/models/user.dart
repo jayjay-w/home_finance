@@ -55,7 +55,8 @@ class User {
         "defaultCurrency": defaultCurrency ?? "USD",
         "currencySymbol": currencySymbol ?? "\$",
         "profileImageUrl": imageURL,
-        "isGoogleUser": isGoogleUser ?? false
+        "isGoogleUser": isGoogleUser ?? false,
+        "setupComplete": setUpComplete
       };
 
   factory User.fromDocument(DocumentSnapshot doc) {

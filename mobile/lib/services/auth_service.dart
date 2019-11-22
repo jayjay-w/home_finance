@@ -95,8 +95,21 @@ class AuthService {
     }
   }
 
+  static Future<User> getUserObjectByUid(String uid) async {
+    User user = null;
+    await _firestore.collection('/users').document(uid).get().then((userDoc) {
+      if (userDoc.data == null) { return null; }
+      user = User.fromDocument(userDoc);
+    } );
+    return user;
+  }
+
   static void createFirebaseDbUser(BuildContext context, FirebaseUser signedInUser, String fName, String lName, String email, String password, String currency, String currencySymbol, bool isGoogleUser, String imageUrl) async {
     print('creating local account for ' + email);
+
+    User existingUser = await AuthService.getUserObjectByUid(signedInUser.uid);
+    
+
     User newUser = User(
         firstName: fName,
         lastName: lName,
@@ -106,7 +119,11 @@ class AuthService {
         imageURL: imageUrl,
         isGoogleUser: isGoogleUser,
       );
-
+      if (existingUser != null) {
+      newUser.setUpComplete = existingUser.setUpComplete;
+      newUser.currencySymbol = existingUser.currencySymbol;
+      newUser.defaultCurrency = existingUser.defaultCurrency;
+    }
 
       if (signedInUser != null) {
         _firestore.collection('/users').document(signedInUser.uid).setData(newUser.toJson());

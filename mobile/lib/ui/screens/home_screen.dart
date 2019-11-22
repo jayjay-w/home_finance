@@ -493,7 +493,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void showBottomAd() async {
-    
        bottomBanner
       ..load()
       ..show(
