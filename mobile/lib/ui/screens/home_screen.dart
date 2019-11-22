@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:homefinance/models/transaction.dart';
 import 'package:homefinance/models/user.dart';
 import 'package:homefinance/services/auth_service.dart';
@@ -31,6 +32,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final currencyFormatter = new NumberFormat("#,##0.00", "en_US");
   DateTime _startDate = DateTime(DateTime.now().year, DateTime.now().month, 1);
   DateTime _endDate = DateTime(DateTime.now().year, DateTime.now().month, 1).add(Duration(days: 30));
+  String _setupCurrency;
+  String _setupCurrencySymbol;
   bool stateLoading = true;
   BannerAd bottomBanner = BannerAd(
       adUnitId: "ca-app-pub-6470490276899852/5330132357", // TEST Ad: "ca-app-pub-3940256099942544/6300978111",//
@@ -46,6 +49,8 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     stateLoading = false;
+    _setupCurrency = widget.user.defaultCurrency;
+    _setupCurrencySymbol = widget.user.currencySymbol;
   }
   
 
@@ -72,11 +77,17 @@ class _MyHomePageState extends State<MyHomePage> {
                     UserProfileWidget(user: widget.user,),
                     SizedBox(height: 40,),
                     Text("Please select your default currency:"),
-                    CurrencyDropDown(currencyValue: "USD", onChanged: (cur, sym) {
+                    CurrencyDropDown(currencyValue: _setupCurrency, onChanged: (cur, sym) {
+                       SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {
+                            _setupCurrency = cur;
+                            _setupCurrencySymbol = sym;
+                      }));
                       widget.user.defaultCurrency = cur;
                       widget.user.currencySymbol = sym;
 
                       DatabaseService.updateUser(widget.user);
+
+                      
 
                     },),
                     OutlineButton(
@@ -503,88 +514,96 @@ class _MyHomePageState extends State<MyHomePage> {
   }
   _makeDrawer() {
     return Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: Column(
-                children: <Widget>[
-                  UserProfileWidget(user: widget.user),
-                   Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+        child: Container(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              Container(
+                height: 250,
+                child: DrawerHeader(
+                  child: Column(
                     children: <Widget>[
-                      Text(
-                        widget.user.firstName + ' ' + widget.user.lastName, 
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                      UserProfileWidget(user: widget.user),
+                       Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              widget.user.firstName + ' ' + widget.user.lastName, 
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                             widget.user.email,
+                              style: TextStyle(fontSize: 16, color: Colors.grey),
+                            ),
+                          ],
+                        ),
                       ),
-                      SizedBox(
-                        width: 15,
-                      ),
-                      Text(
-                       widget.user.email,
-                        style: TextStyle(fontSize: 15, color: Colors.grey),
-                      ),
+                    )
                     ],
                   ),
-                )
-                ],
+                  decoration: BoxDecoration(color: Colors.black12),
+                ),
               ),
-              decoration: BoxDecoration(color: Colors.black12),
-            ),
-            ListTile(
-              title: Text("Accounts"),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(
-                                    builder: (_) => AccountsScreen(user: widget.user,)
-                                  ));
-                
-              },
-            ),
-             ListTile(
-              title: Text("Transfers"),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(
-                                    builder: (_) => TransfersScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency,)
-                                  ));
-                
-              },
-            ),
-             ListTile(
-              title: Text("Income"),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(
-                                    builder: (_) => IncomeScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency,)
-                                  ));
-                
-              },
-            ),
-             ListTile(
-              title: Text("Expenses"),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(
-                                    builder: (_) => ExpensesScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency,)
-                                  ));
-                
-              },
-            ),
-             ListTile(
-              title: Text("Budget"),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(
-                                    builder: (_) => BudgetScreen(userID: widget.user.userId, currency: widget.user.currencySymbol,)
-                                  ));
-                
-              },
-            ),
-          ],
+              ListTile(
+                title: Text("Accounts"),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(
+                                      builder: (_) => AccountsScreen(user: widget.user,)
+                                    ));
+                  
+                },
+              ),
+               ListTile(
+                title: Text("Transfers"),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(
+                                      builder: (_) => TransfersScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency,)
+                                    ));
+                  
+                },
+              ),
+               ListTile(
+                title: Text("Income"),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(
+                                      builder: (_) => IncomeScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency,)
+                                    ));
+                  
+                },
+              ),
+               ListTile(
+                title: Text("Expenses"),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(
+                                      builder: (_) => ExpensesScreen(userID: widget.user.userId, currency: widget.user.defaultCurrency,)
+                                    ));
+                  
+                },
+              ),
+               ListTile(
+                title: Text("Budget"),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(
+                                      builder: (_) => BudgetScreen(userID: widget.user.userId, currency: widget.user.currencySymbol,)
+                                    ));
+                  
+                },
+              ),
+            ],
+          ),
         ),
       );
   }
