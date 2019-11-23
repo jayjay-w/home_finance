@@ -51,5 +51,7 @@
 	<string>Share and upload photos</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Share and upload photos</string>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-6470490276899852~9918924686</string>
 </dict>
 </plist>
